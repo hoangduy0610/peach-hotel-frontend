@@ -1,18 +1,20 @@
 import React from "react";
-import { Container, Row, Col,  } from "react-bootstrap";
-import "./Home.scss";
-
-import { destinationsData, popularsData } from "../../modules/data";
 import Banner from "./partials/Banner/Banner";
 import Search from "../../layouts/Search/Search";
 import Features from "./partials/Features/Features";
-import Cards from "../../layouts/Cards/Cards";
-import PopularCard from "../../layouts/Cards/PopularCard";
-import Gallery from "./partials/Gallery/Gallery";
-import Slider from "react-slick";
+import { Container, Row, Col,  } from "react-bootstrap";
 
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
+
+import "./Home.scss";
+
+import Gallery from "./partials/Gallery/Gallery";
+import Cards from "../../layouts/Cards/Cards";
+import { destinationsData, popularsData } from "../../modules/data";
+import PopularCard from "../../layouts/Cards/PopularCard";
 
 
 const Home = () => {
@@ -97,27 +99,6 @@ const Home = () => {
           </Row>
         </Container>
       </section>
-      
-      <section className="gallery">
-        <Container>
-          <Row>
-            <Col md="12">
-              <div className="main_heading">
-                <h1>Photo Gallery </h1>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="12">
-              <Gallery />
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-
-
-      {/* tour seciton start */}
 
       <section className="popular py-5">
       <Container>
@@ -168,6 +149,27 @@ const Home = () => {
         </Container>
         <div className="overlay"></div>
       </section>
+      
+      <section className="gallery">
+        <Container>
+          <Row>
+            <Col md="12">
+              <div className="main_heading">
+                <h1>Photo Gallery </h1>
+              </div>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="12">
+              <Gallery />
+            </Col>
+          </Row>
+        </Container>
+      </section>
+
+
+
+
 
 
     </>
