@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 import "./ProductCard.scss";
-import { Card, Button, Badge, Stack } from 'react-bootstrap';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Card, Button, Badge, Stack } from "react-bootstrap";
+import { NavLink, useNavigate } from "react-router-dom";
 
 interface ProductCardProps {
   val: {
@@ -42,11 +42,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ val }) => {
           </NavLink>
         </Card.Title>
 
-        <div className="rating">
+        {/* Rating */}
+        <div className="rating mb-3">
           <i className="bi bi-star-fill me-1"></i>
           <span>{val.rating.toFixed(1)} / 5</span>
         </div>
 
+        {/* Category */}
         <Stack direction="horizontal" gap={2} className="mb-3">
           {val.category.map((cat, index) => (
             <Badge key={index} className="category-badge">
@@ -55,33 +57,47 @@ const ProductCard: React.FC<ProductCardProps> = ({ val }) => {
           ))}
         </Stack>
 
-        <p className="price">
-          {val.price.toLocaleString('vi-VN', {
-            style: 'currency',
-            currency: 'VND',
-          })}{' '}
-          / đêm
-        </p>
+        {/* Tier */}
+        <div className="tier mb-3">
+          <span className="label">Hạng phòng:</span>
+          <Badge className={`tier-badge ${val.tier.toLowerCase()}`}>
+            {val.tier}
+          </Badge>
+        </div>
 
-        <Badge className={`tier-badge ${val.tier.toLowerCase()}`}>
-          {val.tier}
-        </Badge>
-
+        {/* Features */}
         <div className="features mt-3">
-          {val.features.map((feature, index) => (
-            <span key={index} className="feature">
-              <i className={`bi ${featureIcons[feature] || 'bi-box'}`}></i> {feature}
-            </span>
-          ))}
+          <span className="label">Tiện nghi:</span>
+          <div className="features-list">
+            {val.features.map((feature, index) => (
+              <span key={index} className="feature">
+                <i className={`bi ${featureIcons[feature] || "bi-box"}`}></i> {feature}
+              </span>
+            ))}
+          </div>
+        </div>
+        
+        {/* Price */}
+        <div className="price mt-4 mb-4">
+          <span className="label">Giá:</span>{" "}
+          <span className="price-value">
+            {val.price.toLocaleString("vi-VN", {
+              style: "currency",
+              currency: "VND",
+            })}
+          </span>{" "}
+          / đêm
         </div>
       </Card.Body>
+
+      {/* Footer with buttons */}
       <Card.Footer className="d-flex justify-content-between">
-      <Button variant="primary" onClick={() => navigate("/details")}>
-        Xem chi tiết
-      </Button>
-      <Button variant="success" onClick={() => navigate("/booking")}>
-        Đặt phòng
-      </Button>
+        <Button variant="primary" onClick={() => navigate("/room-details")}>
+          Xem chi tiết
+        </Button>
+        <Button variant="success" onClick={() => navigate("/booking")}>
+          Đặt phòng
+        </Button>
       </Card.Footer>
     </Card>
   );
