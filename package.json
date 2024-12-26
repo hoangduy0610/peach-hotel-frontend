@@ -10,7 +10,6 @@
     "antd": "^5.22.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
-    "mklirrwwmp.github": "file:",
     "react": "18.3.1",
     "react-bootstrap": "^2.10.7",
     "react-datepicker": "^7.5.0",
@@ -22,18 +21,32 @@
     "react-signify": "1.5.1",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1",
+    "typescript": "^5.7.2",
     "web-vitals": "2.1.4",
     "yet-another-react-lightbox": "^3.21.7"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "devDependencies": {
-    "react-scripts": "latest",
+    "@craco/craco": "^7.1.0",
+    "@craco/types": "^7.1.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/react-image-gallery": "^1.2.4",
+    "@types/react-slick": "^0.23.13",
     "sass": "^1.81.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
