@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSystemContext } from '../../hooks/useSystemContext';
 import { MainApiRequest } from '../../services/MainApiRequest';
 
-const Login = () => {
+const Register = () => {
     const navigate = useNavigate();
     const context = useSystemContext();
     const {
@@ -15,34 +15,23 @@ const Login = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [remember, setRemember] = React.useState(false);
+    const [name, setName] = React.useState('');
 
     const handleRememberOnChange = (e) => {
         setRemember(e.target.checked);
     }
 
-    const handleLogin = async () => {
-        const res = await MainApiRequest.post('/auth/signin', {
+    const handleRegister = async () => {
+        const res = await MainApiRequest.post('/auth/register', {
             email,
-            password
+            password,
+            name
         });
 
         if (res.status === 200) {
-            const data = res.data;
-            context.setToken(data.token);
-
-            if (remember) {
-                localStorage.setItem('token', data.token);
-            }
-
-            navigate('/');
+            navigate('/login');
         }
     }
-
-    useEffect(() => {
-        if (!isLoggedIn && token) {
-            navigate('/');
-        }
-    }, [isLoggedIn]);
 
     return (
         // <LoadingOverlay
@@ -63,7 +52,7 @@ const Login = () => {
                         </div>
                         <div className="card shadow-lg">
                             <div className="card-body p-5">
-                                <h1 className="fs-4 card-title fw-bold mb-4">Đăng nhập</h1>
+                                <h1 className="fs-4 card-title fw-bold mb-4">Đăng ký</h1>
                                 <form method="POST" className="needs-validation">
                                     <div className="mb-3">
                                         <label className="mb-2 text-muted">E-Mail</label>
@@ -86,21 +75,25 @@ const Login = () => {
                                         </div>
                                     </div>
 
-                                    <div className="d-flex align-items-center">
-                                        <div className="form-check">
-                                            <input type="checkbox" name="remember" id="remember" className="form-check-input" onChange={handleRememberOnChange} />
-                                            <label className="form-check-label">Ghi nhớ đăng nhập</label>
+                                    <div className="mb-3">
+                                        <label className="mb-2 text-muted">Họ và tên</label>
+                                        <input id="name" type="text" className="form-control" name="name" value={name} required onChange={(e) => setName(e.target.value)} />
+                                        <div className="invalid-feedback">
+                                            Họ và tên không hợp lệ
                                         </div>
-                                        <button type="button" onClick={handleLogin} className="btn btn-primary ms-auto">
-                                            Đăng nhập
+                                    </div>
+
+                                    <div className="d-flex align-items-center">
+                                        <button type="button" onClick={handleRegister} className="btn btn-primary ms-auto">
+                                            Đăng kí
                                         </button>
                                     </div>
 
                                     <hr className="my-4" />
 
                                     <div className="d-flex justify-content-center mt-3">
-                                        <a href="/register" className="text-muted">
-                                            Chưa có tài khoản? Đăng ký ngay
+                                        <a href="/login" className="text-muted">
+                                            Đã có tài khoản? Đăng nhập ngay
                                         </a>
                                     </div>
                                 </form>
@@ -117,4 +110,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default Register;

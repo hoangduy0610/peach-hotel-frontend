@@ -14,19 +14,20 @@ import PhotoGallery from "../pages/PhotoGallery/PhotoGallery";
 import Login from "../pages/Login/Login";
 import { useSystemContext } from "../hooks/useSystemContext";
 import "../../App.scss";
+import Register from "../pages/Register/Register";
 
 export default function MainRoutes() {
   const context = useSystemContext();
 
   useEffect(() => {
-    if (!context.token && window.location.pathname !== "/login") {
+    if (!context.token && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
       window.location.href = "/login";
     }
   }, [context]);
 
   return (
     <>
-      {window.location.pathname !== "/login" && <Header />}
+      {window.location.pathname !== "/login" && window.location.pathname !== "/register" && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
@@ -37,10 +38,11 @@ export default function MainRoutes() {
         <Route path="destinations" element={<Destinations />} />
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {window.location.pathname !== "/login" && <Footer />}
+      {window.location.pathname !== "/login" && window.location.pathname !== "/register" && <Footer />}
     </>
   );
 }
