@@ -3,24 +3,24 @@ import { Card } from "react-bootstrap";
 import "./Cards.scss";
 import { NavLink } from "react-router-dom";
 
-const Cards = ({ destination }: any) => {
+const Cards = ({ tier }: any) => {
   return (
     <>
       <div className="img-box">
-        <NavLink className="body-text text-dark text-decoration-none" to="/tours">
+        <NavLink className="body-text text-dark text-decoration-none" to="/rooms">
           <Card>
             <Card.Img
               variant="top"
-              src={destination.image}
+              src={tier.image}
               className="img-fluid"
-              alt={destination.name}
+              alt={tier.name}
             />
             <Card.Title>
 
-              {destination.name}
+              {tier.name}
             </Card.Title>
 
-            <span className="tours">{destination.tours}</span>
+            <span className="rooms">{tier.rooms}</span>
           </Card>
         </NavLink>
       </div>

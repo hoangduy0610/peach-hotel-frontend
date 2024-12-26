@@ -1,4 +1,4 @@
-.tours_section {
+.rooms_section {
     .img-box {
       padding: 0px 12px;
       
@@ -32,7 +32,7 @@
           width: 100%;
         }
   
-        .tours {
+        .rooms {
           position: absolute;
           right: 5%;
           bottom: 5%;
@@ -55,7 +55,7 @@
             transform: scale(1.1);
           }
   
-          .tours {
+          .rooms {
             transform: translateX(0);
           }
         }
@@ -121,7 +121,7 @@
         color: #ffffff !important;
       }
   
-      .Tour {
+      .Room {
         background-color: #6088c4 !important;
         color: #ffffff !important;
       }

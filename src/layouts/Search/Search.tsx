@@ -11,8 +11,8 @@ const Search = () => {
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
 
-  const selectedLocation = (value: any) => {
-    console.log("Location", value)
+  const selectedTier = (value: any) => {
+    console.log("Tier", value)
   }
 
   const selectedGuest = (value: any) => {
@@ -29,14 +29,16 @@ const Search = () => {
                 <div className="item-search">
                   {/*  Using Props to Pass Data */}
                   <CustomDropdown
-                    label="Location"
-                    onSelect={selectedLocation}
+                    label="Tier"
+                    onSelect={selectedTier}
                     options={[
-                      "USA, Turkish",
-                      "Tokyo, Japan",
-                      "Sydney, Australia",
-                      "Melbourne, Australia",
-                      "Paris, France",
+                      "King Room, Spacious and luxurious",
+                      "Luxury Suite, Ocean view and private balcony",
+                      "Standard Room, Comfortable and affordable",
+                      "Presidential Suite, Exclusive services and breathtaking views",
+                      "Deluxe Room, Premium furnishings and stunning view",
+                      "Superior Room, Cozy atmosphere and modern amenities"
+
                     ]}
                   />
                 </div>

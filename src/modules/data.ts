@@ -1,10 +1,10 @@
 // destinations img
-import tour1 from "@/assets/view20.jpg";
-import tour2 from "@/assets/view10.jpg";
-import tour3 from "@/assets/view13.jpg";
-import tour4 from "@/assets/view2.jpg";
-import tour5 from "@/assets/view15.jpg";
-import tour6 from "@/assets/view8.jpg";
+import room1 from "@/assets/view20.jpg";
+import room2 from "@/assets/view10.jpg";
+import room3 from "@/assets/view13.jpg";
+import room4 from "@/assets/view2.jpg";
+import room5 from "@/assets/view15.jpg";
+import room6 from "@/assets/view8.jpg";
 
 // populars img
 import Anchorage from "@/assets/view1.jpg";
@@ -16,7 +16,7 @@ import Ushuaia from "@/assets/view12.jpg";
 import Santiago from "@/assets/view11.jpg";
 import Explorer from "@/assets/view18.jpg";
 
-// tour detail img
+// room detail img
 import image1 from "@/assets/room1.jpg";
 import image2 from "@/assets/room2.jpg";
 import image3 from "@/assets/room3.jpg";
@@ -26,236 +26,211 @@ import image6 from "@/assets/room6.jpg";
 import image7 from "@/assets/room9.jpg";
 import image8 from "@/assets/room3.jpg";
 
-export const destinationsData = [
+export const roomTierData = [
   {
     id: 0,
-    name: "Bali",
-    tours: "5 tours and activities",
-    image: tour1,
-    link: "tour-name",
-    shortDes: "",
+    name: "King Room",
+    rooms: "2 rooms available",
+    image: room1, // Thay thế với hình ảnh phòng King thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "A spacious room with a king-size bed and luxurious amenities.",
   },
   {
     id: 1,
-    name: "Tokyo",
-    tours: "9 tours and activities",
-    image: tour2,
-    link: "tour-name",
+    name: "Luxury Suite",
+    rooms: "3 rooms available",
+    image: room2, // Thay thế với hình ảnh phòng Luxury thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "A lavish suite with an ocean view, private balcony, and premium facilities.",
   },
-
   {
     id: 2,
-    name: "Bangkok",
-    tours: "5 tours and activities",
-    image: tour3,
-    link: "tour-name",
+    name: "Standard Room",
+    rooms: "5 rooms available",
+    image: room3, // Thay thế với hình ảnh phòng Standard thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "A comfortable and affordable room with essential amenities.",
   },
-
   {
     id: 3,
-    name: "Cancun",
-    tours: "4 tours and activities",
-    image: tour4,
-    link: "tour-name",
+    name: "Presidential Suite",
+    rooms: "1 room available",
+    image: room4, // Thay thế với hình ảnh phòng Presidential thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "The most luxurious room with exclusive services and breathtaking views.",
   },
   {
     id: 4,
-    name: "Nha Trang",
-    tours: "9 tours and activities ",
-    image: tour5,
-    link: "tour-name",
+    name: "Deluxe Room",
+    rooms: "4 rooms available",
+    image: room5, // Thay thế với hình ảnh phòng Deluxe thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "A deluxe room with premium furnishings and a stunning view.",
   },
   {
     id: 5,
-    name: "Phuket",
-    tours: "4 tours and activities",
-    image: tour6,
-    link: "tour-name",
-  }
+    name: "Superior Room",
+    rooms: "3 rooms available",
+    image: room6, // Thay thế với hình ảnh phòng Superior thực tế
+    link: "room-name", // Liên kết tới trang chi tiết phòng
+    shortDes: "A well-appointed room with a cozy atmosphere and modern amenities.",
+  },
 ];
+
 
 export const popularsData: {
   id: number;
   title: string;
   image: string;
-  location: string;
   category: string[];
-  days: string;
   price: number;
-  afterDiscount: number;
+  tier: string;
+  features: string[];
   rating: number;
-  reviews: number;
 }[] = [
-    {
-      id: 0,
-      title: "Discover Singapore",
-      image: Singapore,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["Escorted Tour", "Rail Tour"],
-      days: "5 days - 4 nights",
-      price: 100,
-      afterDiscount: 92,
-      rating: 3,
-      reviews: 5,
-    },
-    {
-      id: 1,
-      title: "Kiwiana Panorama",
-      image: Kiwiana,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["River Cruise", "Wildlife"],
-      days: "2 days - 1 nights",
-      price: 87,
-      afterDiscount: 82,
-      rating: 4,
-      reviews: 9,
-    },
-    {
-      id: 2,
-      title: "Anchorage To Quito",
-      image: Quito,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["Escorted Tour", "River Cruise"],
-      days: "2 days - 1 nights",
-      price: 87,
-      afterDiscount: 82,
-      rating: 4,
-      reviews: 9,
-    },
-    {
-      id: 3,
-      title: "Anchorage To La Paz",
-      image: Anchorage,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["River Cruise", "Rail Tour"],
-      days: "unlimited",
-      price: 434,
-      afterDiscount: 0,
-      rating: 5,
-      reviews: 20,
-    },
-    {
-      id: 4,
-      title: "Cuzco To Anchorage",
-      image: Cuzco,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["River Cruise", "Tour & Cruise"],
-      days: "1 days - 9 hours",
-      price: 395,
-      afterDiscount: 0,
-      rating: 3,
-      reviews: 12,
-    },
-    {
-      id: 5,
-      title: "Anchorage To Ushuaia",
-      image: Ushuaia,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["Escorted Tour", "Wildlife"],
-      days: "5 days - 4 nights",
-      price: 93,
-      afterDiscount: 0,
-      rating: 3,
-      reviews: 12,
-    },
-    {
-      id: 6,
-      title: "Anchorage To Santiago",
-      image: Santiago,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["Escorted Tour", "Wildlife"],
-      days: "1 day - 1 night",
-      price: 42,
-      afterDiscount: 0,
-      rating: 5,
-      reviews: 18,
-    },
-    {
-      id: 7,
-      title: "LA Explorer",
-      image: Explorer,
-      location: "European Way, Southampton, United Kingdom",
-      category: ["Rail Tour", "Tour & Cruise"],
-      days: "1 night",
-      price: 99,
-      afterDiscount: 0,
-      rating: 4,
-      reviews: 22,
-    },
-  ];
+  {
+    id: 0,
+    title: "Deluxe Double Room",
+    image: Anchorage,
+    category: ["Double"],
+    price: 120,
+    tier: "Luxury",
+    features: ["TV", "Air Conditioner", "Bathtub", "WiFi", "Mini Bar"],
+    rating: 4.5,
+  },
+  {
+    id: 1,
+    title: "Standard Single Room",
+    image: Singapore,
+    category: ["Single"],
+    price: 75,
+    tier: "Standard",
+    features: ["TV", "WiFi", "Air Conditioner"],
+    rating: 4.0,
+  },
+  {
+    id: 2,
+    title: "King Suite",
+    image: Kiwiana,
+    category: ["Double"],
+    price: 250,
+    tier: "King",
+    features: ["TV", "Air Conditioner", "Bathtub", "WiFi", "Private Balcony", "Mini Bar"],
+    rating: 5.0,
+  },
+  {
+    id: 3,
+    title: "Luxury Double Room",
+    image: Quito,
+    category: ["Double"],
+    price: 180,
+    tier: "Luxury",
+    features: ["TV", "Air Conditioner", "Bathtub", "WiFi", "Coffee Maker"],
+    rating: 4.8,
+  },
+  {
+    id: 4,
+    title: "Economy Single Room",
+    image: Cuzco,
+    category: ["Single"],
+    price: 50,
+    tier: "Standard",
+    features: ["WiFi", "Air Conditioner"],
+    rating: 3.8,
+  },
+  {
+    id: 5,
+    title: "Presidential Suite",
+    image: Ushuaia,
+    category: ["Double"],
+    price: 500,
+    tier: "King",
+    features: ["TV", "Air Conditioner", "Bathtub", "WiFi", "Private Pool", "Butler Service"],
+    rating: 5.0,
+  },
+  {
+    id: 6,
+    title: "Economy Single Room",
+    image: Santiago,
+    category: ["Single"],
+    price: 50,
+    tier: "Standard",
+    features: ["WiFi", "Air Conditioner"],
+    rating: 3.8,
+  },
+  {
+    id: 7,
+    title: "Presidential Suite",
+    image: Explorer,
+    category: ["Double"],
+    price: 500,
+    tier: "King",
+    features: ["TV", "Air Conditioner", "Bathtub", "WiFi", "Private Pool", "Butler Service"],
+    rating: 5.0,
+  },
+];
 
-export const tourDetails = {
-  title: "Beautiful Bali with Malaysia",
-  des: ` Bali, also known as the land of gods has plenty to offer to travelers from across the globe. As it so contrasted oh estimating instrument. Size like body some one had.  Are conduct viewing boy minutes warrant the expense?  Tolerably behavior may admit daughters offending her ask own. Praise effect wishes change way and any wanted.  Lively use looked latter regard had. Do he it part more  last in. We understand that theory is important to build a solid foundation, we understand that theory alone isn’t going to get the job done so that’s why this is packed with practical hands-on examples that you can  follow step by step.`,
-  price: "280.00",
-  rating: " 4.5",
-  reviews: "365 reviews",
-  tourInfo: [
-    '<strong className="font-bold"> Place Covered</strong>: Bali - Ubud',
-    ' <strong className="font-bold">Duration:</strong>5 Days, 4 Nights',
-    '<strong className="font-bold">Start Point:</strong> Ngurah International Airport',
-    '<strong className="font-bold">End Point:</strong>  Ngurah International Airport',
+
+export const roomDetails = {
+  title: "Deluxe Room with Ocean View",
+  des: `This spacious and luxurious deluxe room offers stunning ocean views, perfect for relaxation. With modern furnishings and elegant design, the room features a king-sized bed, a comfortable seating area, and all the amenities you need for a pleasant stay. Located on the upper floors, it provides both privacy and breathtaking views of the sea. Ideal for couples or solo travelers seeking comfort and tranquility.`,
+  price: "150.00", // Giá phòng mỗi đêm
+  rating: "4.8", // Đánh giá của khách hàng
+  reviews: "245 reviews", // Số lượng đánh giá
+
+  roomInfo: [
+    '<strong className="font-bold">Location:</strong> Ocean View, 5th Floor',
+    '<strong className="font-bold">Room Size:</strong> 35 m²',
+    '<strong className="font-bold">Bed Type:</strong> King-size Bed',
+    '<strong className="font-bold">Facilities:</strong> Air conditioning, Free Wi-Fi, Mini bar, Smart TV, In-room safe, Coffee machine',
   ],
 
   highlights: [
-    " Experience a delightful tropical getaway with a luxurious stay and witness the picture-perfect beaches, charming waterfalls and so much more",
-    " Dependent on so extremely delivered by. Yet no jokes  worse her why. Bed one supposing breakfast day fulfilled off depending questions.",
-    " Whatever boy her exertion his extended. Ecstatic  followed handsome drawings entirely Mrs one yet  outweigh.",
-    "Meant balls it if up doubt small purse. Required his  you put the outlived answered position. A pleasure exertion if believed provided to.",
+    "Stunning ocean view from your private balcony",
+    "Luxury amenities including high-end toiletries and bed linens",
+    "24/7 room service and daily housekeeping",
+    "Access to the hotel’s spa, gym, and infinity pool",
   ],
 
   itinerary: [
     {
-      title: `<span class="me-1 fw-bold">Day 1:</span>  Airport Pick Up `,
-      des: ` Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in.`,
-    },
-
-    {
-      title: `<span class="me-1 fw-bold">Day 2:</span>  Temples & River Cruise `,
-      des: ` Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in. `,
+      title: `<span class="me-1 fw-bold">Day 1:</span> Check-in and Relaxation`,
+      des: `Arrive at the hotel, check into your Deluxe Room with Ocean View, and enjoy a relaxing evening by the sea. Unwind and explore the hotel’s amenities at your leisure.`,
     },
     {
-      title: `<span class="me-1 fw-bold">Day 3:</span>  Massage & Overnight Train`,
-      des: ` Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in.`,
+      title: `<span class="me-1 fw-bold">Day 2:</span> Spa and Wellness`,
+      des: `Indulge in a rejuvenating spa treatment followed by a relaxing day by the infinity pool. Enjoy lunch at the rooftop restaurant with panoramic views of the ocean.`,
     },
     {
-      title: `<span class="me-1 fw-bold">Day 4:</span>  Khao Sok National Park `,
-      des: ` Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in.`,
+      title: `<span class="me-1 fw-bold">Day 3:</span> Private Beach and Sunset Cruise`,
+      des: `Spend the day on the private beach, followed by a scenic sunset cruise. Return to the hotel for a gourmet dinner at the restaurant.`,
     },
     {
-      title: `<span class="me-1 fw-bold">Day 5:</span>  Travel to Koh Phangan `,
-      des: ` Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in.
-      `,
-    },
-    {
-      title: `<span class="me-1 fw-bold">Day 6:</span> Morning Chill & Muay Thai Lesson `,
-      des: `Like on all of our trips, we can collect you from the airport when you land and take you directly to your hotel. The first Day is just a check-in Day so you have this freedom to explore the city and get settled in.
-      `,
+      title: `<span class="me-1 fw-bold">Day 4:</span> Explore the Local Culture`,
+      des: `Take a guided tour of the local cultural sites. Enjoy lunch at a traditional restaurant and return to the hotel for some relaxation before checking out.`,
     },
   ],
 
   included: [
-    "Comfortable stay for 4 nights in your preferred category Hotels",
-    "Professional English speaking guide to help you explore the cities",
-    "Breakfast is included as mentioned in Itinerary.",
-    "Per Peron rate on twin sharing basis",
-    "Entrance Tickets to Genting Indoor Theme Park    ",
-    "All Tours & Transfers on Seat In Coach Basis ",
-    "Visit Bali Safari & Marine Park with Jungle Hopper Pass    ",
+    "Comfortable stay in the Deluxe Ocean View Room for 4 nights",
+    "Daily breakfast included",
+    "Access to hotel facilities including the spa, gym, and infinity pool",
+    "Round-trip airport transfers",
+    "Complimentary Wi-Fi",
+    "Guided tour to local cultural sites",
   ],
+
   exclusion: [
-    "Lunch and dinner are not included in CP plans",
-    "Any other services not specifically mentioned in the inclusions",
-    "Medical and Travel insurance",
-    "Airfare is not included ",
-    "Early Check-In & Late Check-Out ",
-    "Anything which is not specified in Inclusions    ",
+    "Lunch and dinner are not included in the room rate",
+    "Additional spa treatments or services",
+    "Personal expenses (e.g., minibar, souvenirs)",
+    "Tourist taxes or fees",
   ],
 
   images: [
     {
-      original: image1,
-      thumbnail: image1,
+      original: image1, // Thay thế với đường dẫn đến hình ảnh thực tế
+      thumbnail: image1, // Thay thế với đường dẫn đến hình ảnh thu nhỏ
     },
     {
       original: image2,
@@ -273,7 +248,6 @@ export const tourDetails = {
       original: image5,
       thumbnail: image5,
     },
-
     {
       original: image6,
       thumbnail: image6,
@@ -288,6 +262,7 @@ export const tourDetails = {
     },
   ],
 };
+
 
 export const location = [
   "Bali",
@@ -304,7 +279,7 @@ export const Categories = [
   "History",
   "Calture",
   "Netural",
-  "Urban Tour",
+  "Urban room",
   "Relax",
 ];
 

@@ -6,10 +6,8 @@ import PageNotFound from "@/layouts/PageNotFound";
 import About from "@/pages/About/About";
 import Booking from "@/pages/Booking/Booking";
 import Contact from "@/pages/Contact/Contact";
-import Destinations from "@/pages/Destinations/Destinations";
 import Home from "@/pages/Home/Home";
-import TourDetails from "@/pages/Home/Tours/TourDetails";
-import Tours from "@/pages/Home/Tours/Tours";
+import RoomDetails from "@/pages/Home/Rooms/RoomDetails";
 import Login from "@/pages/Login/Login";
 import PhotoGallery from "@/pages/PhotoGallery/PhotoGallery";
 import Register from "@/pages/Register/Register";
@@ -19,6 +17,8 @@ import AdminPage from "@/pages/AdminPage/Admin/admin";
 import Dashboard from "@/pages/AdminPage/Dasboard/Dashboard";
 import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
+import Rooms from "@/pages/Home/Rooms/Rooms";
+import RoomTier from "@/pages/RoomTier/RoomTier";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -45,10 +45,10 @@ export default function MainRoutes() {
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
         <Route path="contact-us" element={<Contact />} />
-        <Route path="tours" element={<Tours />} />
-        <Route path="tour-details" element={<TourDetails />} />
+        <Route path="rooms" element={<Rooms />} />
+        <Route path="room-details" element={<RoomDetails />} />
         <Route path="booking" element={<Booking />} />
-        <Route path="destinations" element={<Destinations />} />
+        <Route path="roomtier" element={<RoomTier />} />
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />

@@ -1,5 +1,5 @@
 
-.tours_section {
+.rooms_section {
   padding: 50px 0;
   background: var(--secondaryClr);
 
@@ -12,7 +12,7 @@
 }
 
 @media (max-width: 1199px) {
-  .tours_section {
+  .rooms_section {
     .slick-slide img {
       max-width: 90%;  /* Giới hạn ảnh nhỏ hơn một chút trên màn hình nhỏ */
       height: auto;
@@ -21,7 +21,7 @@
 }
 
 @media (max-width: 768px) {
-  .tours_section {
+  .rooms_section {
     .slick-slide img {
       max-width: 100%;  /* Đảm bảo ảnh không vượt quá chiều rộng container */
       height: auto;
