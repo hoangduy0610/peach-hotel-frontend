@@ -21,14 +21,14 @@ import { tourDetails } from "../../../modules/data";
 const TourDetails = () => {
 
   useEffect(() => {
-    document.title = " Tours  Details  ";
+    document.title = " Hotel  Details  ";
     window.scroll(0, 0);
   }, []);
   return (
     <>
       <Breadcrumbs
         title={tourDetails.title}
-        pagename=<NavLink to="/tours">Tours</NavLink>
+        pagename=<NavLink to="/hotel">Hotel</NavLink>
         childpagename={tourDetails.title}
       />
 

@@ -13,12 +13,12 @@ const Tours = () => {
   const handleShow = () => setShow(true);
 
   useEffect(() => {
-    document.title = " Tours   ";
+    document.title = " Hotel   ";
     window.scroll(0, 0);
   }, []);
   return (
     <>
-      <Breadcrumbs title="Tours" pagename="Tours" />
+      <Breadcrumbs title="Hotel" pagename="Hotel" />
       <section className="py-5 tour_list">
         <Container>
           <Row>
