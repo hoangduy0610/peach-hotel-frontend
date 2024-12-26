@@ -1,8 +1,9 @@
 // src/app/pages/DashboardPage/DashboardPage.tsx
 import React from 'react';
-import DashboardCard from '../../../components/dashboard-card/DashboardCard.tsx';
+
 // import Chart from '../../../components/chart/Chart.tsx';
 import './Dashboard.css';
+import DashboardCard from '@/components/dashboard-card/DashboardCard';
 
 const DashboardPage: React.FC = () => {
   return (
