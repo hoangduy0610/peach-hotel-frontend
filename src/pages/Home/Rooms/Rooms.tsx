@@ -1,12 +1,12 @@
 import React, { useState,useEffect } from "react";
 import { Container, Row, Col, Offcanvas } from "react-bootstrap";
-import "./Tour.scss";
+import "./Room.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import Filters from "./Filters";
-import PopularCard from "@/layouts/Cards/PopularCard";
+import ProductCard from "@/layouts/Cards/ProductCard";
 import { popularsData } from "@/modules/data";
 
-const Tours = () => {
+const Rooms = () => {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -19,7 +19,7 @@ const Tours = () => {
   return (
     <>
       <Breadcrumbs title="Hotel" pagename="Hotel" />
-      <section className="py-5 tour_list">
+      <section className="py-5 room_list">
         <Container>
           <Row>
             <Col xl="3" lg="4" md="12" sm="12">
@@ -38,7 +38,7 @@ const Tours = () => {
                 {popularsData.map((val, inx) => {
                   return (
                     <Col xl={4} lg={6} md={6} sm={6} className="mb-5" key={inx}>
-                      <PopularCard val={val} />
+                      <ProductCard val={val} />
                     </Col>
                   );
                 })}
@@ -60,4 +60,4 @@ const Tours = () => {
   );
 };
 
-export default Tours;
+export default Rooms;

@@ -1,74 +1,87 @@
-import React from "react";
-import { Card, Stack } from "react-bootstrap";
-import "./Cards.scss"
+import React from 'react';
+import "./ProductCard.scss";
+import { Card, Button, Badge, Stack } from 'react-bootstrap';
+import { NavLink, useNavigate } from 'react-router-dom';
 
-
-const ProductCard = ({ val }: {
+interface ProductCardProps {
   val: {
     image: string;
-    location: string;
     title: string;
     rating: number;
-    reviews: number;
     category: string[];
     price: number;
-    afterDiscount?: number;
-    days: number;
-  }
-}) => {
+    tier: string;
+    features: string[];
+  };
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ val }) => {
+  const navigate = useNavigate();
+  const featureIcons: { [key: string]: string } = {
+    TV: "bi-tv",
+    Conditioner: "bi-fan",
+    Bathtub: "bi-droplet",
+    Wifi: "bi-wifi",
+  };
+
   return (
-    <Card className="rounded-2 shadow-sm popular ">
+    <Card className="rounded-3 shadow-sm product-card">
       <Card.Img
         variant="top"
         src={val.image}
         className="img-fluid"
-        alt={"image"}
+        alt={`Image of ${val.title}`}
       />
       <Card.Body>
-        <Card.Text>
-          <i className="bi bi-geo-alt"></i>
-          <span className="text">{val.location}</span>
-        </Card.Text>
-        <Card.Title> {val.title} </Card.Title>
-        <p className="reviwe">
-          <span>
-            <i className="bi bi-star-fill me-1"></i>
-          </span>
-          <span>{val.rating} </span>
-          <span>( {val.reviews} reviews )</span>
-        </p>
-        {val.category.map((cat, index) => {
-          return (
-            <span key={index} className={cat.replace(/ .*/, "") + " badge"}>
+        <Card.Title>
+          <NavLink
+            className="body-text text-dark text-decoration-none"
+            to="/details"
+          >
+            {val.title}
+          </NavLink>
+        </Card.Title>
+
+        <div className="rating">
+          <i className="bi bi-star-fill me-1"></i>
+          <span>{val.rating.toFixed(1)} / 5</span>
+        </div>
+
+        <Stack direction="horizontal" gap={2} className="mb-3">
+          {val.category.map((cat, index) => (
+            <Badge key={index} className="category-badge">
               {cat}
-            </span>
-          );
-        })}
-      </Card.Body>
-
-      <Card.Footer className="py-4">
-        {val.afterDiscount ? (
-          <p className="text-decoration-line-through">
-            {" "}
-            ${val.price.toFixed(2)}
-          </p>
-        ) : (
-          ""
-        )}
-
-        <Stack direction="horizontal" className="justify-content-between  mt-3">
-          <p>
-            From{" "}
-            <b>
-              {val.afterDiscount
-                ? '$' + val.afterDiscount.toFixed(2)
-                : '$' + val.price.toFixed(2)}
-            </b>
-          </p>
-          <p>
-            <i className="bi bi-clock"></i> {val.days}
-          </p>
+            </Badge>
+          ))}
         </Stack>
+
+        <p className="price">
+          {val.price.toLocaleString('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+          })}{' '}
+          / đêm
+        </p>
+
+        <Badge className={`tier-badge ${val.tier.toLowerCase()}`}>
+          {val.tier}
+        </Badge>
+
+        <div className="features mt-3">
+          {val.features.map((feature, index) => (
+            <span key={index} className="feature">
+              <i className={`bi ${featureIcons[feature] || 'bi-box'}`}></i> {feature}
+            </span>
+          ))}
+        </div>
+      </Card.Body>
+      <Card.Footer className="d-flex justify-content-between">
+      <Button variant="primary" onClick={() => navigate("/details")}>
+        Xem chi tiết
+      </Button>
+      <Button variant="success" onClick={() => navigate("/booking")}>
+        Đặt phòng
+      </Button>
       </Card.Footer>
     </Card>
   );

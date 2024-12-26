@@ -83,24 +83,8 @@ const Header = () => {
                 <NavLink className="nav-link" to="/about-us" onClick={closeMenu}>
                   ABOUT US
                 </NavLink>
-                <NavLink className="nav-link" to="/tours" onClick={closeMenu}>
-                  TOURS
-                </NavLink>
-
-                <NavDropdown
-                  title="DESTINATION"
-                  id={`offcanvasNavbarDropdown-expand-lg`}
-                >
-
-
-                  <NavLink className="nav-link text-dark" to="/destinations" onClick={closeMenu}>
-                    SPAIN TOURS
-                  </NavLink>
-
-
-                </NavDropdown>
-                <NavLink className="nav-link" to="/gallery" onClick={closeMenu}>
-                  GALLERY
+                <NavLink className="nav-link" to="/rooms" onClick={closeMenu}>
+                  ROOMS
                 </NavLink>
                 <NavLink className="nav-link" to="/contact-us" onClick={closeMenu}>
                   CONTACT

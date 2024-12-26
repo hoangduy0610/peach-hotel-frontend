@@ -1,7 +1,7 @@
 import React from "react";
 import { Accordion, Form } from "react-bootstrap";
 import { location ,Categories, Duration, PriceRange, Ratings} from "@/modules/data";
-import "./Tour.scss"
+import "./Room.scss"
 const Filters = () => {
   return (
     <div className="side_bar">

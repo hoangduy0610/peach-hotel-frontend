@@ -13,8 +13,8 @@ import "./Home.css";
 
 import Gallery from "./partials/Gallery/Gallery";
 import Cards from "@/layouts/Cards/Cards";
-import { destinationsData, popularsData } from "@/modules/data";
-import PopularCard from "@/layouts/Cards/PopularCard";
+import { roomTierData, popularsData } from "@/modules/data";
+import ProductCard from "@/layouts/Cards/ProductCard";
 import { MainApiRequest } from "@/services/MainApiRequest";
 
 
@@ -81,8 +81,8 @@ const Home = () => {
       <Search />
       <Features />
 
-      {/* tour seciton start */}
-      <section className="tours_section slick_slider">
+      {/* room seciton start */}
+      <section className="rooms_section slick_slider">
         <Container>
           <Row>
             <Col md="12">
@@ -95,9 +95,9 @@ const Home = () => {
           <Row>
             <Col md="12">
               <Slider {...settings}>
-                {destinationsData.map((destination, inx) => {
+                {roomTierData.map((tier, inx) => {
                   return (
-                    <Cards destination={destination} key={inx} />
+                    <Cards tier={tier} key={inx} />
                   );
                 })}
               </Slider>
@@ -111,7 +111,7 @@ const Home = () => {
           <Row>
             <Col md="12">
               <div className="main_heading">
-                <h1> Popular Activities </h1>
+                <h1> Popular Rooms </h1>
               </div>
             </Col>
           </Row>
@@ -119,7 +119,7 @@ const Home = () => {
             {popularsData.map((val, inx) => {
               return (
                 <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
-                  <PopularCard val={val} />
+                  <ProductCard val={val} />
                 </Col>
               )
             })}

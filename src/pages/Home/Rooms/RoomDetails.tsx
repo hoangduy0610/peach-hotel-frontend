@@ -1,5 +1,5 @@
 import React,{useEffect} from "react";
-import "./Tour.scss";
+import "./Room.scss";
 import ImageGallery from "react-image-gallery";
 
 import {
@@ -16,9 +16,9 @@ import {
 
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { NavLink } from "react-router-dom";
-import { tourDetails } from "@/modules/data";
+import { roomDetails } from "@/modules/data";
 
-const TourDetails = () => {
+const RoomDetails = () => {
 
   useEffect(() => {
     document.title = " Hotel  Details  ";
@@ -27,17 +27,17 @@ const TourDetails = () => {
   return (
     <>
       <Breadcrumbs
-        title={tourDetails.title}
+        title={roomDetails.title}
         pagename=<NavLink to="/hotel">Hotel</NavLink>
-        childpagename={tourDetails.title}
+        childpagename={roomDetails.title}
       />
 
-      <section className="tour_details py-5">
+      <section className="room_details py-5">
         <Container>
           <Row>
-            <h1 className="fs-2 font-bold mb-4">{tourDetails.title} </h1>
+            <h1 className="fs-2 font-bold mb-4">{roomDetails.title} </h1>
             <ImageGallery
-              items={tourDetails.images}
+              items={roomDetails.images}
               showNav={false}
               showBullets={false}
               showPlayButton={false}
@@ -71,16 +71,16 @@ const TourDetails = () => {
 
                   <Tab.Content className="mt-4">
                     <Tab.Pane eventKey="1">
-                      <div className="tour_details">
+                      <div className="room_details">
                         <h1 className="font-bold mb-2 h3 border-bottom pb-2">
                           Overview
                         </h1>
-                        <p className="body-text">{tourDetails.des}</p>
+                        <p className="body-text">{roomDetails.des}</p>
 
-                        <h5 className="font-bold mb-2 h5  mt-3">Tour Info</h5>
+                        <h5 className="font-bold mb-2 h5  mt-3">Room Info</h5>
 
                         <ListGroup>
-                          {tourDetails.tourInfo.map((val, index) => {
+                          {roomDetails.roomInfo.map((val, index) => {
                             return (
                               <ListGroup.Item
                                 className="border-0 pt-0 body-text"
@@ -92,10 +92,10 @@ const TourDetails = () => {
                         </ListGroup>
 
                         <h5 className="font-bold mb-2 h5  mt-3">
-                          Tour highlights
+                          room highlights
                         </h5>
 
-                        {tourDetails.highlights.map((val, index) => {
+                        {roomDetails.highlights.map((val, index) => {
                           return (
                             <ListGroup.Item
                               className="border-0 pt-0 body-text"
@@ -109,13 +109,13 @@ const TourDetails = () => {
                     </Tab.Pane>
 
                     <Tab.Pane eventKey="2">
-                      <div className="tour_details">
+                      <div className="room_details">
                         <h1 className="font-bold mb-2 h3 border-bottom pb-2">
                           Itinerary
                         </h1>
 
                         <Accordion defaultActiveKey="0" className="mt-4">
-                          {tourDetails.itinerary.map((val, index) => {
+                          {roomDetails.itinerary.map((val, index) => {
                             return (
                               <Accordion.Item
                                 eventKey={index.toString()}
@@ -140,14 +140,14 @@ const TourDetails = () => {
                     </Tab.Pane>
 
                     <Tab.Pane eventKey="3">
-                      <div className="tour_details">
+                      <div className="room_details">
                         <h1 className="font-bold mb-2 h3 border-bottom pb-2">
                           Inclusions & Exclusions
                         </h1>
 
                         <h5 className="font-bold mb-3 h5  mt-3">Inclusion</h5>
 
-                        {tourDetails.included.map((val, index) => {
+                        {roomDetails.included.map((val, index) => {
                           return (
                             <ListGroup.Item
                               className="border-0 pt-0 body-text d-flex align-items-center"
@@ -161,7 +161,7 @@ const TourDetails = () => {
 
                         <h5 className="font-bold mb-3 h5  mt-3">Exclusion</h5>
 
-                        {tourDetails.exclusion.map((val, index) => {
+                        {roomDetails.exclusion.map((val, index) => {
                           return (
                             <ListGroup.Item
                               className="border-0 pt-0 body-text d-flex align-items-center"
@@ -175,7 +175,7 @@ const TourDetails = () => {
                       </div>
                     </Tab.Pane>
                     <Tab.Pane eventKey="4">
-                      <div className="tour_details">
+                      <div className="room_details">
                         <h1 className="font-bold mb-4 h3 border-bottom pb-2">
                           Location
                         </h1>
@@ -199,7 +199,7 @@ const TourDetails = () => {
                       <Card.Body>
                         <Stack gap={2} direction="horizontal">
                           <h1 className="font-bold mb-0 h2">
-                            ${tourDetails.price}
+                            ${roomDetails.price}
                           </h1>
                           <span className="fs-4"> /person</span>
                         </Stack>
@@ -207,7 +207,7 @@ const TourDetails = () => {
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           <ListGroup horizontal>
                             <ListGroup.Item className="border-0 me-2 fw-bold">
-                              {tourDetails.rating}
+                              {roomDetails.rating}
                             </ListGroup.Item>
                             <ListGroup.Item className="border-0 me-1 text-warning">
                               <i className="bi bi-star-fill"></i>
@@ -225,7 +225,7 @@ const TourDetails = () => {
                               <i className="bi bi-star-half"></i>
                             </ListGroup.Item>
                           </ListGroup>
-                          <h5 className="h6"> ({tourDetails.reviews})</h5>
+                          <h5 className="h6"> ({roomDetails.reviews})</h5>
                         </div>
 
                         <NavLink to="/booking" className="primaryBtn w-100 d-flex justify-content-center fw-bold">
@@ -264,4 +264,4 @@ const TourDetails = () => {
   );
 };
 
-export default TourDetails;
+export default RoomDetails;
