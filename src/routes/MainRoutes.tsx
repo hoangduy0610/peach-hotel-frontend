@@ -13,6 +13,10 @@ import PhotoGallery from "@/pages/PhotoGallery/PhotoGallery";
 import Register from "@/pages/Register/Register";
 import { useEffect } from "react";
 import { useSystemContext } from "@/hooks/useSystemContext";
+import AdminPage from "@/pages/AdminPage/Admin/admin";
+import Dashboard from "@/pages/AdminPage/Dasboard/Dashboard";
+import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
+
 import Rooms from "@/pages/Home/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
 
@@ -22,17 +26,21 @@ export default function MainRoutes() {
 
   // Check if current route is login or register
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAdminPage = location.pathname.includes('/admin')
 
   useEffect(() => {
-    if (!context.token && !isAuthPage) {
+    if (!context)
+      return;
+    console.log(context.token)
+    if (!localStorage.getItem('token') && !isAuthPage) {
       window.location.href = "/login";
     }
-  }, [context]);
+  }, []);
 
   return (
     <>
       {/* Only render Header and Footer if not on login or register page */}
-      {!isAuthPage && <Header />}
+      {!isAuthPage && !isAdminPage && <Header />} 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
@@ -44,10 +52,14 @@ export default function MainRoutes() {
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="admin" element={<AdminPage />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="booking" element={<AdminBooking />} />
+        </Route>
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isAdminPage && <Footer />}
     </>
   );
 }

@@ -1,0 +1,29 @@
+.booking-filter-panel {
+    margin-bottom: 40px; 
+    padding: 10px; 
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: row; 
+    justify-content: flex-start; 
+    align-items: center; 
+  }
+  
+  .booking-filter-panel button {
+    margin-right: 10px; 
+    padding: 10px 20px; 
+    border: none;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    font-size: 14px; 
+  }
+  
+  .booking-filter-panel button.active {
+    background-color: #494949;
+    color: white;
+  }
+  
+  .booking-filter-panel button:last-child {
+    margin-right: 0;
+  }
+  

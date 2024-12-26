@@ -1,0 +1,11 @@
+.dashboard {
+    display: flex;         
+    gap: 10rem;            
+    flex-wrap: wrap;        
+    padding: 1rem;
+  }
+  
+.chart-section {
+    width: 80%;  /* Chiếm 80% chiều rộng */
+    margin-top: 2rem;  /* Khoảng cách từ các card đến chart */
+  }
