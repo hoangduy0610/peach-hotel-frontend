@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import PageNotFound from "../layouts/PageNotFound";
 import Header from "../layouts/Header/Header";
 import Footer from "../layouts/Footer/Footer";
@@ -12,22 +12,20 @@ import Booking from "../pages/Booking/Booking";
 import Destinations from "../pages/Destinations/Destinations";
 import PhotoGallery from "../pages/PhotoGallery/PhotoGallery";
 import Login from "../pages/Login/Login";
-import { useSystemContext } from "../hooks/useSystemContext";
 import "../../App.scss";
 import Register from "../pages/Register/Register";
 
 export default function MainRoutes() {
-  const context = useSystemContext();
+  const location = useLocation(); 
 
-  useEffect(() => {
-    if (!context.token && window.location.pathname !== "/login" && window.location.pathname !== "/register") {
-      window.location.href = "/login";
-    }
-  }, [context]);
+  // Check if current route is login or register
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+
 
   return (
     <>
-      {window.location.pathname !== "/login" && window.location.pathname !== "/register" && <Header />}
+          {/* Only render Header and Footer if not on login or register page */}
+          {!isAuthPage && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
@@ -42,7 +40,7 @@ export default function MainRoutes() {
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      {window.location.pathname !== "/login" && window.location.pathname !== "/register" && <Footer />}
+      {!isAuthPage && <Footer />}
     </>
   );
 }

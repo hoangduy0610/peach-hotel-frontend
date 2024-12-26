@@ -43,15 +43,7 @@ const Login = () => {
     }, [isLoggedIn]);
 
     return (
-        // <LoadingOverlay
-        //     active={isLoggedIn}
-        //     styles={{
-        //         wrapper: {
-        //             height: "100vh"
-        //         }
-        //     }}
-        //     spinner
-        // >
+
         <section className="h-100 bg-login">
             <div className="container h-100">
                 <div className="row justify-content-sm-center h-100">
@@ -111,7 +103,6 @@ const Login = () => {
                 </div>
             </div>
         </section>
-        // </LoadingOverlay>
     );
 };
 
