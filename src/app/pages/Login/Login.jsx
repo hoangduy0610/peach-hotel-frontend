@@ -30,9 +30,7 @@ const Login = () => {
             const data = res.data;
             context.setToken(data.token);
 
-            if (remember) {
-                localStorage.setItem('token', data.token);
-            }
+            localStorage.setItem('token', data.token);
 
             navigate('/');
         }

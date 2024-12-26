@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Banner from "./partials/Banner/Banner";
 import Search from "../../layouts/Search/Search";
 import Features from "./partials/Features/Features";
@@ -15,6 +15,7 @@ import Gallery from "./partials/Gallery/Gallery";
 import Cards from "../../layouts/Cards/Cards";
 import { destinationsData, popularsData } from "../../modules/data";
 import PopularCard from "../../layouts/Cards/PopularCard";
+import { MainApiRequest } from "../../services/MainApiRequest";
 
 
 const Home = () => {
@@ -67,7 +68,14 @@ const Home = () => {
     ],
   };
 
+  const fetchUserInfo = async () => {
+    const res = await MainApiRequest.get("/auth/callback");
+    console.log(res);
+  };
 
+  useEffect(() => {
+    fetchUserInfo();
+  }, []);
 
   return (
     <>
