@@ -65,9 +65,6 @@ const Register = () => {
                                     <div className="mb-3">
                                         <div className="mb-2 w-100">
                                             <label className="text-muted">Mật khẩu</label>
-                                            <a href="forgot.html" className="float-end">
-                                                Quên mật khẩu?
-                                            </a>
                                         </div>
                                         <input id="password" type="password" className="form-control" name="password" value={password} required onChange={(e) => setPassword(e.target.value)} />
                                         <div className="invalid-feedback">
