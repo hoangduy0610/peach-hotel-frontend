@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Banner from "./partials/Banner/Banner";
 import Search from "@/layouts/Search/Search";
 import Features from "./partials/Features/Features";
@@ -70,9 +70,17 @@ const Home = () => {
     const res = await MainApiRequest.get("/auth/callback");
     console.log(res);
   };
+  
+  const [roomList, setRoomList] = useState<any[]>([]);
+  const fetchListRooms = async () => {
+      const res = await MainApiRequest.get(`/room/filter-available`);
+      console.log(res.data);
+      setRoomList(res.data);
+    };
 
   useEffect(() => {
     fetchUserInfo();
+    fetchListRooms();
   }, []);
 
   return (
@@ -116,7 +124,7 @@ const Home = () => {
             </Col>
           </Row>
           <Row>
-            {popularsData.map((val, inx) => {
+            {roomList.map((val, inx) => {
               return (
                 <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
                   <ProductCard val={val} />

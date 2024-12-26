@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -6,17 +6,50 @@ import "./Search.scss";
 import { Container, Row, Col, Button } from "react-bootstrap";
 // import
 import CustomDropdown from "@/layouts/CustomDropdown/CustomDropdown";
+import { MainApiRequest } from "@/services/MainApiRequest";
+import { useNavigate } from "react-router-dom";
 
 const Search = () => {
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
+  const [tierList, setTierList] = useState<any[]>([]);
+  const [selectedTier, setSelectedTier] = useState<number | null>(null);
+  const [selectedGuest, setSelectedGuest] = useState<number | null>(null);
 
-  const selectedTier = (value: any) => {
-    console.log("Tier", value)
+  const onSelectedTier = (value: any) => {
+    const tier = tierList.find((item) => item.name === value);
+    setSelectedTier(tier?.id);
   }
 
-  const selectedGuest = (value: any) => {
-    console.log("Guest ", value)
+  const onSelectedGuest = (value: any) => {
+    setSelectedGuest(parseInt(value));
+  }
+
+  const fetchTierList = async () => {
+    const res = await MainApiRequest.get('/room/tier/list');
+    // console.log(res);
+    setTierList(res.data);
+  }
+
+  useEffect(() => {
+    fetchTierList();
+  }, []);
+
+  const onSearch = async () => {
+    if (!selectedTier || !selectedGuest) {
+      alert("Please select Tier and Guest");
+      return;
+    }
+
+    navigate("/rooms", {
+      state: {
+        tier: selectedTier,
+        guest: selectedGuest,
+        startDate: startDate,
+        endDate: endDate
+      }
+    })
   }
 
   return (
@@ -30,16 +63,8 @@ const Search = () => {
                   {/*  Using Props to Pass Data */}
                   <CustomDropdown
                     label="Tier"
-                    onSelect={selectedTier}
-                    options={[
-                      "King Room, Spacious and luxurious",
-                      "Luxury Suite, Ocean view and private balcony",
-                      "Standard Room, Comfortable and affordable",
-                      "Presidential Suite, Exclusive services and breathtaking views",
-                      "Deluxe Room, Premium furnishings and stunning view",
-                      "Superior Room, Cozy atmosphere and modern amenities"
-
-                    ]}
+                    onSelect={onSelectedTier}
+                    options={tierList.map((item) => item.name)}
                   />
                 </div>
                 <div className="item-search item-search-2">
@@ -68,16 +93,17 @@ const Search = () => {
                 <div className="item-search bd-none">
                   <CustomDropdown
                     label="Guest"
-                    onSelect={selectedGuest}
+                    onSelect={onSelectedGuest}
                     options={[
-                      "2 adults, 1 children",
-                      "	2 adults, 1 children",
-                      "2 adults, 3 children",
-                    ]}
+                      1,
+                      2,
+                      3,
+                      4
+                    ].map((item) => item.toString())}
                   />
                 </div>
                 <div className="item-search bd-none">
-                  <Button className="primaryBtn flex-even d-flex justify-content-center">
+                  <Button className="primaryBtn flex-even d-flex justify-content-center" onClick={onSearch}>
                     <i className="bi bi-search me-2"></i> Search
                   </Button>
 

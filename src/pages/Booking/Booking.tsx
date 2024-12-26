@@ -1,17 +1,54 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Container, Form, Row, Card, ListGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "./Booking.scss"
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
+import { useLocation, useNavigate } from "react-router-dom";
+import moment from "moment";
+import { MainApiRequest } from "@/services/MainApiRequest";
 
 const Booking = () => {
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [startDate, setStartDate] = useState(location.state?.checkInDate ? new Date(location.state?.checkInDate) : new Date());
+  const [endDate, setEndDate] = useState(location.state?.checkInDate ? new Date(location.state?.checkOutDate) : new Date());
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
 
-  useEffect(()=>{
-    document.title ="Page Name  "
+  const fetchUserInformation = async () => {
+    const res = await MainApiRequest.get("/auth/callback");
+    setFirstName(res.data.data.name.split(" ")[0]);
+    setLastName(res.data.data.name.split(" ").slice(1).join(" "));
+  }
+
+  useEffect(() => {
+    document.title = "Page Name  "
     window.scroll(0, 0)
-  },[])
+    fetchUserInformation()
+  }, [])
+
+  const handleBookRoom = async () => {
+    const data = {
+      "userId": 1,
+      "customerName": `${firstName} ${lastName}`,
+      "customerPhone": phone,
+      "checkIn": moment(startDate).format("YYYY-MM-DD"),
+      "checkOut": moment(endDate).format("YYYY-MM-DD"),
+      "roomIds": [
+        location.state?.roomId
+      ]
+    };
+
+    console.log(data);
+
+    const res = await MainApiRequest.post("/booking", data);
+
+    if (res.status === 200) {
+      alert("Booking success")
+      navigate("/")
+    }
+  }
 
   return (
     <>
@@ -23,6 +60,9 @@ const Booking = () => {
               <div className="booking-form-warp border rounded-3">
                 <div className="form-title px-4 border-bottom py-3">
                   <h3 className="h4 font-bold m-0"> Your Details</h3>
+                  <h5 className="font-bold m-0 my-2">
+                    Room: {location.state?.roomName} - Tier: {location.state?.roomTier}
+                  </h5>
                 </div>
 
                 <Form className="p-4">
@@ -36,6 +76,8 @@ const Booking = () => {
                       <Form.Label>First name</Form.Label>
                       <Form.Control
                         required
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         type="text"
                         placeholder="First name"
                       />
@@ -50,21 +92,10 @@ const Booking = () => {
                       <Form.Label>Last name</Form.Label>
                       <Form.Control
                         required
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
                         type="text"
                         placeholder="Last name"
-                      />
-                    </Form.Group>
-
-                    <Form.Group
-                      className="mb-4"
-                      controlId="email.ControlInput1"
-                      as={Col}
-                      md="6"
-                    >
-                      <Form.Label>Email address</Form.Label>
-                      <Form.Control
-                        type="email"
-                        placeholder="name@example.com"
                       />
                     </Form.Group>
 
@@ -75,7 +106,7 @@ const Booking = () => {
                       md="6"
                     >
                       <Form.Label>Phone Number</Form.Label>
-                      <Form.Control type="text" placeholder="Phone Number" />
+                      <Form.Control type="text" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
                     </Form.Group>
 
                     <Form.Group
@@ -114,7 +145,7 @@ const Booking = () => {
                       />
                     </Form.Group>
                     <Col md="12">
-                      <button className="primaryBtn "> Submit Now</button>
+                      <button className="primaryBtn" type="button" onClick={handleBookRoom}> Submit Now</button>
                     </Col>
                   </Row>
                 </Form>
@@ -131,24 +162,43 @@ const Booking = () => {
                   <ListGroup>
                     <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                       <span> Base Price</span>
-                      <strong>$28,660</strong>
+                      <strong>{location.state?.price.toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })}</strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> Total Nights</span>
+                      <strong>{
+                        moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')
+                      }</strong>
                     </ListGroup.Item>
                     <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                       <span> Total Discount <span className="badge bg-danger">
-                        10%
+                        0%
                       </span></span>
-                      <strong>$20</strong>
+                      <strong>0đ</strong>
                     </ListGroup.Item>
                     <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                       <span> Taxes % Fees</span>
-                      <strong>$28,660</strong>
+                      <strong>{
+                        (location.state?.price * 0.1 * moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')).toLocaleString("vi-VN", {
+                          style: "currency",
+                          currency: "VND",
+                        })
+                      }</strong>
                     </ListGroup.Item>
 
                   </ListGroup>
                 </Card.Body>
                 <Card.Footer className="d-flex justify-content-between py-4">
                   <span className="font-bold h5"> Payable Now</span>
-                  <strong className="font-bold h5">$28,660</strong>
+                  <strong className="font-bold h5">{
+                    (location.state?.price * 1.1 * moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })
+                  }</strong>
                 </Card.Footer>
               </Card>
             </Col>

@@ -7,7 +7,7 @@ import About from "@/pages/About/About";
 import Booking from "@/pages/Booking/Booking";
 import Contact from "@/pages/Contact/Contact";
 import Home from "@/pages/Home/Home";
-import RoomDetails from "@/pages/Home/Rooms/RoomDetails";
+import RoomDetails from "@/pages/Rooms/RoomDetails";
 import Login from "@/pages/Login/Login";
 import PhotoGallery from "@/pages/PhotoGallery/PhotoGallery";
 import Register from "@/pages/Register/Register";
@@ -17,7 +17,7 @@ import AdminPage from "@/pages/AdminPage/Admin/admin";
 import Dashboard from "@/pages/AdminPage/Dasboard/Dashboard";
 import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
-import Rooms from "@/pages/Home/Rooms/Rooms";
+import Rooms from "@/pages/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
 
 export default function MainRoutes() {
