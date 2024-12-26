@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import PageNotFound from "../layouts/PageNotFound";
 import Header from "../layouts/Header/Header";
@@ -11,11 +11,22 @@ import TourDetails from "../pages/Home/Tours/TourDetails";
 import Booking from "../pages/Booking/Booking";
 import Destinations from "../pages/Destinations/Destinations";
 import PhotoGallery from "../pages/PhotoGallery/PhotoGallery";
+import Login from "../pages/Login/Login";
+import { useSystemContext } from "../hooks/useSystemContext";
 import "../../App.scss";
+
 export default function MainRoutes() {
+  const context = useSystemContext();
+
+  useEffect(() => {
+    if (!context.token && window.location.pathname !== "/login") {
+      window.location.href = "/login";
+    }
+  }, [context]);
+
   return (
     <>
-      <Header />
+      {window.location.pathname !== "/login" && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
@@ -25,10 +36,11 @@ export default function MainRoutes() {
         <Route path="booking" element={<Booking />} />
         <Route path="destinations" element={<Destinations />} />
         <Route path="gallery" element={<PhotoGallery />} />
+        <Route path="login" element={<Login />} />
 
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <Footer  />
+      {window.location.pathname !== "/login" && <Footer />}
     </>
   );
 }
