@@ -34,9 +34,14 @@ const Navbar: React.FC = () => {
       icon: 'fas fa-layer-group',
     },
     {
-      title: 'Service',  // Thêm mục Service vào
+      title: 'Service',  // Mục Service
       link: '/admin/service',
-      icon: 'fas fa-cogs', // Icon của Service
+      icon: 'fas fa-cogs',
+    },
+    {
+      title: 'Promote',  // Mục Promote mới
+      link: '/admin/promote',
+      icon: 'fas fa-tags', // Icon cho Promote
     },
   ];
 
