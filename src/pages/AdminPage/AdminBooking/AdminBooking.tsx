@@ -1,4 +1,3 @@
-// src/app/pages/AdminPage/Booking/Booking.tsx
 import React, { useEffect, useState } from 'react';
 import './AdminBooking.css';
 import { MainApiRequest } from '@/services/MainApiRequest';
@@ -37,7 +36,7 @@ const AdminBooking = () => {
   return (
     <div className="container-fluid m-2">
       <h3 className='h3'>Booking Management</h3>
-      <Button 
+      <Button
         type='primary'
         onClick={() => onOpenCreateBookingModal()}
       >
@@ -49,7 +48,7 @@ const AdminBooking = () => {
         onOk={() => onOKCreateBooking()}
         onCancel={() => onCancelCreateBooking()}
       >
-        <Form 
+        <Form
           form={form}
         >
           <Form.Item
