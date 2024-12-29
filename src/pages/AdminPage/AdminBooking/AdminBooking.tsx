@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import './AdminBooking.css';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Modal, Table, Tag } from 'antd';
+import { Button, Form, Modal, Table, Tag } from 'antd';
 
 const AdminBooking = () => {
+  const [form] = Form.useForm();
   const [bookingList, setBookingList] = useState<any[]>([]);
   const [openCreateBookingModal, setOpenCreateBookingModal] = useState(false);
 
@@ -23,6 +24,9 @@ const AdminBooking = () => {
 
   const onOKCreateBooking = () => {
     setOpenCreateBookingModal(false)
+
+    const data = form.getFieldsValue();
+    console.log(data)
   }
 
   const onCancelCreateBooking = () => {
@@ -44,9 +48,17 @@ const AdminBooking = () => {
         onOk={() => onOKCreateBooking()}
         onCancel={() => onCancelCreateBooking()}
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Form 
+          form={form}
+        >
+          <Form.Item
+            label='Customer Name'
+            name='customerName'
+            rules={[{ required: true, message: 'Please input customer name!' }]}
+          >
+            <input type='text' />
+          </Form.Item>
+        </Form>
       </Modal>
       <Table
         dataSource={bookingList}
