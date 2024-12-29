@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.scss';
-import { List } from 'antd';
 import { comparePathname } from '@/utils/uri';
 
 const Navbar: React.FC = () => {
@@ -34,6 +33,11 @@ const Navbar: React.FC = () => {
       link: '/admin/roomtier',
       icon: 'fas fa-layer-group',
     },
+    {
+      title: 'Service',  // Thêm mục Service vào
+      link: '/admin/service',
+      icon: 'fas fa-cogs', // Icon của Service
+    },
   ];
 
   return (
@@ -48,7 +52,7 @@ const Navbar: React.FC = () => {
             const isActive = comparePathname(currentPath, route.link);
 
             return (
-              <li className={`flex-1 nav-item`}>
+              <li key={index} className={`flex-1 nav-item`}>
                 <Link
                   to={route.link}
                   className={`nav-link ${isActive ? "nav-link-active" : "text-dark"}`}
@@ -62,8 +66,8 @@ const Navbar: React.FC = () => {
                     {route.title}
                   </span>
                 </Link>
-              </li >
-            )
+              </li>
+            );
           })
         }
       </ul>

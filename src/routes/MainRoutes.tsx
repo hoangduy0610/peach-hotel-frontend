@@ -19,6 +19,7 @@ import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
 import Rooms from "@/pages/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
+import AdminService from "@/pages/AdminPage/Service/AdminService";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -55,6 +56,7 @@ export default function MainRoutes() {
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
+          <Route path="service" element={<AdminService/>} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
 
