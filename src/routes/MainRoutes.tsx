@@ -55,6 +55,7 @@ export default function MainRoutes() {
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
+          <Route path="*" element={<PageNotFound />} />
         </Route>
 
         <Route path="*" element={<PageNotFound />} />

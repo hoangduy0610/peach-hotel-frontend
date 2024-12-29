@@ -3,7 +3,7 @@ import React from 'react';
 
 // import Chart from '../../../components/chart/Chart.tsx';
 import './Dashboard.css';
-import DashboardCard from '@/components/dashboard-card/DashboardCard';
+import DashboardCard from '@/components/admin/dashboard-card/DashboardCard';
 
 const DashboardPage: React.FC = () => {
   return (

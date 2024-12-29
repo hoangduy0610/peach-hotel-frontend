@@ -1,40 +1,65 @@
 // src/app/pages/AdminPage/Booking/Booking.tsx
 import React, { useEffect, useState } from 'react';
 import './AdminBooking.css';
-import BookingFilterPanel from '@/components/BookingFilterPanel/BookingFilterPanel';
-import BookingTable from '@/components/booking-table/BookingTable';
 import { MainApiRequest } from '@/services/MainApiRequest';
-
-const initialBookings = [
-  { guest: 'John Doe', phoneNumber: '0123456789', checkIn: '2024-12-26', checkOut: '2024-12-30', roomType: 'Deluxe', status: 'Booked' },
-  { guest: 'Jane Smith', phoneNumber: '0123456789', checkIn: '2024-12-21', checkOut: '2024-12-23', roomType: 'Standard', status: 'Canceled' },
-  { guest: 'Alice Johnson', phoneNumber: '0123456789', checkIn: '2024-12-19', checkOut: '2024-12-22', roomType: 'Suite', status: 'Refunded' },
-];
+import { Button, Modal, Table, Tag } from 'antd';
 
 const AdminBooking = () => {
-  const [selectedFilter, setSelectedFilter] = useState('All');
   const [bookingList, setBookingList] = useState<any[]>([]);
+  const [openCreateBookingModal, setOpenCreateBookingModal] = useState(false);
 
-  const filteredBookings = initialBookings.filter(booking => 
-    selectedFilter === 'All' || booking.status === selectedFilter
-  );
-  const fetchBookingList = async()=>{
+  const fetchBookingList = async () => {
     const res = await MainApiRequest.get('/booking/list');
     setBookingList(res.data)
   }
-  useEffect(()=>{
-    fetchBookingList()
-  },[])
 
+  useEffect(() => {
+    fetchBookingList()
+  }, [])
+
+  const onOpenCreateBookingModal = () => {
+    setOpenCreateBookingModal(true)
+  }
+
+  const onOKCreateBooking = () => {
+    setOpenCreateBookingModal(false)
+  }
+
+  const onCancelCreateBooking = () => {
+    setOpenCreateBookingModal(false)
+  }
 
   return (
-    <div className="booking-container">
-      <h1>Booking Management</h1>
-      <BookingFilterPanel 
-        selectedFilter={selectedFilter} 
-        onFilterChange={setSelectedFilter} 
+    <div className="container-fluid m-2">
+      <h3 className='h3'>Booking Management</h3>
+      <Button 
+        type='primary'
+        onClick={() => onOpenCreateBookingModal()}
+      >
+        Create Booking
+      </Button>
+      <Modal
+        title="Create Booking"
+        open={openCreateBookingModal}
+        onOk={() => onOKCreateBooking()}
+        onCancel={() => onCancelCreateBooking()}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+      <Table
+        dataSource={bookingList}
+        columns={[
+          { title: 'Guest', dataIndex: 'customerName', key: 'customerName' },
+          { title: 'Reservation Code', dataIndex: 'reservationCode', key: 'reservationCode' },
+          { title: 'Phone Number', dataIndex: 'customerPhone', key: 'customerPhone' },
+          { title: 'Check In', dataIndex: 'checkIn', key: 'checkIn', render: (checkIn: string) => checkIn.split('T')[0] },
+          { title: 'Check Out', dataIndex: 'checkOut', key: 'checkOut', render: (checkOut: string) => checkOut.split('T')[0] },
+          { title: 'Room Type', dataIndex: 'rooms', key: 'rooms', render: (rooms: any[]) => rooms[0].roomTier.name },
+          { title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={status === 'PENDING' ? 'orange' : 'green'}>{status}</Tag> },
+        ]}
       />
-      <BookingTable bookings={bookingList} />
     </div>
   );
 };
