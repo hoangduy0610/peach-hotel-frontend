@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an instance of Axios
 export const MainApiRequest = axios.create({
-    baseURL: 'https://abca-222-253-79-230.ngrok-free.app/', // Replace with your desired base URL
+    baseURL: 'https://performance-damage-solving-aaron.trycloudflare.com/', // Replace with your desired base URL
     timeout: 60000, // Replace with your desired timeout in milliseconds
     headers: {
         'Content-Type': 'application/json', // Set the Content-Type header to JSON
