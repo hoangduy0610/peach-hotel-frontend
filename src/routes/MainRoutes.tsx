@@ -21,6 +21,7 @@ import Rooms from "@/pages/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
 import AdminService from "@/pages/AdminPage/Service/AdminService";
 import Promote from "@/pages/AdminPage/Promote/Promote";
+import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -59,6 +60,7 @@ export default function MainRoutes() {
           <Route path="booking" element={<AdminBooking />} />
           <Route path="service" element={<AdminService/>} />
           <Route path="promote" element={<Promote/>} />
+          <Route path="staff" element={<AdminStaff />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
 

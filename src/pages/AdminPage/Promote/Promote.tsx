@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, DatePicker, Modal, Table, Tag, Select } from 'antd';
+import { Button, Form, Input, DatePicker, Modal, Table, Select, Popconfirm } from 'antd';
 import moment from 'moment';
 
 const AdminPromote = () => {
@@ -9,6 +9,8 @@ const AdminPromote = () => {
     const [couponList, setCouponList] = useState<any[]>([]);
     const [openCreatePromoteModal, setOpenCreatePromoteModal] = useState(false);
     const [openCreateCouponModal, setOpenCreateCouponModal] = useState(false);
+    const [editPromote, setEditPromote] = useState<any>(null);
+    const [editCoupon, setEditCoupon] = useState<any>(null);
 
     const fetchPromoteList = async () => {
         const res = await MainApiRequest.get('/promote/list');
@@ -25,32 +27,72 @@ const AdminPromote = () => {
         fetchCouponList();
     }, []);
 
-    const onOpenCreatePromoteModal = () => {
+    const onOpenCreatePromoteModal = (record: any = null) => {
+        setEditPromote(record);
+        if (record) {
+            form.setFieldsValue({
+                ...record,
+                startAt: moment(record.startAt),
+                endAt: moment(record.endAt)
+            });
+        }
         setOpenCreatePromoteModal(true);
     }
 
-    const onOpenCreateCouponModal = () => {
+    const onOpenCreateCouponModal = (record = null) => {
+        setEditCoupon(record);
+        if (record) form.setFieldsValue(record);
         setOpenCreateCouponModal(true);
     }
 
-    const onOKCreatePromote = () => {
-        setOpenCreatePromoteModal(false);
+    const onOKCreatePromote = async () => {
         const data = form.getFieldsValue();
-        console.log(data);
+        data.startAt = data.startAt.toISOString();
+        data.endAt = data.endAt.toISOString();
+
+        if (editPromote) {
+            await MainApiRequest.put(`/promote/update/${editPromote.id}`, data);
+        } else {
+            await MainApiRequest.post('/promote/post', data);
+        }
+
+        fetchPromoteList();
+        setOpenCreatePromoteModal(false);
+        form.resetFields();
+    }
+
+    const onOKCreateCoupon = async () => {
+        const data = form.getFieldsValue();
+
+        if (editCoupon) {
+            await MainApiRequest.put(`/promote/coupon/update/${editCoupon.id}`, data);
+        } else {
+            await MainApiRequest.post('/promote/coupon/post', data);
+        }
+
+        fetchCouponList();
+        setOpenCreateCouponModal(false);
+        form.resetFields();
+    }
+
+    const onDeletePromote = async (id: number) => {
+        await MainApiRequest.delete(`/promote/delete/${id}`);
+        fetchPromoteList();
+    }
+
+    const onDeleteCoupon = async (id: number) => {
+        await MainApiRequest.delete(`/promote/coupon/delete/${id}`);
+        fetchCouponList();
     }
 
     const onCancelCreatePromote = () => {
         setOpenCreatePromoteModal(false);
-    }
-
-    const onOKCreateCoupon = () => {
-        setOpenCreateCouponModal(false);
-        const data = form.getFieldsValue();
-        console.log(data);
+        form.resetFields();
     }
 
     const onCancelCreateCoupon = () => {
         setOpenCreateCouponModal(false);
+        form.resetFields();
     }
 
     return (
@@ -71,7 +113,7 @@ const AdminPromote = () => {
             </Button>
 
             <Modal
-                title="Create Promote"
+                title={editPromote ? "Edit Promote" : "Create Promote"}
                 open={openCreatePromoteModal}
                 onOk={() => onOKCreatePromote()}
                 onCancel={() => onCancelCreatePromote()}
@@ -126,7 +168,7 @@ const AdminPromote = () => {
             </Modal>
 
             <Modal
-                title="Create Coupon"
+                title={editCoupon ? "Edit Coupon" : "Create Coupon"}
                 open={openCreateCouponModal}
                 onOk={() => onOKCreateCoupon()}
                 onCancel={() => onCancelCreateCoupon()}
@@ -165,6 +207,16 @@ const AdminPromote = () => {
                     { title: 'Type', dataIndex: 'type', key: 'type' },
                     { title: 'Start At', dataIndex: 'startAt', key: 'startAt', render: (startAt: string) => moment(startAt).format('YYYY-MM-DD HH:mm:ss') },
                     { title: 'End At', dataIndex: 'endAt', key: 'endAt', render: (endAt: string) => moment(endAt).format('YYYY-MM-DD HH:mm:ss') },
+                    {
+                        title: 'Actions', key: 'actions', render: (text, record) => (
+                            <>
+                                <Button type="link" onClick={() => onOpenCreatePromoteModal(record)}>Edit</Button>
+                                <Popconfirm title="Are you sure delete this promote?" onConfirm={() => onDeletePromote(record.id)}>
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
+                            </>
+                        )
+                    },
                 ]}
             />
 
@@ -174,6 +226,16 @@ const AdminPromote = () => {
                     { title: 'Promote ID', dataIndex: 'promoteId', key: 'promoteId' },
                     { title: 'Coupon Code', dataIndex: 'code', key: 'code' },
                     { title: 'User ID', dataIndex: 'userId', key: 'userId' },
+                    {
+                        title: 'Actions', key: 'actions', render: (text, record) => (
+                            <>
+                                <Button type="link" onClick={() => onOpenCreateCouponModal(record)}>Edit</Button>
+                                <Popconfirm title="Are you sure delete this coupon?" onConfirm={() => onDeleteCoupon(record.id)}>
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
+                            </>
+                        )
+                    },
                 ]}
             />
         </div>

@@ -9,6 +9,8 @@ const AdminService = () => {
     const [serviceTierList, setServiceTierList] = useState<any[]>([]);
     const [openCreateServiceModal, setOpenCreateServiceModal] = useState(false);
     const [openCreateServiceTierModal, setOpenCreateServiceTierModal] = useState(false);
+    const [editingService, setEditingService] = useState<any | null>(null);
+    const [editingServiceTier, setEditingServiceTier] = useState<any | null>(null);
 
     const fetchServiceList = async () => {
         const res = await MainApiRequest.get('/service/list');
@@ -36,25 +38,61 @@ const AdminService = () => {
     const onOKCreateService = async () => {
         setOpenCreateServiceModal(false);
         const data = form.getFieldsValue();
-        console.log(data);
-        await MainApiRequest.post('/service/post', data);
+        if (editingService) {
+            await MainApiRequest.put(`/service/put/${editingService.id}`, data);
+        } else {
+            await MainApiRequest.post('/service/post', data);
+        }
         fetchServiceList();
+        setEditingService(null);
+        form.resetFields();
     };
 
     const onOKCreateServiceTier = async () => {
         setOpenCreateServiceTierModal(false);
         const data = form.getFieldsValue();
-        console.log(data);
-        await MainApiRequest.post('/service/tier/post', data);
+        if (editingServiceTier) {
+            await MainApiRequest.put(`/service/tier/put/${editingServiceTier.id}`, data);
+        } else {
+            await MainApiRequest.post('/service/tier/post', data);
+        }
         fetchServiceTierList();
+        setEditingServiceTier(null);
+        form.resetFields();
     };
 
     const onCancelCreateService = () => {
         setOpenCreateServiceModal(false);
+        setEditingService(null);
+        form.resetFields();
     };
 
     const onCancelCreateServiceTier = () => {
         setOpenCreateServiceTierModal(false);
+        setEditingServiceTier(null);
+        form.resetFields();
+    };
+
+    const onEditService = (service: any) => {
+        setEditingService(service);
+        form.setFieldsValue(service);
+        setOpenCreateServiceModal(true);
+    };
+
+    const onDeleteService = async (id: number) => {
+        await MainApiRequest.delete(`/service/delete/${id}`);
+        fetchServiceList();
+    };
+
+    const onEditServiceTier = (tier: any) => {
+        setEditingServiceTier(tier);
+        form.setFieldsValue(tier);
+        setOpenCreateServiceTierModal(true);
+    };
+
+    const onDeleteServiceTier = async (id: number) => {
+        await MainApiRequest.delete(`/service/tier/delete/${id}`);
+        fetchServiceTierList();
     };
 
     return (
@@ -69,7 +107,7 @@ const AdminService = () => {
             </Button>
 
             <Modal
-                title="Create Service"
+                title={editingService ? "Edit Service" : "Create Service"}
                 open={openCreateServiceModal}
                 onOk={() => onOKCreateService()}
                 onCancel={() => onCancelCreateService()}
@@ -94,7 +132,7 @@ const AdminService = () => {
             </Modal>
 
             <Modal
-                title="Create Service Tier"
+                title={editingServiceTier ? "Edit Service Tier" : "Create Service Tier"}
                 open={openCreateServiceTierModal}
                 onOk={() => onOKCreateServiceTier()}
                 onCancel={() => onCancelCreateServiceTier()}
@@ -127,6 +165,14 @@ const AdminService = () => {
                             return tier ? tier.name : 'N/A';
                         }
                     },
+                    {
+                        title: 'Actions', key: 'actions', render: (_, record) => (
+                            <>
+                                <Button type="link" onClick={() => onEditService(record)}>Edit</Button>
+                                <Button type="link" danger onClick={() => onDeleteService(record.id)}>Delete</Button>
+                            </>
+                        )
+                    }
                 ]}
             />
 
@@ -137,6 +183,14 @@ const AdminService = () => {
                     { title: 'Type', dataIndex: 'type', key: 'type' },
                     { title: 'Description', dataIndex: 'description', key: 'description' },
                     { title: 'Slots', dataIndex: 'slot', key: 'slot' },
+                    {
+                        title: 'Actions', key: 'actions', render: (_, record) => (
+                            <>
+                                <Button type="link" onClick={() => onEditServiceTier(record)}>Edit</Button>
+                                <Button type="link" danger onClick={() => onDeleteServiceTier(record.id)}>Delete</Button>
+                            </>
+                        )
+                    }
                 ]}
             />
         </div>
