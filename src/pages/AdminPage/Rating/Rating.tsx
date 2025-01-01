@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Rate, Space, Button, Modal, Form, Input, InputNumber } from 'antd';
+import { Table, Rate, Space, Button, Modal, Form, Input, Popconfirm } from 'antd';
 
 const AdminCustomerRating = () => {
     const [ratingsList, setRatingsList] = useState<any[]>([]);
@@ -34,7 +34,6 @@ const AdminCustomerRating = () => {
     ];
 
     const fetchRatingsList = async () => {
-        // Sử dụng dữ liệu mẫu thay vì gọi API
         setRatingsList(sampleRatingsList);
     }
 
@@ -54,7 +53,7 @@ const AdminCustomerRating = () => {
             const newRating = {
                 ...values,
                 id: isEditing ? currentRating.id : ratingsList.length + 1,
-                date: new Date().toISOString().split('T')[0], // Lấy ngày hiện tại
+                date: new Date().toISOString().split('T')[0],
             };
 
             if (isEditing) {
@@ -103,6 +102,7 @@ const AdminCustomerRating = () => {
                         label='Customer Name'
                         name='customerName'
                         rules={[{ required: true, message: 'Please input customer name!' }]}
+
                     >
                         <Input type='text' />
                     </Form.Item>
@@ -110,6 +110,7 @@ const AdminCustomerRating = () => {
                         label='Rating'
                         name='rating'
                         rules={[{ required: true, message: 'Please select rating!' }]}
+
                     >
                         <Rate />
                     </Form.Item>
@@ -117,6 +118,7 @@ const AdminCustomerRating = () => {
                         label='Comment'
                         name='comment'
                         rules={[{ required: true, message: 'Please input comment!' }]}
+
                     >
                         <Input.TextArea rows={3} />
                     </Form.Item>
@@ -136,7 +138,14 @@ const AdminCustomerRating = () => {
                         render: (_, record) => (
                             <Space size="middle">
                                 <Button onClick={() => onEditRating(record)}>Edit</Button>
-                                <Button onClick={() => onDeleteRating(record.id)} danger>Delete</Button>
+                                <Popconfirm
+                                    title="Are you sure you want to delete this rating?"
+                                    onConfirm={() => onDeleteRating(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button danger>Delete</Button>
+                                </Popconfirm>
                             </Space>
                         ),
                     },

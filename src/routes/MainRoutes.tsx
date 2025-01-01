@@ -25,6 +25,8 @@ import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
 import AdminRoom from "@/pages/AdminPage/AdminRoom/AdminRoom";
 import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/RoomTier";
 import Rating from "@/pages/AdminPage/Rating/Rating";
+import AdminBlacklist from "@/pages/AdminPage/Blacklist/Blacklist";
+import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -67,6 +69,8 @@ export default function MainRoutes() {
           <Route path="room" element={<AdminRoom />} />
           <Route path="roomtier" element={<AdminRoomTier />} />
           <Route path="rating" element={<Rating />} />
+          <Route path="blacklist" element={<AdminBlacklist />} />
+          <Route path="paymenthistory" element={<PaymentHistory />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
 

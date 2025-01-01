@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, DatePicker, Modal, Table, Select, Popconfirm } from 'antd';
+import { Button, Form, Input, DatePicker, Modal, Table, Select, Popconfirm, message } from 'antd';
 import moment from 'moment';
 
 const AdminPromote = () => {
@@ -76,13 +76,23 @@ const AdminPromote = () => {
     }
 
     const onDeletePromote = async (id: number) => {
-        await MainApiRequest.delete(`/promote/delete/${id}`);
-        fetchPromoteList();
+        try {
+            await MainApiRequest.delete(`/promote/delete/${id}`);
+            fetchPromoteList();
+            message.success('Promote deleted successfully!');
+        } catch (error) {
+            message.error('Failed to delete promote!');
+        }
     }
 
     const onDeleteCoupon = async (id: number) => {
-        await MainApiRequest.delete(`/promote/coupon/delete/${id}`);
-        fetchCouponList();
+        try {
+            await MainApiRequest.delete(`/promote/coupon/delete/${id}`);
+            fetchCouponList();
+            message.success('Coupon deleted successfully!');
+        } catch (error) {
+            message.error('Failed to delete coupon!');
+        }
     }
 
     const onCancelCreatePromote = () => {
@@ -122,29 +132,25 @@ const AdminPromote = () => {
                     <Form.Item
                         label='Promote Name'
                         name='name'
-                        rules={[{ required: true, message: 'Please input promote name!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input promote name!' }]}>
                         <Input type='text' />
                     </Form.Item>
                     <Form.Item
                         label='Description'
                         name='description'
-                        rules={[{ required: true, message: 'Please input description!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input description!' }]}>
                         <Input type='text' />
                     </Form.Item>
                     <Form.Item
                         label='Discount'
                         name='discount'
-                        rules={[{ required: true, message: 'Please input discount!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input discount!' }]}>
                         <Input type='number' />
                     </Form.Item>
                     <Form.Item
                         label='Type'
                         name='type'
-                        rules={[{ required: true, message: 'Please select type!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please select type!' }]}>
                         <Select>
                             <Select.Option value="percentage">Percentage</Select.Option>
                             <Select.Option value="fixed">Fixed</Select.Option>
@@ -153,15 +159,13 @@ const AdminPromote = () => {
                     <Form.Item
                         label='Start Date'
                         name='startAt'
-                        rules={[{ required: true, message: 'Please select start date!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please select start date!' }]}>
                         <DatePicker showTime />
                     </Form.Item>
                     <Form.Item
                         label='End Date'
                         name='endAt'
-                        rules={[{ required: true, message: 'Please select end date!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please select end date!' }]}>
                         <DatePicker showTime />
                     </Form.Item>
                 </Form>
@@ -177,22 +181,19 @@ const AdminPromote = () => {
                     <Form.Item
                         label='Promote ID'
                         name='promoteId'
-                        rules={[{ required: true, message: 'Please input promote ID!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input promote ID!' }]}>
                         <Input type='number' />
                     </Form.Item>
                     <Form.Item
                         label='Coupon Code'
                         name='code'
-                        rules={[{ required: true, message: 'Please input coupon code!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input coupon code!' }]}>
                         <Input type='text' />
                     </Form.Item>
                     <Form.Item
                         label='User ID'
                         name='userId'
-                        rules={[{ required: true, message: 'Please input user ID!' }]}
-                    >
+                        rules={[{ required: true, message: 'Please input user ID!' }]}>
                         <Input type='number' />
                     </Form.Item>
                 </Form>
@@ -211,7 +212,12 @@ const AdminPromote = () => {
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <>
                                 <Button type="link" onClick={() => onOpenCreatePromoteModal(record)}>Edit</Button>
-                                <Popconfirm title="Are you sure delete this promote?" onConfirm={() => onDeletePromote(record.id)}>
+                                <Popconfirm
+                                    title="Are you sure you want to delete this promote?"
+                                    onConfirm={() => onDeletePromote(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
                                     <Button type="link" danger>Delete</Button>
                                 </Popconfirm>
                             </>
@@ -230,7 +236,12 @@ const AdminPromote = () => {
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <>
                                 <Button type="link" onClick={() => onOpenCreateCouponModal(record)}>Edit</Button>
-                                <Popconfirm title="Are you sure delete this coupon?" onConfirm={() => onDeleteCoupon(record.id)}>
+                                <Popconfirm
+                                    title="Are you sure you want to delete this coupon?"
+                                    onConfirm={() => onDeleteCoupon(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
                                     <Button type="link" danger>Delete</Button>
                                 </Popconfirm>
                             </>

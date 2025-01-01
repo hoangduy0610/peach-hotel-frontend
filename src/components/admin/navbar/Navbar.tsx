@@ -53,6 +53,16 @@ const Navbar: React.FC = () => {
       link: '/admin/rating',
       icon: 'fas fa-star',
     },
+    {
+      title: 'Blacklist',
+      link: '/admin/blacklist',
+      icon: 'fas fa-ban',
+    },
+    {
+      title: 'Payment History',  // New Route
+      link: '/admin/paymenthistory',  // Add your route here
+      icon: 'fas fa-credit-card',  // You can use any icon you prefer
+    },
   ];
 
   return (

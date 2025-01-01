@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, InputNumber, Modal, Table, Space } from 'antd';
+import { Button, Form, Input, InputNumber, Modal, Table, Space, message } from 'antd';
 
 const AdminRoomTier = () => {
     const [form] = Form.useForm();
@@ -34,7 +34,6 @@ const AdminRoomTier = () => {
     ];
 
     const fetchRoomTierList = async () => {
-        // Sử dụng dữ liệu mẫu thay vì gọi API
         setRoomTierList(sampleRoomTierList);
     }
 
@@ -63,6 +62,7 @@ const AdminRoomTier = () => {
             }
 
             setOpenCreateRoomTierModal(false);
+            message.success(isEditing ? 'Room tier updated successfully!' : 'Room tier created successfully!');
         });
     }
 
@@ -78,7 +78,13 @@ const AdminRoomTier = () => {
     }
 
     const onDeleteRoomTier = (id: number) => {
-        setRoomTierList(roomTierList.filter(roomTier => roomTier.id !== id));
+        Modal.confirm({
+            title: 'Are you sure you want to delete this room tier?',
+            onOk: () => {
+                setRoomTierList(roomTierList.filter(roomTier => roomTier.id !== id));
+                message.success('Room tier deleted successfully!');
+            },
+        });
     }
 
     return (
@@ -147,6 +153,7 @@ const AdminRoomTier = () => {
                         ),
                     },
                 ]}
+                rowKey="id"
             />
         </div>
     );

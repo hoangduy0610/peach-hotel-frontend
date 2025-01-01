@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, DatePicker, Modal, Table, Space } from 'antd';
+import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm } from 'antd';
 import moment from 'moment';
 
 const AdminStaff = () => {
@@ -38,9 +38,8 @@ const AdminStaff = () => {
     ];
 
     const fetchStaffList = async () => {
-        // Sử dụng dữ liệu mẫu thay vì gọi API
         setStaffList(sampleStaffList);
-    }
+    };
 
     useEffect(() => {
         fetchStaffList();
@@ -51,7 +50,7 @@ const AdminStaff = () => {
         setCurrentStaff(null);
         setIsEditing(false);
         setOpenCreateStaffModal(true);
-    }
+    };
 
     const onOKCreateStaff = () => {
         form.validateFields().then(values => {
@@ -69,11 +68,11 @@ const AdminStaff = () => {
 
             setOpenCreateStaffModal(false);
         });
-    }
+    };
 
     const onCancelCreateStaff = () => {
         setOpenCreateStaffModal(false);
-    }
+    };
 
     const onEditStaff = (record: any) => {
         setCurrentStaff(record);
@@ -83,11 +82,11 @@ const AdminStaff = () => {
         });
         setIsEditing(true);
         setOpenCreateStaffModal(true);
-    }
+    };
 
     const onDeleteStaff = (id: number) => {
         setStaffList(staffList.filter(staff => staff.id !== id));
-    }
+    };
 
     return (
         <div className="container-fluid m-2">
@@ -157,8 +156,19 @@ const AdminStaff = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button onClick={() => onEditStaff(record)}>Edit</Button>
-                                <Button onClick={() => onDeleteStaff(record.id)} danger>Delete</Button>
+                                <Button type="primary" onClick={() => onEditStaff(record)}>
+                                    Edit
+                                </Button>
+                                <Popconfirm
+                                    title="Are you sure to delete this staff?"
+                                    onConfirm={() => onDeleteStaff(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button danger>
+                                        Delete
+                                    </Button>
+                                </Popconfirm>
                             </Space>
                         ),
                     },

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './AdminService.css';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, Modal, Select, Table, Tag } from 'antd';
+import { Button, Form, Input, Modal, Select, Table, Popconfirm } from 'antd';
 
 const AdminService = () => {
     const [form] = Form.useForm();
@@ -169,13 +169,21 @@ const AdminService = () => {
                         title: 'Actions', key: 'actions', render: (_, record) => (
                             <>
                                 <Button type="link" onClick={() => onEditService(record)}>Edit</Button>
-                                <Button type="link" danger onClick={() => onDeleteService(record.id)}>Delete</Button>
+                                <Popconfirm
+                                    title="Are you sure to delete this service?"
+                                    onConfirm={() => onDeleteService(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
                             </>
                         )
                     }
                 ]}
             />
 
+            {/* Service Tier List Table */}
             <Table
                 dataSource={serviceTierList}
                 columns={[
@@ -187,7 +195,14 @@ const AdminService = () => {
                         title: 'Actions', key: 'actions', render: (_, record) => (
                             <>
                                 <Button type="link" onClick={() => onEditServiceTier(record)}>Edit</Button>
-                                <Button type="link" danger onClick={() => onDeleteServiceTier(record.id)}>Delete</Button>
+                                <Popconfirm
+                                    title="Are you sure to delete this service tier?"
+                                    onConfirm={() => onDeleteServiceTier(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
                             </>
                         )
                     }
