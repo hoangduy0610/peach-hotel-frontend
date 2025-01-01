@@ -25,7 +25,7 @@ const Navbar: React.FC = () => {
     },
     {
       title: 'Rooms',
-      link: '/admin/rooms',
+      link: '/admin/room',
       icon: 'fas fa-bed',
     },
     {
@@ -47,6 +47,11 @@ const Navbar: React.FC = () => {
       title: 'Staff',
       link: '/admin/staff',
       icon: 'fas fa-users',
+    },
+    {
+      title: 'Rating',
+      link: '/admin/rating',
+      icon: 'fas fa-star',
     },
   ];
 
