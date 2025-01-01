@@ -1,62 +1,8 @@
 @import "~react-image-gallery/styles/css/image-gallery.css";
 
-.filter_box {
-  padding: 20px 30px 30px;
-  border: 1px solid #e7e6e6;
-
-  .accordion-item {
-    border-bottom: 1px solid #e7e6e6 !important;
-    
-    &:last-child {
-      border: none !important;
-    }
-    
-    button {
-      background: none;
-      border: none;
-      border-radius: 0;
-      font-size: 16px;
-      font-weight: 600;
-      padding: 16px 0;
-      box-shadow: none !important;
-      
-      &:focus {
-        border: none;
-        outline: none;
-        box-shadow: none;
-      }
-    }
-
-    .accordion-body {
-      padding: 0;
-      margin-bottom: 15px;
-
-      .form-check {
-        margin-bottom: 10px;
-
-        .form-check-input {
-          width: 1.2em;
-          height: 1.2em;
-        }
-
-        .form-check-label {
-          margin-left: 8px;
-          margin-top: 5px;
-        }
-      }
-    }
-  }
-}
-
-.filters {
-  position: sticky;
-  top: 55px;
-}
-
 /* room Details */
 .room_details {
   .image-gallery-thumbnail {
-    width: 12.3%;
 
     &:hover,
     &.active {

@@ -21,14 +21,13 @@
         "jsx": "react-jsx",
         "baseUrl": ".",
         "paths": {
-            "@/*": [
-                "src/*"
-            ]
+            "@/*": ["src/*"]
         }
     },
     "include": [
-        "src",
-        "**/*.ts",
-        "**/*.tsx"
+    "src",
+    "**/*.ts",
+    "**/*.tsx",
+    "custom.d.ts"
     ]
 }

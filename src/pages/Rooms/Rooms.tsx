@@ -7,22 +7,32 @@ import ProductCard from "@/layouts/Cards/ProductCard";
 import { popularsData } from "@/modules/data";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
+import Search from "@/layouts/Search/Search";
 
 const Rooms = () => {
   const navigate = useNavigate();
 
   const {
-    state: { tier, guest, startDate, endDate },
+    state,
   } = useLocation();
+
+  const startDate = state?.startDate || new Date();
+  const endDate = state?.endDate || new Date();
 
   const [show, setShow] = useState(false);
   const [roomList, setRoomList] = useState<any[]>([]);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
 
   const fetchListRooms = async () => {
-    const res = await MainApiRequest.get(`/room/filter-available?checkInDate=${startDate.toISOString()}&checkOutDate=${endDate.toISOString()}&roomTierId=${tier}&guestNum=${guest}`);
+    let optionalParams = "";
+    if (state?.tier) {
+      optionalParams += `&roomTierId=${state.tier}`;
+    }
+    if (state?.guest) {
+      optionalParams += `&guestNum=${state.guest}`;
+    }
+    const res = await MainApiRequest.get(`/room/filter-available?checkInDate=${startDate.toISOString()}&checkOutDate=${endDate.toISOString()}${optionalParams}`);
     console.log(res.data);
     setRoomList(res.data);
   };
@@ -38,40 +48,29 @@ const Rooms = () => {
     <>
       <Breadcrumbs title="Hotel" pagename="Hotel" />
       <section className="py-5 room_list">
+        <Search />
         <Container>
-          <Row>
-            <Col xl="3" lg="4" md="12" sm="12">
-              <div className="d-lg-none d-block">
-                <button className="primaryBtn mb-4" onClick={handleShow}>
-                  <i className="bi bi-funnel"></i> Filters
-                </button>
-              </div>
-              <div className="filters d-lg-block d-none">
-                <Filters />
-              </div>
-
-            </Col>
-            <Col xl="9" lg="8" md="12" sm="12">
-              <Row>
+          <Col>
+            <Row>
                 {roomList.map((val, inx) => {
                   return (
-                    <Col xl={4} lg={6} md={6} sm={6} className="mb-5" key={inx}>
+                    <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
                       <ProductCard val={val} checkInDate={startDate} checkOutDate={endDate}/>
                     </Col>
+                    
                   );
                 })}
               </Row>
             </Col>
-          </Row>
         </Container>
       </section>
 
       <Offcanvas show={show} onHide={handleClose}>
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Filters</Offcanvas.Title>
+          <Offcanvas.Title>Search</Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
-          <Filters />
+          <Search />
         </Offcanvas.Body>
       </Offcanvas>
     </>

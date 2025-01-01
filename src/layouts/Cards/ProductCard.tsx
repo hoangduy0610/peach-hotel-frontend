@@ -3,14 +3,15 @@ import "./ProductCard.scss";
 import { Card, Button, Badge, Stack } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import Anchorage from "@/assets/view1.jpg";
+import { Rate } from 'antd';
+
 
 interface ProductCardProps {
   val: {
     id: number;
     // image: string;
     // title: string;
-    // rating: number;
-    // category: string[];
+    rating: number;
     price: number;
     // tier: string;
     // features: string[];
@@ -59,9 +60,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
 
         {/* Rating */}
         <div className="rating mb-3">
-          <i className="bi bi-star-fill me-1"></i>
-          {/* <span>{val.rating.toFixed(1)} / 5</span> */}
-          <span>4.5 / 5</span>
+          {Array.from({ length: 5 }, (_, index) => {
+            const fullStars = Math.floor(val.rating); // Replace 3.5 with val.rating
+            const hasHalfStar = val.rating % 1 !== 0; // Replace 3.5 with val.rating
+            if (index < fullStars) {
+              return <i className="bi bi-star-fill text-warning" key={index}></i>;
+            } else if (index === fullStars && hasHalfStar) {
+              return <i className="bi bi-star-half text-warning" key={index}></i>;
+            } else {
+              return <i className="bi bi-star text-warning" key={index}></i>;
+            }
+          })}
+          <span className="ms-2">{val.rating} / 5</span> {/* Replace 3.5 with val.rating */}
         </div>
 
         {/* Category */}
@@ -128,7 +138,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
 
       {/* Footer with buttons */}
       <Card.Footer className="d-flex justify-content-between">
-        <Button variant="primary" onClick={() => navigate("/room-details")}>
+        <Button variant="primary" onClick={() => navigate(`/room/${val.id}`)}>
           Xem chi tiết
         </Button>
         <Button variant="success" onClick={() => navigate("/booking", {
