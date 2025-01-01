@@ -15,7 +15,7 @@ const Features = () => {
     infinite: true,
     autoplay: false,
     autoplaySpeed: 1500,
-    slidesToShow: 4,
+    slidesToShow: 3,
     slidesToScroll: 1,
     responsive: [
       {
@@ -45,35 +45,27 @@ const Features = () => {
           arrows: false,
         },
       },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-          arrows: false,
-        },
-      },
     ],
   };
 
   const featureList = [
     {
-      id: 0,
-      image: feature1,
-      title: "Discover the possibilities",
-      des: "With nearly half a million attractions, hotels & more, you're sure to find joy.",
-    },
-    {
       id: 1,
-      image: feature2,
-      title: "Enjoy deals & delights",
-      des: "Quality activities. Great prices. Plus, earn credits to save more.",
+      image: feature3,
+      title: "Stay in Style",
+      des: "With a wide range of luxurious rooms and suites, find the perfect stay tailored to your needs.",
     },
     {
       id: 2,
-      image: feature3,
-      title: "Exploring made easy",
-      des: "Book last minute, skip lines & get free cancellation for easier exploring.",
+      image: feature1,
+      title: "Exclusive Offers",
+      des: "Enjoy special discounts, complimentary services, and rewards to make your stay even better.",
+    },
+    {
+      id: 3,
+      image: feature2,
+      title: "Effortless Booking",
+      des: "Book instantly, manage your reservations, and enjoy free cancellations for a stress-free experience.",
     },
   ];
 

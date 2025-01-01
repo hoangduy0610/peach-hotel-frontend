@@ -1,14 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaAppStore, FaGooglePlay } from 'react-icons/fa';
 import './Footer.css';
 
 const Footer = () => {
+
+  const [visible, setVisible]= useState(false);
+
+  const toggleVisible=()=>{
+    const scrolled = document.documentElement.scrollTop;
+    if(scrolled > 300){
+      setVisible(true)
+    }
+   else if(scrolled  <= 300){
+      setVisible(false)
+    }
+  }
+
+  const scrollTop =()=>{
+    window.scrollTo({
+      top:0,
+      behavior:"smooth"
+    })
+  }
+
+  if(typeof window !== "undefined"){
+    window.addEventListener("scroll", toggleVisible)
+  }
+   
   const handleClick = (section: any) => {
     console.log(`Navigating to ${section}`);
     // Thêm logic điều hướng hoặc xử lý sự kiện tại đây
   };
 
   return (
+    <>
     <footer className="footer">
       <div className="footer__section footer__logo-section">
         <h2 className="footer__logo">GROUP6 HOTEL</h2>
@@ -57,6 +82,13 @@ const Footer = () => {
         </div>
       </div>
     </footer>
+
+    <div id="back-top"
+      onClick={scrollTop}
+      className={visible ? "active" : ""}>
+      <i className="bi bi-arrow-up"></i>
+    </div>
+    </>
   );
 };
 

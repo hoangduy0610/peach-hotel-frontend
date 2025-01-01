@@ -19,7 +19,6 @@
         &::before {
           content: "";
           position: absolute;
-          top: 1px;
           right: 10px;
           width: 1px;
           height: 58px;
@@ -29,6 +28,8 @@
   
       .item-search-2 {
         display: inline-block;
+        width: 30%;
+        top: 2px;
   
         .react-datepicker__input-container {
           font-family: bootstrap-icons !important;
@@ -47,22 +48,23 @@
           content: "\f214";
           position: absolute;
           left: 0;
-          bottom: 8px;
+          margin-right: 5px;
+          bottom: 10px;
           font-size: var(--bodyText);
         }
   
         .react-datepicker__input-container::after {
           content: "\f282";
           position: absolute;
-          right: 20px;
+          right: 15px;
           bottom: 8px;
           font-size: var(--bodyText);
         }
   
         .react-datepicker-wrapper input {
           border: none;
-          padding: 5px 40px 5px 5px;
-          padding-left: 22px !important;
+          padding: 5px 30px 5px 5px;
+          padding-left: 30px !important;
           line-height: 1.5;
           width: 100%;
           font-size: var(--bodyText);
@@ -74,6 +76,7 @@
             border: none;
             outline: none;
           }
+
         }
       }
   
