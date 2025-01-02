@@ -1,0 +1,26 @@
+name: Auto Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Change directory
+        run: cd ~/hotel-management-fe
+
+      - name: Pull latest code
+        run: git pull origin master
+      
+      - name: Install dependencies
+        run: yarn
+
+      - name: Start
+        run: yarn start
