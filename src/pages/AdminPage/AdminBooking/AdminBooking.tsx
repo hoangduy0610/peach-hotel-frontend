@@ -105,8 +105,8 @@ const AdminBooking = () => {
           { title: 'Guest', dataIndex: 'customerName', key: 'customerName' },
           { title: 'Reservation Code', dataIndex: 'reservationCode', key: 'reservationCode' },
           { title: 'Phone Number', dataIndex: 'customerPhone', key: 'customerPhone' },
-          { title: 'Check In', dataIndex: 'checkIn', key: 'checkIn', render: (checkIn: string) => checkIn.split('T')[0] },
-          { title: 'Check Out', dataIndex: 'checkOut', key: 'checkOut', render: (checkOut: string) => checkOut.split('T')[0] },
+          { title: 'Check In', dataIndex: 'checkIn', key: 'checkIn', render: (checkIn: string) => moment(checkIn).format('DD-MM-YYYY') },
+          { title: 'Check Out', dataIndex: 'checkOut', key: 'checkOut', render: (checkOut: string) => moment(checkOut).format('DD-MM-YYYY') },
           // { title: 'Room Type', dataIndex: 'rooms', key: 'rooms', render: (rooms: any[]) => rooms[0].roomTier.name },
           { title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={status === 'PENDING' ? 'orange' : 'green'}>{status}</Tag> },
         ]}

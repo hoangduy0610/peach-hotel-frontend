@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Table, Popconfirm, Select } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import './AdminBlacklist.scss';
+import moment from 'moment';
 const { Option } = Select;
 
 const AdminBlacklist = () => {
@@ -48,8 +49,8 @@ const AdminBlacklist = () => {
   const onOKCreateBlacklist = async () => {
     const formData = form.getFieldsValue();
     const newBlacklistEntry = {
-      ...formData,
-      dateAdded: new Date().toLocaleDateString('en-GB'), // Ngày tạo
+      reason: formData.reason,
+      userId: formData.userId,
     };
     await MainApiRequest.post('/blacklist', newBlacklistEntry);
     fetchBlacklist();
@@ -65,7 +66,7 @@ const AdminBlacklist = () => {
   // Cập nhật Customer ID khi chọn Customer Name
   const handleCustomerChange = (customerId: number) => {
     const selectedCustomer = customerList.find((customer: any) => customer.id === customerId);
-    form.setFieldsValue({ name: selectedCustomer?.name, idCustomer: customerId });
+    form.setFieldsValue({ name: selectedCustomer?.name, userId: customerId });
   };
 
   return (
@@ -102,7 +103,7 @@ const AdminBlacklist = () => {
           </Form.Item>
 
           {/* Customer ID */}
-          <Form.Item label="Customer ID" name="idCustomer">
+          <Form.Item label="Customer ID" name="userId">
             <Input readOnly />
           </Form.Item>
 
@@ -113,7 +114,7 @@ const AdminBlacklist = () => {
             className="reason-field "
             rules={[{ required: true, message: 'Please input the reason!' }]}
           >
-            <Input.TextArea/>
+            <Input.TextArea />
           </Form.Item>
         </Form>
       </Modal>
@@ -122,9 +123,17 @@ const AdminBlacklist = () => {
         dataSource={blacklist}
         columns={[
           { title: 'ID Blacklist', dataIndex: 'id', key: 'id' },
-          { title: 'ID Customer', dataIndex: 'idCustomer', key: 'idCustomer' },
-          { title: 'Name Customer', dataIndex: 'name', key: 'name' },
-          { title: 'Date Added', dataIndex: 'dateAdded', key: 'dateAdded' },
+          {
+            title: 'ID Customer', dataIndex: 'idCustomer', key: 'idCustomer', render(_, record) {
+              return record.user.id;
+            },
+          },
+          {
+            title: 'Name Customer', dataIndex: 'name', key: 'name', render(_, record) {
+              return record.user.name;
+            },
+          },
+          { title: 'Date Added', dataIndex: 'bannedAt', key: 'bannedAt', render: (bannedAt) => moment(bannedAt).format("DD-MM-YYYY") },
           { title: 'Reason', dataIndex: 'reason', key: 'reason' },
           {
             title: 'Action',

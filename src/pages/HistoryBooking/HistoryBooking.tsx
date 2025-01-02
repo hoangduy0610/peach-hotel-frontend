@@ -5,6 +5,7 @@ import { Container } from 'react-bootstrap';
 import Breadcrumbs from '@/layouts/Breadcrumbs/Breadcrumbs';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 const HistoryBooking = () => {
   const [bookingList, setBookingList] = useState<any[]>([]);
@@ -80,13 +81,13 @@ const HistoryBooking = () => {
                 title: 'Check In',
                 dataIndex: 'checkIn',
                 key: 'checkIn',
-                render: (checkIn: string) => checkIn.split('T')[0],
+                render: (checkIn: string) => moment(checkIn).format('DD-MM-YYYY'),
               },
               {
                 title: 'Check Out',
                 dataIndex: 'checkOut',
                 key: 'checkOut',
-                render: (checkOut: string) => checkOut.split('T')[0],
+                render: (checkOut: string) => moment(checkOut).format('DD-MM-YYYY'),
               },
               {
                 title: 'Room Type',
