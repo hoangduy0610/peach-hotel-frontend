@@ -10,14 +10,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Change directory
         run: cd ~/hotel-management-fe
 
       - name: Pull latest code
-        run: git pull origin master
+        run: git pull
       
       - name: Install dependencies
         run: yarn
