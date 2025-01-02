@@ -1,159 +1,110 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, InputNumber, Modal, Table, Space, message } from 'antd';
+import { MainApiRequest } from '@/services/MainApiRequest';
+import { Button, Form, Input, Modal, Table, Popconfirm } from 'antd';
 
 const AdminRoomTier = () => {
     const [form] = Form.useForm();
     const [roomTierList, setRoomTierList] = useState<any[]>([]);
     const [openCreateRoomTierModal, setOpenCreateRoomTierModal] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [currentRoomTier, setCurrentRoomTier] = useState<any | null>(null);
-
-    // Dữ liệu mẫu
-    const sampleRoomTierList = [
-        {
-            id: 1,
-            name: 'Deluxe',
-            description: 'Phòng cao cấp với view đẹp',
-            slot: 5,
-            capacity: 2
-        },
-        {
-            id: 2,
-            name: 'Standard',
-            description: 'Phòng tiêu chuẩn với đầy đủ tiện nghi',
-            slot: 10,
-            capacity: 2
-        },
-        {
-            id: 3,
-            name: 'Suite',
-            description: 'Phòng hạng sang với nhiều dịch vụ cao cấp',
-            slot: 3,
-            capacity: 4
-        }
-    ];
+    const [editingRoomTier, setEditingRoomTier] = useState<any | null>(null);
 
     const fetchRoomTierList = async () => {
-        setRoomTierList(sampleRoomTierList);
-    }
+        const res = await MainApiRequest.get('/room/tier/list');
+        setRoomTierList(res.data);
+    };
 
     useEffect(() => {
         fetchRoomTierList();
     }, []);
 
     const onOpenCreateRoomTierModal = () => {
-        form.resetFields();
-        setCurrentRoomTier(null);
-        setIsEditing(false);
         setOpenCreateRoomTierModal(true);
-    }
+    };
 
-    const onOKCreateRoomTier = () => {
-        form.validateFields().then(values => {
-            const newRoomTier = {
-                ...values,
-                id: isEditing ? currentRoomTier.id : roomTierList.length + 1,
-            };
-
-            if (isEditing) {
-                setRoomTierList(roomTierList.map(roomTier => roomTier.id === currentRoomTier.id ? newRoomTier : roomTier));
-            } else {
-                setRoomTierList([...roomTierList, newRoomTier]);
-            }
-
-            setOpenCreateRoomTierModal(false);
-            message.success(isEditing ? 'Room tier updated successfully!' : 'Room tier created successfully!');
-        });
-    }
+    const onOKCreateRoomTier = async () => {
+        setOpenCreateRoomTierModal(false);
+        const data = form.getFieldsValue();
+        if (editingRoomTier) {
+            await MainApiRequest.put(`/room/tier/put/${editingRoomTier.id}`, data);
+        } else {
+            await MainApiRequest.post('/room/tier/post', data);
+        }
+        fetchRoomTierList();
+        setEditingRoomTier(null);
+        form.resetFields();
+    };
 
     const onCancelCreateRoomTier = () => {
         setOpenCreateRoomTierModal(false);
-    }
+        setEditingRoomTier(null);
+        form.resetFields();
+    };
 
-    const onEditRoomTier = (record: any) => {
-        setCurrentRoomTier(record);
-        form.setFieldsValue(record);
-        setIsEditing(true);
+    const onEditRoomTier = (tier: any) => {
+        setEditingRoomTier(tier);
+        form.setFieldsValue(tier);
         setOpenCreateRoomTierModal(true);
-    }
+    };
 
-    const onDeleteRoomTier = (id: number) => {
-        Modal.confirm({
-            title: 'Are you sure you want to delete this room tier?',
-            onOk: () => {
-                setRoomTierList(roomTierList.filter(roomTier => roomTier.id !== id));
-                message.success('Room tier deleted successfully!');
-            },
-        });
-    }
+    const onDeleteRoomTier = async (id: number) => {
+        await MainApiRequest.delete(`/room/tier/delete/${id}`);
+        fetchRoomTierList();
+    };
 
     return (
         <div className="container-fluid m-2">
-            <h3 className='h3'>Room Tier Management</h3>
-            <Button
-                type='primary'
-                onClick={onOpenCreateRoomTierModal}
-            >
+            <h3 className="h3">Room Tier Management</h3>
+
+            <Button type="primary" onClick={() => onOpenCreateRoomTierModal()}>
                 Create Room Tier
             </Button>
 
             <Modal
-                title={isEditing ? "Edit Room Tier" : "Create Room Tier"}
+                title={editingRoomTier ? "Edit Room Tier" : "Create Room Tier"}
                 open={openCreateRoomTierModal}
-                onOk={onOKCreateRoomTier}
-                onCancel={onCancelCreateRoomTier}
+                onOk={() => onOKCreateRoomTier()}
+                onCancel={() => onCancelCreateRoomTier()}
             >
-                <Form form={form} layout="vertical">
-                    <Form.Item
-                        label='Name'
-                        name='name'
-                        rules={[{ required: true, message: 'Please input room tier name!' }]}
-                    >
-                        <Input type='text' />
+                <Form form={form}>
+                    <Form.Item label="Tier Name" name="name" rules={[{ required: true, message: 'Please input tier name!' }]}>
+                        <Input />
                     </Form.Item>
-                    <Form.Item
-                        label='Description'
-                        name='description'
-                        rules={[{ required: true, message: 'Please input description!' }]}
-                    >
-                        <Input.TextArea rows={3} />
+                    <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please input tier type!' }]}>
+                        <Input />
                     </Form.Item>
-                    <Form.Item
-                        label='Slot'
-                        name='slot'
-                        rules={[{ required: true, message: 'Please input slot!' }]}
-                    >
-                        <InputNumber min={0} />
+                    <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description!' }]}>
+                        <Input />
                     </Form.Item>
-                    <Form.Item
-                        label='Capacity'
-                        name='capacity'
-                        rules={[{ required: true, message: 'Please input capacity!' }]}
-                    >
-                        <InputNumber min={0} />
+                    <Form.Item label="Slots" name="slot" rules={[{ required: true, message: 'Please input number of slots!' }]}>
+                        <Input type="number" />
                     </Form.Item>
                 </Form>
             </Modal>
 
+            {/* Room Tier List Table */}
             <Table
                 dataSource={roomTierList}
                 columns={[
-                    { title: 'Name', dataIndex: 'name', key: 'name' },
+                    { title: 'Tier Name', dataIndex: 'name', key: 'name' },
+                    { title: 'Type', dataIndex: 'type', key: 'type' },
                     { title: 'Description', dataIndex: 'description', key: 'description' },
-                    { title: 'Slot', dataIndex: 'slot', key: 'slot' },
-                    { title: 'Capacity', dataIndex: 'capacity', key: 'capacity' },
+                    { title: 'Slots', dataIndex: 'slot', key: 'slot' },
                     {
-                        title: 'Action',
-                        key: 'action',
-                        render: (_, record) => (
-                            <Space size="middle">
-                                <Button onClick={() => onEditRoomTier(record)}>Edit</Button>
-                                <Button onClick={() => onDeleteRoomTier(record.id)} danger>Delete</Button>
-                            </Space>
-                        ),
-                    },
+                        title: 'Actions', key: 'actions', render: (_, record) => (
+                            <>
+                                <Button type="link" onClick={() => onEditRoomTier(record)}>Edit</Button>
+                                <Popconfirm
+                                    title="Are you sure to delete this room tier?"
+                                    onConfirm={() => onDeleteRoomTier(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
+                            </>
+                        )
+                    }
                 ]}
-                rowKey="id"
             />
         </div>
     );

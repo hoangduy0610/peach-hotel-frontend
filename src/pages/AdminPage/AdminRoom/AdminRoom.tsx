@@ -1,210 +1,123 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, Modal, Table, message } from 'antd';
+import { MainApiRequest } from '@/services/MainApiRequest';
+import { Button, Form, Input, Modal, Select, Table, Popconfirm } from 'antd';
 
 const AdminRoom = () => {
-  const [form] = Form.useForm();
-  const [roomList, setRoomList] = useState<any[]>([]);
-  const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
-  const [openEditRoomModal, setOpenEditRoomModal] = useState(false);
-  const [editingRoom, setEditingRoom] = useState<any>(null);
+    const [form] = Form.useForm();
+    const [roomList, setRoomList] = useState<any[]>([]);
+    const [roomTierList, setRoomTierList] = useState<any[]>([]);
+    const [openCreateRoomModal, setOpenCreateRoomModal] = useState(false);
+    const [openCreateRoomTierModal, setOpenCreateRoomTierModal] = useState(false);
+    const [editingRoom, setEditingRoom] = useState<any | null>(null);
+    const [editingRoomTier, setEditingRoomTier] = useState<any | null>(null);
 
-  // Dữ liệu mẫu
-  const sampleRoomList = [
-    {
-      id: 1,
-      roomTierId: 1,
-      name: 'Room 101',
-      floor: 1,
-      price: 100,
-    },
-    {
-      id: 2,
-      roomTierId: 2,
-      name: 'Room 102',
-      floor: 1,
-      price: 120,
-    },
-    {
-      id: 3,
-      roomTierId: 1,
-      name: 'Room 103',
-      floor: 1,
-      price: 150,
-    },
-  ];
-
-  const fetchRoomList = async () => {
-    setRoomList(sampleRoomList);
-  };
-
-  useEffect(() => {
-    fetchRoomList();
-  }, []);
-
-  const onOpenCreateRoomModal = () => {
-    form.resetFields();
-    setOpenCreateRoomModal(true);
-  };
-
-  const onOKCreateRoom = () => {
-    const data = form.getFieldsValue();
-    const newRoom = {
-      ...data,
-      id: roomList.length + 1,
+    const fetchRoomList = async () => {
+        const res = await MainApiRequest.get('/room/list');
+        setRoomList(res.data);
     };
-    setRoomList([...roomList, newRoom]);
-    setOpenCreateRoomModal(false);
-  };
 
-  const onCancelCreateRoom = () => {
-    setOpenCreateRoomModal(false);
-  };
+    useEffect(() => {
+        fetchRoomList();
+    }, []);
 
-  const onOpenEditRoomModal = (room: any) => {
-    setEditingRoom(room);
-    form.setFieldsValue(room);
-    setOpenEditRoomModal(true);
-  };
+    const onOpenCreateRoomModal = () => {
+        setOpenCreateRoomModal(true);
+    };
 
-  const onOKEditRoom = () => {
-    const updatedRoom = form.getFieldsValue();
-    setRoomList(
-      roomList.map(room =>
-        room.id === editingRoom.id ? { ...room, ...updatedRoom } : room
-      )
+    const onOKCreateRoom = async () => {
+        setOpenCreateRoomModal(false);
+        const data = form.getFieldsValue();
+        if (editingRoom) {
+            await MainApiRequest.put(`/room/put/${editingRoom.id}`, data);
+        } else {
+            await MainApiRequest.post('/room/post', data);
+        }
+        fetchRoomList();
+        setEditingRoom(null);
+        form.resetFields();
+    };
+
+    const onCancelCreateRoom = () => {
+        setOpenCreateRoomModal(false);
+        setEditingRoom(null);
+        form.resetFields();
+    };
+
+    const onEditRoom = (room: any) => {
+        setEditingRoom(room);
+        form.setFieldsValue(room);
+        setOpenCreateRoomModal(true);
+    };
+
+    const onDeleteRoom = async (id: number) => {
+        await MainApiRequest.delete(`/room/delete/${id}`);
+        fetchRoomList();
+    };
+
+    return (
+        <div className="container-fluid m-2">
+            <h3 className="h3">Room Management</h3>
+
+            <Button type="primary" onClick={() => onOpenCreateRoomModal()}>
+                Create Room
+            </Button>
+
+            <Modal
+                title={editingRoom ? "Edit Room" : "Create Room"}
+                open={openCreateRoomModal}
+                onOk={() => onOKCreateRoom()}
+                onCancel={() => onCancelCreateRoom()}
+            >
+                <Form form={form}>
+                    <Form.Item label="Room Name" name="name" rules={[{ required: true, message: 'Please input room name!' }]}>
+                        <Input />
+                    </Form.Item>
+                    <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input price!' }]}>
+                        <Input type="number" />
+                    </Form.Item>
+                    <Form.Item label="Room Tier" name="roomTierId" rules={[{ required: true, message: 'Please select room tier!' }]}>
+                        <Select>
+                            {roomTierList.map((tier) => (
+                                <Select.Option key={tier.id} value={tier.id}>
+                                    {tier.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Modal>
+
+            {/* Room List Table */}
+            <Table
+                dataSource={roomList}
+                columns={[
+                    { title: 'Room Name', dataIndex: 'name', key: 'name' },
+                    { title: 'Price', dataIndex: 'price', key: 'price' },
+                    {
+                        title: 'Tier', dataIndex: 'roomTierId', key: 'roomTierId', render: (roomTierId) => {
+                            const tier = roomTierList.find((tier: any) => tier.id === roomTierId);
+                            return tier ? tier.name : 'N/A';
+                        }
+                    },
+                    {
+                        title: 'Actions', key: 'actions', render: (_, record) => (
+                            <>
+                                <Button type="link" onClick={() => onEditRoom(record)}>Edit</Button>
+                                <Popconfirm
+                                    title="Are you sure to delete this room?"
+                                    onConfirm={() => onDeleteRoom(record.id)}
+                                    okText="Yes"
+                                    cancelText="No"
+                                >
+                                    <Button type="link" danger>Delete</Button>
+                                </Popconfirm>
+                            </>
+                        )
+                    }
+                ]}
+            />
+        </div>
     );
-    setOpenEditRoomModal(false);
-    message.success('Room updated successfully!');
-  };
-
-  const onCancelEditRoom = () => {
-    setOpenEditRoomModal(false);
-  };
-
-  const handleDeleteRoom = (id: number) => {
-    Modal.confirm({
-      title: 'Are you sure you want to delete this room?',
-      onOk: () => {
-        setRoomList(roomList.filter(room => room.id !== id));
-        message.success('Room deleted successfully!');
-      },
-    });
-  };
-
-  return (
-    <div className="container-fluid m-2">
-      <h3 className="h3">Room Management</h3>
-      <Button type="primary" onClick={onOpenCreateRoomModal}>
-        Create Room
-      </Button>
-
-      <Modal
-        title="Create Room"
-        open={openCreateRoomModal}
-        onOk={onOKCreateRoom}
-        onCancel={onCancelCreateRoom}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            label="Room Tier ID"
-            name="roomTierId"
-            rules={[{ required: true, message: 'Please input room tier ID!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please input room name!' }]}
-          >
-            <Input type="text" />
-          </Form.Item>
-          <Form.Item
-            label="Floor"
-            name="floor"
-            rules={[{ required: true, message: 'Please input floor!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            label="Price"
-            name="price"
-            rules={[{ required: true, message: 'Please input price!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Modal
-        title="Edit Room"
-        open={openEditRoomModal}
-        onOk={onOKEditRoom}
-        onCancel={onCancelEditRoom}
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            label="Room Tier ID"
-            name="roomTierId"
-            rules={[{ required: true, message: 'Please input room tier ID!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            label="Name"
-            name="name"
-            rules={[{ required: true, message: 'Please input room name!' }]}
-          >
-            <Input type="text" />
-          </Form.Item>
-          <Form.Item
-            label="Floor"
-            name="floor"
-            rules={[{ required: true, message: 'Please input floor!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            label="Price"
-            name="price"
-            rules={[{ required: true, message: 'Please input price!' }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-        </Form>
-      </Modal>
-
-      <Table
-        dataSource={roomList}
-        columns={[
-          { title: 'Room Tier ID', dataIndex: 'roomTierId', key: 'roomTierId' },
-          { title: 'Name', dataIndex: 'name', key: 'name' },
-          { title: 'Floor', dataIndex: 'floor', key: 'floor' },
-          { title: 'Price', dataIndex: 'price', key: 'price' },
-          {
-            title: 'Action',
-            key: 'action',
-            render: (_: any, record: { id: number }) => (
-              <div>
-                <Button type="link" onClick={() => onOpenEditRoomModal(record)}>
-                  Edit
-                </Button>
-                <Button
-                  type="link"
-                  danger
-                  onClick={() => handleDeleteRoom(record.id)}
-                  style={{ marginLeft: '10px' }}
-                >
-                  Delete
-                </Button>
-              </div>
-            ),
-          },
-        ]}
-        rowKey="id"
-      />
-    </div>
-  );
 };
 
 export default AdminRoom;
