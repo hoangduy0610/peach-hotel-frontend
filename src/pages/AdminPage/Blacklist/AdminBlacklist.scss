@@ -1,0 +1,22 @@
+.container-fluid {
+    .ant-modal {
+      .ant-form {
+        .ant-form-item {
+          margin-bottom: 16px;
+  
+          // Field Reason override
+          &.reason-field {
+            display: block !important; // Buộc hiển thị dạng block
+            width: 100% !important; // Chiếm toàn bộ chiều ngang
+            margin-bottom: 16px !important; // Khoảng cách phía dưới
+  
+            .ant-input,
+            .ant-textarea {
+              width: 100% !important; // Buộc các input bên trong full width
+            }
+          }
+        }
+      }
+    }
+  }
+  

@@ -147,8 +147,12 @@ const AdminRoomTier = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button onClick={() => onEditRoomTier(record)}>Edit</Button>
-                                <Button onClick={() => onDeleteRoomTier(record.id)} danger>Delete</Button>
+                                <Button onClick={() => onEditRoomTier(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
+                                <Button onClick={() => onDeleteRoomTier(record.id)} danger>
+                                    <i className="fas fa-trash"></i>
+                                </Button>
                             </Space>
                         ),
                     },

@@ -194,14 +194,18 @@ const AdminService = () => {
                     {
                         title: 'Actions', key: 'actions', render: (_, record) => (
                             <>
-                                <Button type="link" onClick={() => onEditServiceTier(record)}>Edit</Button>
+                                <Button type="link" onClick={() => onEditServiceTier(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
                                 <Popconfirm
                                     title="Are you sure to delete this service tier?"
                                     onConfirm={() => onDeleteServiceTier(record.id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>Delete</Button>
+                                    <Button type="link" danger>
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
                                 </Popconfirm>
                             </>
                         )

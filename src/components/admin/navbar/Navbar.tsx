@@ -49,14 +49,19 @@ const Navbar: React.FC = () => {
       icon: 'fas fa-users',
     },
     {
-      title: 'Rating',
-      link: '/admin/rating',
-      icon: 'fas fa-star',
+      title: 'Customer',
+      link: '/admin/customer',
+      icon: 'fas fa-user-friends',
     },
     {
       title: 'Blacklist',
       link: '/admin/blacklist',
       icon: 'fas fa-ban',
+    },
+    {
+      title: 'Rating',
+      link: '/admin/rating',
+      icon: 'fas fa-star',
     },
     {
       title: 'Payment History',  // New Route

@@ -148,9 +148,11 @@ const PaymentHistory = () => {
             key: 'action',
             render: (_, record) => (
               <Space size="middle">
-                <Button onClick={() => onEditPayment(record)}>Edit</Button>
+                <Button onClick={() => onEditPayment(record)}>
+                  <i className="fas fa-edit"></i>
+                </Button>
                 <Button onClick={() => onDeletePayment(record.id)} danger>
-                  Delete
+                  <i className="fas fa-trash"></i>
                 </Button>
               </Space>
             ),

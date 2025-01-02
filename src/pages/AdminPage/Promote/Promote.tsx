@@ -235,14 +235,18 @@ const AdminPromote = () => {
                     {
                         title: 'Actions', key: 'actions', render: (text, record) => (
                             <>
-                                <Button type="link" onClick={() => onOpenCreateCouponModal(record)}>Edit</Button>
+                                <Button type="link" onClick={() => onOpenCreateCouponModal(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
                                 <Popconfirm
                                     title="Are you sure you want to delete this coupon?"
                                     onConfirm={() => onDeleteCoupon(record.id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>Delete</Button>
+                                    <Button type="link" danger>
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
                                 </Popconfirm>
                             </>
                         )
