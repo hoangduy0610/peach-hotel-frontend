@@ -7,7 +7,6 @@ import About from "@/pages/About/About";
 import Booking from "@/pages/Booking/Booking";
 import Contact from "@/pages/Contact/Contact";
 import Home from "@/pages/Home/Home";
-import RoomDetails from "@/pages/Rooms/RoomDetails";
 import Login from "@/pages/Login/Login";
 import PhotoGallery from "@/pages/PhotoGallery/PhotoGallery";
 import Register from "@/pages/Register/Register";
@@ -19,6 +18,12 @@ import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
 import Rooms from "@/pages/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
+import HistoryBooking from "@/pages/HistoryBooking/HistoryBooking";
+import RoomDetails from "@/pages/Rooms/RoomDetails";
+import ProfileUser from "@/pages/ProfileUser/ProfileUser";
+import Feedback from "react-bootstrap/esm/Feedback";
+import FeedbackPage from "@/pages/Feedback/FeedbackPage";
+import Payment from "@/pages/Payment/Payment";
 import AdminService from "@/pages/AdminPage/Service/AdminService";
 import Promote from "@/pages/AdminPage/Promote/Promote";
 import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
@@ -48,23 +53,26 @@ export default function MainRoutes() {
   return (
     <>
       {/* Only render Header and Footer if not on login or register page */}
-      {!isAuthPage && !isAdminPage && <Header />} 
+      {!isAuthPage && !isAdminPage && <Header />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="about-us" element={<About />} />
         <Route path="contact-us" element={<Contact />} />
+        <Route path="profile-user" element={<ProfileUser />} />
         <Route path="rooms" element={<Rooms />} />
         <Route path="room/:id" element={<RoomDetails />} />
         <Route path="booking" element={<Booking />} />
-        <Route path="roomtier" element={<RoomTier />} />
+        <Route path="history" element={<HistoryBooking />} />
+        {/* <Route path="feedback/:reservationCode" element={<FeedbackPage />} /> */}
+        <Route path="payment" element={<Payment />} />
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
-          <Route path="service" element={<AdminService/>} />
-          <Route path="promote" element={<Promote/>} />
+          <Route path="service" element={<AdminService />} />
+          <Route path="promote" element={<Promote />} />
           <Route path="staff" element={<AdminStaff />} />
           <Route path="room" element={<AdminRoom />} />
           <Route path="roomtier" element={<AdminRoomTier />} />

@@ -57,7 +57,6 @@ const Rooms = () => {
                     <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
                       <ProductCard val={val} checkInDate={startDate} checkOutDate={endDate}/>
                     </Col>
-                    
                   );
                 })}
               </Row>

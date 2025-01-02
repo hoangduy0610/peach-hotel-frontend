@@ -10,6 +10,7 @@ import {
 import { NavLink, useNavigate } from "react-router-dom";
 import "./Header.scss";
 import { useSystemContext } from "@/hooks/useSystemContext";
+import { MainApiRequest } from "@/services/MainApiRequest";
 
 const Header = () => {
 
@@ -17,6 +18,7 @@ const Header = () => {
   const navigate = useNavigate();
   const context = useSystemContext();  // Get context for token or login state
   const { token } = context;  // You can use token or isLoggedIn from context
+  const [userInfo, setUserInfo] = useState<any>(null);
 
   const toggleMenu = () => {
     setOpen(!open);
@@ -49,12 +51,34 @@ const Header = () => {
     navigate("/login");  // Redirect to home page or login page
   };
 
+  useEffect(() => {
+    if (token) {
+      fetchUserInfo();
+    }
+  }, [token]);
+
+  const fetchUserInfo = async () => {
+    try {
+      const res = await MainApiRequest.get("/auth/callback", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setUserInfo(res.data); // Giả định API trả về thông tin người dùng
+    } catch (error) {
+      console.error("Failed to fetch user info:", error);
+      context.setToken(""); // Xóa token nếu không hợp lệ
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
+  };
+
   return (
 
     <header className="header-section">
       <Container>
 
-        <Navbar expand="lg" className="p-0">
+        <Navbar expand="lg" className="p-0 mt-2">
           {/* Logo Section  */}
           <Navbar.Brand>
             <NavLink to="/"> Weekendmonks</NavLink>
@@ -77,7 +101,7 @@ const Header = () => {
             {/*end mobile Logo Section  */}
 
             <Offcanvas.Body>
-              <Nav className="justify-content-end flex-grow-1 pe-3">
+              <Nav className="justify-content-end flex-grow-1 pe-3 mt-2">
                 <NavLink className="nav-link" to="/" onClick={closeMenu}>
                   Home
                 </NavLink>
@@ -95,25 +119,50 @@ const Header = () => {
           </Navbar.Offcanvas>
 
           {/* Conditionally render Login or LogOut button */}
-          <div className="ms-md-4 ms-2">
-            {!token ? (
-              <NavLink className="primaryBtn d-none d-sm-inline-block" to="/login">
+          <div className="ms-md-4 ms-2 mt-2 mt-lg-0 flex-row d-flex">
+            <Nav>
+              {userInfo ? (
+              <>
+               <NavDropdown 
+                  title={userInfo?.name || "Perry Ặc Ặc"}
+                  className="primaryBtn align-items-center"
+                  id="collasible-nav-dropdown"
+                >
+                  <NavDropdown.Item onClick={() => navigate("/profile-user")}>
+                    {/* <img
+                      alt=""
+                      src={${userInfo.pic}}
+                      width="25"
+                      height="25"
+                      style={{ marginRight: 10 }}
+                    /> */}
+                    My Profile
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={() => navigate("/history")}>
+                    My Booking
+                  </NavDropdown.Item>
+
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={handleLogout}>
+                    Logout
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </>
+            ) : (
+              <NavLink 
+                //className="primaryBtn d-none d-sm-inline-block" 
+                to="/login"
+              >
                 Login
               </NavLink>
-            ) : (
-              <button
-                className="primaryBtn d-none d-sm-inline-block"
-                onClick={handleLogout}
-              >
-                LogOut
-              </button>
-            )
-            }
-            <li className="d-inline-block d-lg-none ms-3 toggle_btn">
+            )}
+          </Nav>
+            <li className="d-inline-block d-lg-none toggle_btn pt-1">
               <i className={open ? "bi bi-x-lg" : "bi bi-list"}  onClick={toggleMenu}></i>
             </li>
           </div>
-          
         </Navbar>
 
       </Container>

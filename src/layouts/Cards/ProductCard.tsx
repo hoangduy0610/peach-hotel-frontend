@@ -5,26 +5,36 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Anchorage from "@/assets/view1.jpg";
 import { Rate } from 'antd';
 
-
 interface ProductCardProps {
   val: {
-    id: number;
-    // image: string;
-    // title: string;
-    rating: number;
-    price: number;
-    // tier: string;
-    // features: string[];
-    name: string;
+    id: number,
+    name: string,
+    floor: 0,
+    price: 0,
     roomTier: {
       name: string;
       description: string;
     }
-    isAirConditioner: boolean;
-    isBalcony: boolean;
-    isBathroom: boolean;
-    isFreeWifi: boolean;
-  };
+    rating: 0,
+    isBalcony: boolean,
+    isBathroom: boolean,
+    isAirConditioner: boolean,
+    isFreeWifi: boolean,
+    isTelevision: boolean,
+    isRefrigerator: boolean,
+    isBreakfast: boolean,
+    isLunch: boolean,
+    isDinner: boolean,
+    isSnack: boolean,
+    isDrink: boolean,
+    isParking: boolean,
+    isSwimmingPool: boolean,
+    isGym: boolean,
+    isSpa: boolean,
+    isLaundry: boolean,
+    isCarRental: boolean,
+    isBusService: boolean
+  }
   checkInDate?: string;
   checkOutDate?: string;
 }
@@ -36,6 +46,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
     Conditioner: "bi-fan",
     Bathtub: "bi-droplet",
     Wifi: "bi-wifi",
+    Refrigerator: "bi-box",
+    Breakfast: "bi-bowl",
+    Lunch: "bi-cup",
+    Dinner: "bi-spoon",
+    Snack: "bi-basket",
+    Drink: "bi-cup-straw",
+    Parking: "bi-parking",
+    SwimmingPool: "bi-pool",
+    Gym: "bi-droplet-half",
+    Spa: "bi-spa",
   };
   console.log('val', val);
 
@@ -135,6 +155,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
           / đêm
         </div>
       </Card.Body>
+
 
       {/* Footer with buttons */}
       <Card.Footer className="d-flex justify-content-between">
