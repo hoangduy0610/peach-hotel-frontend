@@ -7,11 +7,14 @@ import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import { Table, Button, Modal } from "antd";
+import { SelectAdditionalService } from "./SelectAdditionalService";
 
 const Booking = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
+  const [serviceTiers, setServiceTiers] = useState<any[]>([]);
+  const [showServiceModal, setShowServiceModal] = useState(false); // State to toggle modal visibility
+  const [isLoadingTierList, setIsLoadingTierList] = useState(false);
   const [startDate, setStartDate] = useState(
     location.state?.checkInDate ? new Date(location.state?.checkInDate) : new Date()
   );
@@ -22,14 +25,12 @@ const Booking = () => {
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
 
   const totalNights = moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days");
   const basePrice = location.state?.price || 0;
   const taxesAndFees = basePrice * 0.1 * totalNights;
   const totalPayable = basePrice * totalNights + taxesAndFees;
-  const [services, setServices] = useState<any[]>([]); // State to store available services
-  const [selectedServices, setSelectedServices] = useState<any[]>([]); // State to store selected services
-  const [showServiceModal, setShowServiceModal] = useState(false); // State to toggle modal visibility
 
   const fetchUserInformation = async () => {
     const res = await MainApiRequest.get("/auth/callback");
@@ -40,15 +41,10 @@ const Booking = () => {
   };
 
   const fetchAvailableServices = async () => {
-    // Dữ liệu mẫu về các dịch vụ
-    const sampleServices = [
-      { id: 1, name: "Spa Service", price: 100000 },
-      { id: 2, name: "Room Cleaning", price: 50000 },
-      { id: 3, name: "Airport Transfer", price: 200000 },
-      { id: 4, name: "Breakfast", price: 75000 },
-    ];
-
-    setServices(sampleServices);
+    setIsLoadingTierList(true);
+    const res = await MainApiRequest.get("/service/tier/list");
+    setServiceTiers(res.data);
+    setIsLoadingTierList(false);
   };
 
   useEffect(() => {
@@ -59,15 +55,23 @@ const Booking = () => {
   }, []);
 
   const handleBookRoom = async () => {
+    const user = await MainApiRequest.get("/auth/callback");
+
+    if (!user?.data?.data) {
+      alert("Please login to continue payment");
+      navigate("/login");
+      return;
+    }
+
     const data = {
-      userId: 1,
+      userId: user.data.data.id,
       customerName: `${firstName} ${lastName}`,
       customerPhone: phone,
       checkIn: moment(startDate).format("YYYY-MM-DD"),
       checkOut: moment(endDate).format("YYYY-MM-DD"),
       roomIds: [location.state?.roomId],
-      status: "Pending",
-      services: selectedServices.map((service) => service.id), // Sending selected services to the backend
+      status: "PENDING",
+      serviceIds: selectedServices.map((service) => service.id), // Sending selected services to the backend
     };
 
     try {
@@ -75,26 +79,25 @@ const Booking = () => {
 
       if (res.status === 200) {
         alert("Booking success, proceed to payment");
-        navigate("/payment", { state: { bookingData: res.data } });
+        navigate("/payment", { state: { bookingData: res.data, tierName: location.state?.roomTier } });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Booking error:", error);
-      alert("Failed to book room");
+      alert("Failed to book room. Reason: " + error.response.data.message);
     }
-  };
-
-  const handleSelectService = (service: any) => {
-    setSelectedServices((prevSelected) => {
-      if (prevSelected.some((s) => s.id === service.id)) {
-        return prevSelected.filter((s) => s.id !== service.id); // Remove if already selected
-      } else {
-        return [...prevSelected, service]; // Add if not selected
-      }
-    });
   };
 
   return (
     <>
+      <SelectAdditionalService
+        isLoadingTier={isLoadingTierList}
+        showServiceModal={showServiceModal}
+        tierList={serviceTiers}
+        onOk={(service: any[]) => {
+          setSelectedServices([...selectedServices, ...service]);
+        }}
+        onCancel={() => setShowServiceModal(false)}
+      />
       <Breadcrumbs title="Booking" pagename="Booking" />
       <section className="booking-section py-5">
         <Container>
@@ -191,6 +194,17 @@ const Booking = () => {
                         columns={[
                           { title: "Service", dataIndex: "name" },
                           { title: "Price", dataIndex: "price", render: (price) => price.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) },
+                          {
+                            title: "Action",
+                            key: "action",
+                            render: (_, record) => (
+                              <Button
+                                onClick={() => setSelectedServices(selectedServices.filter((service) => service.id !== record.id))}
+                              >
+                                <i className="bi bi-trash"></i>
+                              </Button>
+                            ),
+                          }
                         ]}
                         dataSource={selectedServices}
                         pagination={false}
@@ -225,13 +239,24 @@ const Booking = () => {
                       </strong>
                     </ListGroup.Item>
                     <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                      <span> Total Discount</span>
-                      <strong>0đ</strong>
+                      <span> Total Accomodation</span>
+                      <strong>
+                        {(location.state?.price * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                      </strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> External Services</span>
+                      <strong>{
+                        selectedServices.reduce((acc, service) => acc + service.price, 0).toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+                      }</strong>
                     </ListGroup.Item>
                     <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                       <span> Taxes % Fees</span>
                       <strong>
-                        {(location.state?.price * 0.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")).toLocaleString(
+                        {(
+                          (location.state?.price * 0.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")) +
+                          selectedServices.reduce((acc, service) => acc + service.price, 0) * 0.1
+                        ).toLocaleString(
                           "vi-VN",
                           { style: "currency", currency: "VND" }
                         )}
@@ -242,10 +267,15 @@ const Booking = () => {
                 <Card.Footer className="d-flex justify-content-between py-4">
                   <span className="font-bold h5"> Payable Now</span>
                   <strong className="font-bold h5">
-                    {(location.state?.price * 1.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })}
+                    {
+                      (
+                        (location.state?.price * 1.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")) +
+                        selectedServices.reduce((acc, service) => acc + service.price, 0) * 1.1
+                      ).toLocaleString("vi-VN", {
+                        style: "currency",
+                        currency: "VND",
+                      })
+                    }
                   </strong>
                 </Card.Footer>
               </Card>
@@ -253,22 +283,6 @@ const Booking = () => {
           </Row>
         </Container>
       </section>
-
-      <Modal
-        title="Select Additional Services"
-        open={showServiceModal}
-        onCancel={() => setShowServiceModal(false)}
-        onOk={() => setShowServiceModal(false)}
-      >
-        <ListGroup>
-          {services.map((service) => (
-            <ListGroup.Item key={service.id} action onClick={() => handleSelectService(service)}>
-              {service.name}
-              {selectedServices.some((s) => s.id === service.id) && <span className="badge bg-success ms-2">Selected</span>}
-            </ListGroup.Item>
-          ))}
-        </ListGroup>
-      </Modal>
     </>
   );
 };

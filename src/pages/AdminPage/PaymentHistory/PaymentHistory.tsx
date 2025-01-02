@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Space, Button, Modal, Form, Input, InputNumber, DatePicker, Select } from 'antd';
+import { Table, Space, Button, Modal, Form, Input, InputNumber, DatePicker, Select, Tag, message } from 'antd';
+import { MainApiRequest } from '@/services/MainApiRequest';
 
 const { RangePicker } = DatePicker;
 
@@ -10,33 +11,9 @@ const PaymentHistory = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPayment, setCurrentPayment] = useState<any | null>(null);
 
-  // Sample data
-  const samplePaymentsList = [
-    {
-      id: 1,
-      customerName: 'Nguyễn Văn A',
-      amount: 150000,
-      paymentDate: '2023-01-01',
-      status: 'Completed',
-    },
-    {
-      id: 2,
-      customerName: 'Trần Thị B',
-      amount: 200000,
-      paymentDate: '2023-02-15',
-      status: 'Pending',
-    },
-    {
-      id: 3,
-      customerName: 'Lê Văn C',
-      amount: 300000,
-      paymentDate: '2023-03-10',
-      status: 'Completed',
-    },
-  ];
-
   const fetchPaymentsList = async () => {
-    setPaymentsList(samplePaymentsList);
+    const res = await MainApiRequest.get('/payment/list');
+    setPaymentsList(res.data);
   };
 
   useEffect(() => {
@@ -76,11 +53,17 @@ const PaymentHistory = () => {
     setOpenCreatePaymentModal(false);
   };
 
-  const onEditPayment = (record: any) => {
-    setCurrentPayment(record);
-    form.setFieldsValue(record);
-    setIsEditing(true);
-    setOpenCreatePaymentModal(true);
+  const onConfirmPayment = async (record: any) => {
+    // setCurrentPayment(record);
+    // form.setFieldsValue(record);
+    // setIsEditing(true);
+    // setOpenCreatePaymentModal(true);
+    const id = record.id;
+    const res = await MainApiRequest.post(`/payment/confirm/${id}`);
+    if (res.status === 200) {
+      message.success('Payment confirmed successfully!');
+      fetchPaymentsList();
+    }
   };
 
   const onDeletePayment = (id: number) => {
@@ -95,9 +78,9 @@ const PaymentHistory = () => {
   return (
     <div className="container-fluid m-2">
       <h3 className="h3">Payment History</h3>
-      <Button type="primary" onClick={onOpenCreatePaymentModal}>
+      {/* <Button type="primary" onClick={onOpenCreatePaymentModal}>
         Create Payment
-      </Button>
+      </Button> */}
 
       <Modal
         title={isEditing ? 'Edit Payment' : 'Create Payment'}
@@ -139,21 +122,23 @@ const PaymentHistory = () => {
       <Table
         dataSource={paymentsList}
         columns={[
-          { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
+          { title: 'Payment Remark', dataIndex: 'description', key: 'description' },
           { title: 'Amount', dataIndex: 'amount', key: 'amount' },
           { title: 'Payment Date', dataIndex: 'paymentDate', key: 'paymentDate' },
-          { title: 'Status', dataIndex: 'status', key: 'status' },
+          { title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={status === 'CONFIRMED' ? 'green' : 'red'}>{status}</Tag> },
           {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
               <Space size="middle">
-                <Button onClick={() => onEditPayment(record)}>
-                  <i className="fas fa-edit"></i>
-                </Button>
-                <Button onClick={() => onDeletePayment(record.id)} danger>
-                  <i className="fas fa-trash"></i>
-                </Button>
+                {
+                  record.status === 'PENDING' && (
+                    <Button onClick={() => onConfirmPayment(record)}>Confirm</Button>
+                  )
+                }
+                {/* <Button onClick={() => onDeletePayment(record.id)} danger>
+                  Delete
+                </Button> */}
               </Space>
             ),
           },

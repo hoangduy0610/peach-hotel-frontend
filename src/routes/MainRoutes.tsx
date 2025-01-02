@@ -33,6 +33,7 @@ import Rating from "@/pages/AdminPage/Rating/Rating";
 import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
 import AdminCustomer from "@/pages/AdminPage/Customer/AdminCustomer";
 import AdminBlacklist from "@/pages/AdminPage/Blacklist/AdminBlacklist";
+import AdminLogin from "@/pages/AdminPage/Login/Login";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -69,6 +70,7 @@ export default function MainRoutes() {
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="admin/login" element={<AdminLogin />} />
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
