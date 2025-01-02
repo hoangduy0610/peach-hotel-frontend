@@ -40,7 +40,7 @@ export default function MainRoutes() {
   const context = useSystemContext();
 
   // Check if current route is login or register
-  const isAuthPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/admin/login";
   const isAdminPage = location.pathname.includes('/admin')
 
   useEffect(() => {
