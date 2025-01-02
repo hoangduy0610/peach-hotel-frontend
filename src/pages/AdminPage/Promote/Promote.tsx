@@ -53,7 +53,7 @@ const AdminPromote = () => {
         if (editPromote) {
             await MainApiRequest.put(`/promote/update/${editPromote.id}`, data);
         } else {
-            await MainApiRequest.post('/promote/post', data);
+            await MainApiRequest.post('/promote', data);
         }
 
         fetchPromoteList();
@@ -67,7 +67,7 @@ const AdminPromote = () => {
         if (editCoupon) {
             await MainApiRequest.put(`/promote/coupon/update/${editCoupon.id}`, data);
         } else {
-            await MainApiRequest.post('/promote/coupon/post', data);
+            await MainApiRequest.post('/promote/coupon', data);
         }
 
         fetchCouponList();
@@ -77,7 +77,7 @@ const AdminPromote = () => {
 
     const onDeletePromote = async (id: number) => {
         try {
-            await MainApiRequest.delete(`/promote/delete/${id}`);
+            await MainApiRequest.delete(`/promote/${id}`);
             fetchPromoteList();
             message.success('Promote deleted successfully!');
         } catch (error) {
@@ -87,7 +87,7 @@ const AdminPromote = () => {
 
     const onDeleteCoupon = async (id: number) => {
         try {
-            await MainApiRequest.delete(`/promote/coupon/delete/${id}`);
+            await MainApiRequest.delete(`/promote/coupon/${id}`);
             fetchCouponList();
             message.success('Coupon deleted successfully!');
         } catch (error) {

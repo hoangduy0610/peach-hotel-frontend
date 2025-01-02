@@ -51,14 +51,14 @@ const AdminBlacklist = () => {
       ...formData,
       dateAdded: new Date().toLocaleDateString('en-GB'), // Ngày tạo
     };
-    await MainApiRequest.post('/blacklist/post', newBlacklistEntry);
+    await MainApiRequest.post('/blacklist', newBlacklistEntry);
     fetchBlacklist();
     setOpenCreateBlacklistModal(false);
   };
 
   // Xóa Blacklist
   const onDeleteBlacklist = async (id: number) => {
-    await MainApiRequest.delete(`/blacklist/delete/${id}`);
+    await MainApiRequest.delete(`/blacklist/${id}`);
     fetchBlacklist();
   };
 

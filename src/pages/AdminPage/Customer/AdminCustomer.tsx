@@ -28,9 +28,9 @@ const AdminCustomer = () => {
         setOpenCreateCustomerModal(false);
         const data = form.getFieldsValue();
         if (editingCustomer) {
-            await MainApiRequest.put(`/user/put/${editingCustomer.id}`, data);
+            await MainApiRequest.put(`/user/${editingCustomer.id}`, data);
         } else {
-            await MainApiRequest.post('/user/post', data);
+            await MainApiRequest.post('/user', data);
         }
         fetchCustomerList();
         setEditingCustomer(null);
@@ -51,7 +51,7 @@ const AdminCustomer = () => {
     };
 
     const onDeleteCustomer = async (id: number) => {
-        await MainApiRequest.delete(`/user/delete/${id}`);
+        await MainApiRequest.delete(`/user/${id}`);
         fetchCustomerList();
     };
 

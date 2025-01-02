@@ -28,9 +28,9 @@ const AdminRoom = () => {
     setOpenCreateRoomModal(false);
     const data = form.getFieldsValue();
     if (editingRoom) {
-      await MainApiRequest.put(`/room/put/${editingRoom.id}`, data);
+      await MainApiRequest.put(`/room/${editingRoom.id}`, data);
     } else {
-      await MainApiRequest.post('/room/post', data);
+      await MainApiRequest.post('/room', data);
     }
     fetchRoomList();
     setEditingRoom(null);
@@ -50,7 +50,7 @@ const AdminRoom = () => {
   };
 
   const onDeleteRoom = async (id: number) => {
-    await MainApiRequest.delete(`/room/delete/${id}`);
+    await MainApiRequest.delete(`/room/${id}`);
     fetchRoomList();
   };
 

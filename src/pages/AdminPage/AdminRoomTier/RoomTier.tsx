@@ -25,9 +25,9 @@ const AdminRoomTier = () => {
         setOpenCreateRoomTierModal(false);
         const data = form.getFieldsValue();
         if (editingRoomTier) {
-            await MainApiRequest.put(`/room/tier/put/${editingRoomTier.id}`, data);
+            await MainApiRequest.put(`/room/tier/${editingRoomTier.id}`, data);
         } else {
-            await MainApiRequest.post('/room/tier/post', data);
+            await MainApiRequest.post('/room/tier', data);
         }
         fetchRoomTierList();
         setEditingRoomTier(null);
@@ -47,7 +47,7 @@ const AdminRoomTier = () => {
     };
 
     const onDeleteRoomTier = async (id: number) => {
-        await MainApiRequest.delete(`/room/tier/delete/${id}`);
+        await MainApiRequest.delete(`/room/tier/${id}`);
         fetchRoomTierList();
     };
 

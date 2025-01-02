@@ -39,9 +39,9 @@ const AdminService = () => {
         setOpenCreateServiceModal(false);
         const data = form.getFieldsValue();
         if (editingService) {
-            await MainApiRequest.put(`/service/put/${editingService.id}`, data);
+            await MainApiRequest.put(`/service/${editingService.id}`, data);
         } else {
-            await MainApiRequest.post('/service/post', data);
+            await MainApiRequest.post('/service', data);
         }
         fetchServiceList();
         setEditingService(null);
@@ -52,9 +52,9 @@ const AdminService = () => {
         setOpenCreateServiceTierModal(false);
         const data = form.getFieldsValue();
         if (editingServiceTier) {
-            await MainApiRequest.put(`/service/tier/put/${editingServiceTier.id}`, data);
+            await MainApiRequest.put(`/service/tier/${editingServiceTier.id}`, data);
         } else {
-            await MainApiRequest.post('/service/tier/post', data);
+            await MainApiRequest.post('/service/tier', data);
         }
         fetchServiceTierList();
         setEditingServiceTier(null);
@@ -80,7 +80,7 @@ const AdminService = () => {
     };
 
     const onDeleteService = async (id: number) => {
-        await MainApiRequest.delete(`/service/delete/${id}`);
+        await MainApiRequest.delete(`/service/${id}`);
         fetchServiceList();
     };
 
@@ -91,7 +91,7 @@ const AdminService = () => {
     };
 
     const onDeleteServiceTier = async (id: number) => {
-        await MainApiRequest.delete(`/service/tier/delete/${id}`);
+        await MainApiRequest.delete(`/service/tier/${id}`);
         fetchServiceTierList();
     };
 

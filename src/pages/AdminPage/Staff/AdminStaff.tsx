@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import bcrypt from 'bcryptjs'; // Import thư viện để băm mật khẩu
 import "./AdminStaff.scss";
 
 const AdminStaff = () => {
@@ -30,9 +29,9 @@ const AdminStaff = () => {
         setOpenCreateStaffModal(false);
         const data = form.getFieldsValue();
         if (editingStaff) {
-            await MainApiRequest.put(`/staff/put/${editingStaff.id}`, data);
+            await MainApiRequest.put(`/staff/${editingStaff.id}`, data);
         } else {
-            await MainApiRequest.post('/staff/post', data);
+            await MainApiRequest.post('/staff', data);
         }
         fetchStaffList();
         setEditingStaff(null);
@@ -53,7 +52,7 @@ const AdminStaff = () => {
     };
 
     const onDeleteStaff = async (id: number) => {
-        await MainApiRequest.delete(`/staff/delete/${id}`);
+        await MainApiRequest.delete(`/staff/${id}`);
         fetchStaffList();
     };
 
