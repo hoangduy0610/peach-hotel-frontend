@@ -9,7 +9,6 @@ const AdminStaff = () => {
     
     const [openCreateStaffModal, setOpenCreateStaffModal] = useState(false);
     const [editingStaff, setEditingStaff] = useState<any | null>(null);
-    const [nextId, setNextId] = useState<number>(1); // Quản lý ID tiếp theo
     
     const fetchStaffList = async () => {
         const res = await MainApiRequest.get('/staff/list');
@@ -21,9 +20,8 @@ const AdminStaff = () => {
     }, []);
 
     const onOpenCreateStaffModal = () => {
-        setEditingStaff(null); // Xóa trạng thái đang chỉnh sửa
-        form.setFieldsValue({});
-        setOpenCreateStaffModal(true);    };
+        setOpenCreateStaffModal(true);    
+    };
 
     const onOKCreateStaff = async () => {
         setOpenCreateStaffModal(false);

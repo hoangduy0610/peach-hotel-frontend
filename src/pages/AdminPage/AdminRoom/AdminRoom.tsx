@@ -93,11 +93,8 @@ const AdminRoom = () => {
         columns={[
           { title: 'Room Name', dataIndex: 'name', key: 'name' },
           { title: 'Price', dataIndex: 'price', key: 'price' },
-          {
-            title: 'Tier', dataIndex: 'roomTierId', key: 'roomTierId', render: (roomTierId) => {
-              const tier = roomTierList.find((tier: any) => tier.id === roomTierId);
-              return tier ? tier.name : 'N/A';
-            }
+          { title: 'Room Tier', dataIndex: 'roomTier', key: 'roomTier', render(_, record) 
+            { return record.name }
           },
           {
             title: 'Features', dataIndex: 'features', key: 'features', render: (_, roomDetail) => {

@@ -94,6 +94,8 @@ const AdminService = () => {
         await MainApiRequest.delete(`/service/tier/${id}`);
         fetchServiceTierList();
     };
+    console.log(serviceList, serviceTierList);
+
 
     return (
         <div className="container-fluid m-2">
@@ -102,24 +104,37 @@ const AdminService = () => {
             <Button type="primary" onClick={() => onOpenCreateServiceModal()}>
                 Create Service
             </Button>
-            <Button type="primary" onClick={() => onOpenCreateServiceTierModal()} style={{ marginLeft: '10px' }}>
+            <Button 
+                type="primary" 
+                onClick={() => onOpenCreateServiceTierModal()} 
+                style={{ marginLeft: '10px' }}
+                >
                 Create Service Tier
             </Button>
 
+            {/* Service Modal */}
             <Modal
                 title={editingService ? "Edit Service" : "Create Service"}
                 open={openCreateServiceModal}
-                onOk={() => onOKCreateService()}
-                onCancel={() => onCancelCreateService()}
+                onOk={onOKCreateService}
+                onCancel={onCancelCreateService}
             >
-                <Form form={form}>
-                    <Form.Item label="Service Name" name="name" rules={[{ required: true, message: 'Please input service name!' }]}>
-                        <Input />
+                <Form 
+                    form={form}
+                    layout='vertical'
+                >
+                    <Form.Item 
+                        label="Service Name" 
+                        name="name" 
+                        rules={[{ required: true, message: 'Please input service name!' }]}
+                    >
+                        <Input type='text' />
                     </Form.Item>
-                    <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input price!' }]}>
-                        <Input type="number" />
-                    </Form.Item>
-                    <Form.Item label="Service Tier" name="serviceTierId" rules={[{ required: true, message: 'Please select service tier!' }]}>
+                    <Form.Item 
+                        label="Service Tier" 
+                        name="serviceTierId" 
+                        rules={[{ required: true, message: 'Please select service tier!' }]}
+                        >
                         <Select>
                             {serviceTierList.map((tier) => (
                                 <Select.Option key={tier.id} value={tier.id}>
@@ -128,9 +143,17 @@ const AdminService = () => {
                             ))}
                         </Select>
                     </Form.Item>
+                    <Form.Item 
+                        label="Price" 
+                        name="price" 
+                        rules={[{ required: true, message: 'Please input price!' }]}
+                    >
+                        <Input type="number" />
+                    </Form.Item>
                 </Form>
             </Modal>
 
+            {/* Service Tier Modal */}
             <Modal
                 title={editingServiceTier ? "Edit Service Tier" : "Create Service Tier"}
                 open={openCreateServiceTierModal}
@@ -138,44 +161,69 @@ const AdminService = () => {
                 onCancel={() => onCancelCreateServiceTier()}
             >
                 <Form form={form}>
-                    <Form.Item label="Tier Name" name="name" rules={[{ required: true, message: 'Please input tier name!' }]}>
-                        <Input />
+                    <Form.Item 
+                        label="Tier Name" 
+                        name="name" 
+                        rules={[{ required: true, message: 'Please input tier name!' }]}
+                    >
+                        <Input type="text"/>
                     </Form.Item>
-                    <Form.Item label="Type" name="type" rules={[{ required: true, message: 'Please input tier type!' }]}>
-                        <Input />
+                    <Form.Item 
+                        label="Type" 
+                        name="type" 
+                        rules={[{ required: true, message: 'Please input tier type!' }]}
+                    >
+                        <Select>
+                            <Select.Option value="Restaurent">RESTAURENT</Select.Option>
+                            <Select.Option value="Other">OTHER</Select.Option>
+                        </Select>
                     </Form.Item>
-                    <Form.Item label="Description" name="description" rules={[{ required: true, message: 'Please input description!' }]}>
-                        <Input />
+                    <Form.Item 
+                        label="Description" 
+                        name="description" 
+                        rules={[{ required: true, message: 'Please input description!' }]}
+                    >
+                        <Input type='text'/>
                     </Form.Item>
-                    <Form.Item label="Slots" name="slot" rules={[{ required: true, message: 'Please input number of slots!' }]}>
+                    <Form.Item 
+                        label="Available people" 
+                        name="available" 
+                        rules={[{ required: true, message: 'Please input number of availables!' }]}>
                         <Input type="number" />
                     </Form.Item>
                 </Form>
             </Modal>
 
+
             {/* Service List Table */}
             <Table
                 dataSource={serviceList}
                 columns={[
+                    { title: 'ID', dataIndex: 'id', key: 'id' },
                     { title: 'Service Name', dataIndex: 'name', key: 'name' },
                     { title: 'Price', dataIndex: 'price', key: 'price' },
-                    {
-                        title: 'Tier', dataIndex: 'serviceTierId', key: 'serviceTierId', render: (serviceTierId) => {
-                            const tier = serviceTierList.find((tier) => tier.id === serviceTierId);
-                            return tier ? tier.name : 'N/A';
+                    { 
+                        title: 'Tier', dataIndex: 'serviceTier', key: 'serviceTier', render(_, record) {
+                            return record.name;
                         }
+                    
                     },
+                    
                     {
                         title: 'Actions', key: 'actions', render: (_, record) => (
                             <>
-                                <Button type="link" onClick={() => onEditService(record)}>Edit</Button>
+                                <Button type="link" onClick={() => onEditService(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
                                 <Popconfirm
                                     title="Are you sure to delete this service?"
                                     onConfirm={() => onDeleteService(record.id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>Delete</Button>
+                                    <Button type="link" danger>
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
                                 </Popconfirm>
                             </>
                         )
@@ -187,12 +235,12 @@ const AdminService = () => {
             <Table
                 dataSource={serviceTierList}
                 columns={[
+                    { title: 'ID', dataIndex: 'id', key: 'id' },
                     { title: 'Tier Name', dataIndex: 'name', key: 'name' },
                     { title: 'Type', dataIndex: 'type', key: 'type' },
                     { title: 'Description', dataIndex: 'description', key: 'description' },
-                    { title: 'Slots', dataIndex: 'slot', key: 'slot' },
-                    {
-                        title: 'Actions', key: 'actions', render: (_, record) => (
+                    { title: 'Available people', dataIndex: 'available', key: 'available' },
+                    {    title: 'Actions', key: 'actions', render: (_, record) => (
                             <>
                                 <Button type="link" onClick={() => onEditServiceTier(record)}>
                                     <i className="fas fa-edit"></i>
