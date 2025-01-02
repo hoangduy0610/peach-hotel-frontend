@@ -80,7 +80,7 @@ header {
   .user-icon {
     font-size: 24px;
     cursor: pointer;
-    color: #333;
+    color: var(--white);
   }
 
   .dropdown-menu {
@@ -109,13 +109,20 @@ header {
     padding: 7px 10px;
     cursor: pointer;
 
+    .bi-list::before{
+      font-size: xx-large;
+    }
+    .bi-x-lg::before{
+      font-size:large;
+      padding: 5px 5px;
+    }
     &:hover {
       color: var(--primaryClr);
     }
   }
 
   .is-sticky .navbar .toggle_btn {
-    border: 2px solid var(--primaryClr);
+    //border: 2px solid var(--primaryClr);
   }
 
   .offcanvas-header {
@@ -145,4 +152,9 @@ header {
 }
 .bi-x-lg::before {
   cursor: pointer;
+}
+
+.primaryBtn{
+  padding: 5px 8px !important;
+  background-color: var(--primaryClr) !important;
 }
