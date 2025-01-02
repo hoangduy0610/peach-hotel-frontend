@@ -71,32 +71,41 @@ const Home = () => {
     const res = await MainApiRequest.get("/auth/callback");
     console.log(res);
   };
-  
+
   const [roomList, setRoomList] = useState<any[]>([]);
   const [visibleRooms, setVisibleRooms] = useState(8);
+  const [tierList, setTierList] = useState<any[]>([]);
   const navigate = useNavigate();
 
   const fetchListRooms = async () => {
-      const res = await MainApiRequest.get(`/room/filter-available`);
-      console.log(res.data);
-      setRoomList(res.data);
-    };
+    const res = await MainApiRequest.get(`/room/filter-available`);
+    console.log(res.data);
+    setRoomList(res.data);
+  };
+
+
+  const fetchTierList = async () => {
+    const res = await MainApiRequest.get('/room/tier/list');
+    // console.log(res);
+    setTierList(res.data);
+  }
 
   useEffect(() => {
     fetchUserInfo();
     fetchListRooms();
+    fetchTierList();
   }, []);
 
 
   const handleShowMore = () => {
-    navigate("/rooms"); 
+    navigate("/rooms");
   };
 
 
   return (
     <>
       <Banner />
-      <Search />
+      <Search tierList={tierList} />
       <Features />
 
       {/* room seciton start */}
@@ -113,11 +122,18 @@ const Home = () => {
           <Row>
             <Col md="12">
               <Slider {...settings}>
-                {roomTierData.map((tier, inx) => {
+                {/* {roomTierData.map((tier, inx) => {
                   return (
                     <Cards tier={tier} key={inx} />
                   );
-                })}
+                })} */}
+                {
+                  tierList.map((tier, inx) => {
+                    return (
+                      <Cards tier={tier} key={inx} />
+                    );
+                  })
+                }
               </Slider>
             </Col>
           </Row>
@@ -154,33 +170,33 @@ const Home = () => {
         </Container>
 
         <Container>
-        <div className="overflow-hidden rounded-2xl mt-5">
-          <div className="w-100 rounded-2xl relative">
-            <video 
-              loop 
-              muted 
-              autoPlay 
-              className="d-block w-100 object-cover rounded-2xl"
-            >
-              <source src={video} type="video/mp4" />
-            </video>
+          <div className="overflow-hidden rounded-2xl mt-5">
+            <div className="w-100 rounded-2xl relative">
+              <video
+                loop
+                muted
+                autoPlay
+                className="d-block w-100 object-cover rounded-2xl"
+              >
+                <source src={video} type="video/mp4" />
+              </video>
+            </div>
           </div>
-        </div>
         </Container>
       </section>
 
       <section className="call_us px-5">
         <Container>
           <Row className="align-items-center">
-          <Col md="8">
-            <h2 className="heading">
-              READY FOR AN UNFORGETTABLE STAY? CHOOSE US!
-            </h2>
-            <p className="text">
-              Experience exceptional comfort and luxury at our hotel. From elegant rooms 
-              to world-class amenities, we ensure every moment of your stay is unforgettable.
-            </p>
-          </Col>
+            <Col md="8">
+              <h2 className="heading">
+                READY FOR AN UNFORGETTABLE STAY? CHOOSE US!
+              </h2>
+              <p className="text">
+                Experience exceptional comfort and luxury at our hotel. From elegant rooms
+                to world-class amenities, we ensure every moment of your stay is unforgettable.
+              </p>
+            </Col>
             <Col md="4" className="text-center mt-3 mt-md-0">
               <Link
                 to="/contact-us"

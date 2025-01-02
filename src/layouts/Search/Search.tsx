@@ -7,13 +7,12 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 // import
 import CustomDropdown from "@/layouts/CustomDropdown/CustomDropdown";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useNavigation } from "react-router-dom";
 
-const Search = () => {
+const Search = ({ tierList }: { tierList: any[] }) => {
   const navigate = useNavigate();
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [tierList, setTierList] = useState<any[]>([]);
   const [selectedTier, setSelectedTier] = useState<number | null>(null);
   const [selectedGuest, setSelectedGuest] = useState<number | null>(null);
 
@@ -26,21 +25,11 @@ const Search = () => {
     setSelectedGuest(parseInt(value));
   }
 
-  const fetchTierList = async () => {
-    const res = await MainApiRequest.get('/room/tier/list');
-    // console.log(res);
-    setTierList(res.data);
-  }
-
-  useEffect(() => {
-    fetchTierList();
-  }, []);
-
   const onSearch = async () => {
-    if (!selectedTier || !selectedGuest) {
-      alert("Please select Tier and Guest");
-      return;
-    }
+    // if (!selectedTier && !selectedGuest) {
+    //   alert("Please select Tier or Guest");
+    //   return;
+    // }
 
     navigate("/rooms", {
       state: {

@@ -3,12 +3,13 @@ import "./Room.scss";
 import ImageGallery from "react-image-gallery";
 import { Container, Row, Col, Tab, Card, Stack, ListGroup } from "react-bootstrap";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
-import { NavLink, useParams } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
+import moment from "moment";
 
 const RoomDetails = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
-
   const [roomDetail, setRoomDetail] = useState<any>();
 
   const fetchRoomDetail = async () => {
@@ -19,9 +20,64 @@ const RoomDetails = () => {
   useEffect(() => {
     document.title = "Room Details";
     window.scroll(0, 0);
-    
-    fetchRoomDetail();  
+
+    fetchRoomDetail();
   }, []);
+
+  const features = {
+    isBalcony: roomDetail?.isBalcony,
+    isBathroom: roomDetail?.isBathroom,
+    isAirConditioner: roomDetail?.isAirConditioner,
+    isFreeWifi: roomDetail?.isFreeWifi,
+    isTelevision: roomDetail?.isTelevision,
+    isRefrigerator: roomDetail?.isRefrigerator,
+    isBreakfast: roomDetail?.isBreakfast,
+    isLunch: roomDetail?.isLunch,
+    isDinner: roomDetail?.isDinner,
+    isSnack: roomDetail?.isSnack,
+    isDrink: roomDetail?.isDrink,
+    isParking: roomDetail?.isParking,
+    isSwimmingPool: roomDetail?.isSwimmingPool,
+    isGym: roomDetail?.isGym,
+    isSpa: roomDetail?.isSpa,
+    isLaundry: roomDetail?.isLaundry,
+    isCarRental: roomDetail?.isCarRental,
+    isBusService: roomDetail?.isBusService,
+  }
+
+  const featureIcons: { [key: string]: string } = {
+    isBalcony: "bi-house",
+    isTelevision: "bi-tv",
+    isAirConditioner: "bi-fan",
+    isBathroom: "bi-droplet",
+    isFreeWifi: "bi-wifi",
+    isRefrigerator: "bi-box",
+    isBreakfast: "bi-cup",
+    isLunch: "bi-cup",
+    isDinner: "bi-spoon",
+    isSnack: "bi-basket",
+    isDrink: "bi-cup-straw",
+    isParking: "bi-car-front",
+    isSwimmingPool: "bi-person-workspace",
+    isGym: "bi-droplet-half",
+    isSpa: "bi-person-workspace",
+    isLaundry: "bi-bucket",
+    isCarRental: "bi-car-front",
+    isBusService: "bi-bus-front",
+  };
+
+  const bookNowHandler = () => {
+    navigate("/booking", {
+      state: {
+        roomId: roomDetail.id,
+        roomTier: roomDetail.roomTier.name,
+        roomName: roomDetail.name,
+        checkInDate: moment().toDate(),
+        checkOutDate: moment().add(1, 'days').toDate(),
+        price: roomDetail.price
+      }
+    })
+  };
 
   return (
     <>
@@ -36,7 +92,11 @@ const RoomDetails = () => {
           <Row>
             <h1 className="fs-2 font-bold mb-4">{roomDetail?.name || ""}</h1>
             <ImageGallery
-              items={roomDetail?.images || []}
+              items={(roomDetail?.roomTier?.images || []).map((image: string) => ({
+                original: image,
+                thumbnail: image,
+                originalHeight: 300,
+              }))}
               showNav={false}
               showBullets={false}
               showPlayButton={false}
@@ -48,51 +108,19 @@ const RoomDetails = () => {
                   <Tab.Content className="mt-1">
                     <div className="room_details">
                       <h3 className="font-bold mb-2 h3 border-bottom pb-2">Overview</h3>
-                      <p className="body-text">{roomDetail?.description}</p>
+                      <p className="body-text">{roomDetail?.roomTier?.description}</p>
 
                       <h3 className="font-bold mb-2 h3 mt-3 border-bottom pb-2">Features</h3>
-                      <ul>
-                        {Object.entries(roomDetail?.features || {}).map(([key, value]) =>
-                          value ? <li key={key}>{key.replace("is", "").replace(/([A-Z])/g, " $1")}</li> : null
+                      <div style={{ lineHeight: 1.5 }}>
+                        {Object.entries(features || {}).map(([key, value]) =>
+                          value ? (
+                            <span key={key} className="mx-2" style={{ whiteSpace: 'nowrap' }}>
+                              <i className={`bi ${featureIcons[key]} me-1 text-success`}></i>
+                              {key.replace("is", "").replace(/([A-Z])/g, " $1")}
+                            </span>
+                          ) : null
                         )}
-                      </ul>
-                    </div>
-
-                    {/* Inclusions & Exclusions */}
-                    <div className="room_details">
-                      <h3 className="font-bold h3 mt-3 border-bottom pb-2">Inclusions & Exclusions</h3>
-
-                      {/* Inclusions */}
-                      {roomDetail?.included && (
-                        <>
-                          <h5 className="font-bold mt-3">Inclusion</h5>
-                          {roomDetail.included.map((item: string, index: number) => (
-                            <ListGroup.Item
-                              className="border-0 pt-0 d-flex align-items-center"
-                              key={index}
-                            >
-                              <i className="bi bi-check-lg me-2 text-success"></i>
-                              {item}
-                            </ListGroup.Item>
-                          ))}
-                        </>
-                      )}
-
-                      {/* Exclusions */}
-                      {roomDetail?.exclusion && (
-                        <>
-                          <h5 className="font-bold mt-3">Exclusion</h5>
-                          {roomDetail.exclusion.map((item: string, index: number) => (
-                            <ListGroup.Item
-                              className="border-0 pt-0 d-flex align-items-center"
-                              key={index}
-                            >
-                              <i className="bi bi-x-lg me-2 text-danger"></i>
-                              {item}
-                            </ListGroup.Item>
-                          ))}
-                        </>
-                      )}
+                      </div>
                     </div>
                   </Tab.Content>
                 </Col>
@@ -104,8 +132,11 @@ const RoomDetails = () => {
                     <Card className="rounded-3 p-2 shadow-sm mb-4">
                       <Card.Body>
                         <Stack gap={2} direction="horizontal">
-                          <h1 className="font-bold h2">${roomDetail?.price || "N/A"}</h1>
-                          <span className="fs-4">/person</span>
+                          <h1 className="font-bold h2">{roomDetail?.price.toLocaleString("vi-VN", {
+                            style: "currency",
+                            currency: "VND",
+                          }) || "Contact for price"}</h1>
+                          <span className="fs-4">{roomDetail?.price ? "/night" : ""}</span>
                         </Stack>
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           {/* Rating */}
@@ -125,12 +156,12 @@ const RoomDetails = () => {
                           </div>
                           <h5>({roomDetail?.reviews || 0} reviews)</h5>
                         </div>
-                        <NavLink
-                          to="/booking"
+                        <button
+                          onClick={bookNowHandler}
                           className="primaryBtn w-100 fw-bold text-center"
                         >
                           Book Now
-                        </NavLink>
+                        </button>
                       </Card.Body>
                     </Card>
 

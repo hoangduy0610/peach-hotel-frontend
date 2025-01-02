@@ -72,7 +72,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
         <Card.Title>
           <NavLink
             className="body-text text-dark text-decoration-none"
-            to="/details"
+            to={`/room/${val.id}`}
           >
             {val.name}
           </NavLink>

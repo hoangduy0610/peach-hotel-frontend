@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Col, Container, Form, Row, Card, ListGroup, Button, Modal } from "react-bootstrap";
+import { Col, Container, Form, Row, Card, ListGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "./Booking.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { MainApiRequest } from "@/services/MainApiRequest";
+import { Table, Button, Modal } from "antd";
 
 const Booking = () => {
   const navigate = useNavigate();
@@ -20,7 +21,6 @@ const Booking = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
-  const [cccd, setCccd] = useState("");
   const [email, setEmail] = useState("");
 
   const totalNights = moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days");
@@ -35,6 +35,8 @@ const Booking = () => {
     const res = await MainApiRequest.get("/auth/callback");
     setFirstName(res.data.data.name.split(" ")[0]);
     setLastName(res.data.data.name.split(" ").slice(1).join(" "));
+    setPhone(res.data.data.phone);
+    setEmail(res.data.data.email);
   };
 
   const fetchAvailableServices = async () => {
@@ -98,7 +100,7 @@ const Booking = () => {
         <Container>
           <Row>
             <Col md="8">
-              <div className="booking-form-warp border rounded-3">
+              <div className="booking-form-warp border rounded-3 bg-white">
                 <div className="form-title px-4 border-bottom py-3">
                   <h3 className="h4 font-bold m-0">Your Details</h3>
                   <h5 className="font-bold my-2">
@@ -177,28 +179,26 @@ const Booking = () => {
                       </Form.Group>
                     </div>
 
-                    <Form.Group className="mb-4" controlId="checkout" as={Col} md="6">
-                      <Form.Label className="d-block">Check Out</Form.Label>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date || new Date())}
-                        selectsEnd
-                        startDate={endDate}
-                        endDate={startDate}
-                        dateFormat="dd, MMMM, yyyy"
-                        className="form-control w-100"
-                      />
-                    </Form.Group>
-
                     {/* Add Service Selection Button */}
                     <Col md="12" className="mb-4">
-                      <Button variant="primary" onClick={() => setShowServiceModal(true)}>
-                        Select Services
+                      <Button onClick={() => setShowServiceModal(true)}>
+                        <i className="bi bi-plus-circle-fill"></i> Select Additional Services
                       </Button>
                     </Col>
 
                     <Col md="12">
-                      <button className="primaryBtn" type="button" onClick={handleBookRoom}>
+                      <Table
+                        columns={[
+                          { title: "Service", dataIndex: "name" },
+                          { title: "Price", dataIndex: "price", render: (price) => price.toLocaleString("vi-VN", { style: "currency", currency: "VND" }) },
+                        ]}
+                        dataSource={selectedServices}
+                        pagination={false}
+                      />
+                    </Col>
+
+                    <Col md="12">
+                      <button className="primaryBtn mt-2" type="button" onClick={handleBookRoom}>
                         Next
                       </button>
                     </Col>
@@ -254,25 +254,20 @@ const Booking = () => {
         </Container>
       </section>
 
-      <Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Select Services</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ListGroup>
-            {services.map((service) => (
-              <ListGroup.Item key={service.id} action onClick={() => handleSelectService(service)}>
-                {service.name}
-                {selectedServices.some((s) => s.id === service.id) && <span className="badge bg-success ms-2">Selected</span>}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowServiceModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
+      <Modal
+        title="Select Additional Services"
+        open={showServiceModal}
+        onCancel={() => setShowServiceModal(false)}
+        onOk={() => setShowServiceModal(false)}
+      >
+        <ListGroup>
+          {services.map((service) => (
+            <ListGroup.Item key={service.id} action onClick={() => handleSelectService(service)}>
+              {service.name}
+              {selectedServices.some((s) => s.id === service.id) && <span className="badge bg-success ms-2">Selected</span>}
+            </ListGroup.Item>
+          ))}
+        </ListGroup>
       </Modal>
     </>
   );

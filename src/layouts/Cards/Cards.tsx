@@ -1,17 +1,34 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import "./Cards.scss";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const Cards = ({ tier }: any) => {
+  const navigate = useNavigate();
+  const handleClickTier = () => {
+    if (!tier.id) {
+      navigate("/rooms");
+      return;
+    }
+
+    navigate("/rooms", {
+      state: {
+        tier: tier.id,
+        startDate: moment().toDate(),
+        endDate: moment().add(1, 'days').toDate(),
+      },
+    })
+  }
+
   return (
     <>
       <div className="img-box">
-        <NavLink className="body-text text-dark text-decoration-none" to="/rooms">
+        <div className="body-text text-dark text-decoration-none" onClick={handleClickTier}>
           <Card>
             <Card.Img
               variant="top"
-              src={tier.image}
+              src={tier.image || tier.images[0] || ""}
               className="img-fluid"
               alt={tier.name}
             />
@@ -20,9 +37,9 @@ const Cards = ({ tier }: any) => {
               {tier.name}
             </Card.Title>
 
-            <span className="rooms">{tier.rooms}</span>
+            <span className="rooms">{tier?.rooms?.length || tier?.rooms || ""}</span>
           </Card>
-        </NavLink>
+        </div>
       </div>
     </>
   );
