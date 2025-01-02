@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import './AdminBooking.css';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, DatePicker, Modal, Select, Table, Tag } from 'antd';
+import { Button, Form, Input, DatePicker, Modal, Select, Table, Tag, message } from 'antd';
 import moment from 'moment';
+import { CreateBookingModal } from './CreateBookingModal';
 
 const AdminBooking = () => {
   const [form] = Form.useForm();
@@ -22,15 +23,36 @@ const AdminBooking = () => {
     setOpenCreateBookingModal(true);
   }
 
-  const onOKCreateBooking = () => {
+  const onOKCreateBooking = async (data: any) => {
     setOpenCreateBookingModal(false);
-
-    const data = form.getFieldsValue();
-    console.log(data);
+    const res = await MainApiRequest.post('/booking', data);
+    if (res.status === 200) {
+      fetchBookingList();
+    }
+    const paymentData = {
+      description: "Thanh toanh Dich Vu ABC",
+      userId: data.userId,
+      bookingId: res.data.id
+    }
+    await MainApiRequest.post('/payment', paymentData);
+    message.success('Create booking successfully');
+    // const data = form.getFieldsValue();
+    // console.log(data);
   }
 
   const onCancelCreateBooking = () => {
     setOpenCreateBookingModal(false);
+  }
+
+  const mappingColor = (status: string) => {
+    switch (status) {
+      case 'PENDING': return 'blue';
+      case 'CONFIRMED': return 'green';
+      case 'CANCELLED': return 'red';
+      case 'CHECKED_IN': return 'orange';
+      case 'CHECKED_OUT': return 'purple';
+      default: return 'black';
+    }
   }
 
   return (
@@ -42,63 +64,11 @@ const AdminBooking = () => {
       >
         Create Booking
       </Button>
-      <Modal
-        title="Create Booking"
-        open={openCreateBookingModal}
-        onOk={() => onOKCreateBooking()}
-        onCancel={() => onCancelCreateBooking()}
-      >
-        <Form
-          form={form}
-        >
-          <Form.Item
-            label='Customer Name'
-            name='customerName'
-            rules={[{ required: true, message: 'Please input customer name!' }]}
-          >
-            <Input type='text' />
-          </Form.Item>
-          <Form.Item
-            label='Reservation Code'
-            name='reservationCode'
-            rules={[{ required: true, message: 'Please input reservation code!' }]}
-          >
-            <Input type='text' />
-          </Form.Item>
-          <Form.Item
-            label='Phone Number'
-            name='customerPhone'
-            rules={[{ required: true, message: 'Please input phone number!' }]}
-          >
-            <Input type='text' />
-          </Form.Item>
-          <Form.Item
-            label='Check In'
-            name='checkIn'
-            rules={[{ required: true, message: 'Please select check-in date!' }]}
-          >
-            <DatePicker />
-          </Form.Item>
-          <Form.Item
-            label='Check Out'
-            name='checkOut'
-            rules={[{ required: true, message: 'Please select check-out date!' }]}
-          >
-            <DatePicker />
-          </Form.Item>
-          <Form.Item
-            label='Room Type'
-            name='roomType'
-            rules={[{ required: true, message: 'Please select room type!' }]}
-          >
-            <Select>
-              <Select.Option value="single">Single</Select.Option>
-              <Select.Option value="double">Double</Select.Option>
-              <Select.Option value="suite">Suite</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <CreateBookingModal
+        openCreateBookingModal={openCreateBookingModal}
+        onOKCreateBooking={onOKCreateBooking}
+        onCancelCreateBooking={onCancelCreateBooking}
+      />
       <Table
         dataSource={bookingList}
         columns={[
@@ -107,8 +77,10 @@ const AdminBooking = () => {
           { title: 'Phone Number', dataIndex: 'customerPhone', key: 'customerPhone' },
           { title: 'Check In', dataIndex: 'checkIn', key: 'checkIn', render: (checkIn: string) => moment(checkIn).format('DD-MM-YYYY') },
           { title: 'Check Out', dataIndex: 'checkOut', key: 'checkOut', render: (checkOut: string) => moment(checkOut).format('DD-MM-YYYY') },
-          // { title: 'Room Type', dataIndex: 'rooms', key: 'rooms', render: (rooms: any[]) => rooms[0].roomTier.name },
-          { title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={status === 'PENDING' ? 'orange' : 'green'}>{status}</Tag> },
+          { title: 'Room Type', dataIndex: 'rooms', key: 'roomType', render: (rooms: any[]) => rooms[0]?.roomTier?.name },
+          { title: 'Room Name', dataIndex: 'rooms', key: 'roomName', render: (rooms: any[]) => rooms[0]?.name },
+          { title: 'Booking Date', dataIndex: 'createdAt', key: 'createdAt', render: (bookingDate: string) => moment(bookingDate).format('DD-MM-YYYY HH:mm:ss') },
+          { title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={mappingColor(status)}>{status}</Tag> },
         ]}
       />
     </div>

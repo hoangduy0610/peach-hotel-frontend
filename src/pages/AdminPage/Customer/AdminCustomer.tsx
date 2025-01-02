@@ -5,7 +5,7 @@ import "./AdminCustomer.scss";
 const AdminCustomer = () => {
     const [form] = Form.useForm();
     const [customerList, setCustomerList] = useState<any[]>([]);
-    
+
     const [openCreateCustomerModal, setOpenCreateCustomerModal] = useState(false);
     const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
 
@@ -19,7 +19,7 @@ const AdminCustomer = () => {
     }, []);
 
     const onOpenCreateCustomerModal = () => {
-        setEditingCustomer(null); 
+        setEditingCustomer(null);
         form.setFieldsValue({});
         setOpenCreateCustomerModal(true);
     };
@@ -28,7 +28,11 @@ const AdminCustomer = () => {
         setOpenCreateCustomerModal(false);
         const data = form.getFieldsValue();
         if (editingCustomer) {
-            await MainApiRequest.put(`/user/${editingCustomer.id}`, data);
+            const {
+                password,
+                ...rest
+            } = data;
+            await MainApiRequest.put(`/user/${editingCustomer.id}`, rest);
         } else {
             await MainApiRequest.post('/user', data);
         }
@@ -89,13 +93,15 @@ const AdminCustomer = () => {
                     >
                         <Input type="email" />
                     </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[{ required: true, message: "Please input password!" }]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
+                    {!editingCustomer &&
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: "Please input password!" }]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                    }
 
                     <Form.Item
                         label="Address"
@@ -122,9 +128,9 @@ const AdminCustomer = () => {
                     { title: 'Email', dataIndex: 'email', key: 'email' },
                     { title: 'Address', dataIndex: 'address', key: 'address' },
                     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-                    { 
-                        title: 'Action', 
-                        key: 'actions', 
+                    {
+                        title: 'Action',
+                        key: 'actions',
                         render: (_, record) => (
                             <>
                                 <Button type="link" onClick={() => onEditCustomer(record)}>
