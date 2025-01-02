@@ -5,6 +5,7 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { MainApiRequest } from "@/services/MainApiRequest"; // Thay thế với API thực tế của bạn
 import "./ProfileUser.scss";
 import userImg from "@/assets/cus1.jpg";
+import { Tag } from "antd";
 
 const ProfileUser = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const ProfileUser = () => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState<string | File>("");
   const [user, setUser] = useState({ imageUrl: "" });
+  const [peachCoin, setPeachCoin] = useState(0);
+  const [peachPoint, setPeachPoint] = useState(0);
 
   // Lấy thông tin người dùng từ API khi component mount
   const fetchUserProfile = async () => {
@@ -27,6 +30,8 @@ const ProfileUser = () => {
       setPhone(response.data.data.phone);
       setImage(response.data.data.image);
       setId(response.data.data.id);
+      setPeachCoin(response.data.data.peachCoin);
+      setPeachPoint(response.data.data.peachPoint);
     } catch (error) {
       console.error("Error fetching user profile", error);
     }
@@ -84,6 +89,26 @@ const ProfileUser = () => {
     }
   };
 
+  const mapRank = (point: number) => {
+    if (point < 1000) return "Bronze";
+    if (point < 5000) return "Silver";
+    if (point < 10000) return "Gold";
+    return "Platinum";
+  };
+
+  const mapColor = (point: number) => {
+    if (point < 1000) return "orange";
+    if (point < 5000) return "gray";
+    if (point < 10000) return "gold";
+    return "green";
+  };
+
+  const mapIcon = (point: number) => {
+    if (point < 1000) return "🥉";
+    if (point < 5000) return "🥈";
+    if (point < 10000) return "🥇";
+    return "🏆";
+  };
 
   return (
     <>
@@ -108,6 +133,13 @@ const ProfileUser = () => {
                   id="image-upload-input"
                   className="d-none"
                 />
+                <span>
+                  <strong>Current Rank: </strong>
+                  {mapIcon(peachPoint)}
+                  <Tag color={mapColor(peachPoint)} className="upload-tag">
+                    {mapRank(peachPoint)}
+                  </Tag>
+                </span>
                 <Button
                   variant="primary"
                   onClick={() => document.getElementById("image-upload-input")?.click()}
@@ -160,6 +192,28 @@ const ProfileUser = () => {
                   onChange={(e) => setPhone(e.target.value)}
                 />
               </Form.Group>
+
+              <Form.Group controlId="peachCoin" className="mb-4">
+                <Form.Label>Peach Coin</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your phone number"
+                  value={peachCoin}
+                  disabled
+                  readOnly
+                />
+              </Form.Group>
+{/* 
+              <Form.Group controlId="peachPoint" className="mb-4">
+                <Form.Label>Peach Point</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter your phone number"
+                  value={peachPoint}
+                  disabled
+                  readOnly
+                />
+              </Form.Group> */}
 
               <Button
                 className="primaryBtn"
