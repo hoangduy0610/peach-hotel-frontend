@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Col, Container, Form, Row, Card, ListGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
-import "./Booking.scss"
+import "./Booking.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
@@ -10,45 +10,59 @@ import { MainApiRequest } from "@/services/MainApiRequest";
 const Booking = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [startDate, setStartDate] = useState(location.state?.checkInDate ? new Date(location.state?.checkInDate) : new Date());
-  const [endDate, setEndDate] = useState(location.state?.checkInDate ? new Date(location.state?.checkOutDate) : new Date());
+
+  const [startDate, setStartDate] = useState(
+    location.state?.checkInDate ? new Date(location.state?.checkInDate) : new Date()
+  );
+  const [endDate, setEndDate] = useState(
+    location.state?.checkOutDate ? new Date(location.state?.checkOutDate) : new Date()
+  );
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
+  const [cccd, setCccd] = useState("");
+  const [email, setEmail] = useState("");
+
+  const totalNights = moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days");
+  const basePrice = location.state?.price || 0;
+  const taxesAndFees = basePrice * 0.1 * totalNights;
+  const totalPayable = basePrice * totalNights + taxesAndFees;
 
   const fetchUserInformation = async () => {
     const res = await MainApiRequest.get("/auth/callback");
     setFirstName(res.data.data.name.split(" ")[0]);
     setLastName(res.data.data.name.split(" ").slice(1).join(" "));
-  }
+  };
 
   useEffect(() => {
-    document.title = "Page Name  "
-    window.scroll(0, 0)
-    fetchUserInformation()
-  }, [])
+    document.title = "Booking";
+    window.scroll(0, 0);
+    fetchUserInformation();
+  }, []);
 
   const handleBookRoom = async () => {
     const data = {
-      "userId": 1,
-      "customerName": `${firstName} ${lastName}`,
-      "customerPhone": phone,
-      "checkIn": moment(startDate).format("YYYY-MM-DD"),
-      "checkOut": moment(endDate).format("YYYY-MM-DD"),
-      "roomIds": [
-        location.state?.roomId
-      ]
+      userId: 1,
+      customerName: `${firstName} ${lastName}`,
+      customerPhone: phone,
+      checkIn: moment(startDate).format("YYYY-MM-DD"),
+      checkOut: moment(endDate).format("YYYY-MM-DD"),
+      roomIds: [location.state?.roomId],
+      status: "Pending",
     };
 
-    console.log(data);
+    try {
+      const res = await MainApiRequest.post("/booking", data);
 
-    const res = await MainApiRequest.post("/booking", data);
-
-    if (res.status === 200) {
-      alert("Booking success")
-      navigate("/")
+      if (res.status === 200) {
+        alert("Booking success, proceed to payment");
+        navigate("/payment", { state: { bookingData: res.data } });
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Failed to book room");
     }
-  }
+  };
 
   return (
     <>
@@ -56,149 +70,163 @@ const Booking = () => {
       <section className="booking-section py-5">
         <Container>
           <Row>
-            <Col md="8" lg="8">
+            <Col md="8">
               <div className="booking-form-warp border rounded-3">
                 <div className="form-title px-4 border-bottom py-3">
-                  <h3 className="h4 font-bold m-0"> Your Details</h3>
-                  <h5 className="font-bold m-0 my-2">
+                  <h3 className="h4 font-bold m-0">Your Details</h3>
+                  <h5 className="font-bold my-2">
                     Room: {location.state?.roomName} - Tier: {location.state?.roomTier}
                   </h5>
                 </div>
 
                 <Form className="p-4">
                   <Row>
-                    <Form.Group
-                      as={Col}
-                      md="6"
-                      controlId="firstname"
-                      className="mb-4"
-                    >
+                    <Form.Group as={Col} md="6" className="mb-4">
                       <Form.Label>First name</Form.Label>
                       <Form.Control
                         required
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
-                        type="text"
                         placeholder="First name"
                       />
                     </Form.Group>
 
-                    <Form.Group
-                      as={Col}
-                      md="6"
-                      controlId="lastname"
-                      className="mb-4"
-                    >
+                    <Form.Group as={Col} md="6" className="mb-4">
                       <Form.Label>Last name</Form.Label>
                       <Form.Control
                         required
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
-                        type="text"
                         placeholder="Last name"
                       />
                     </Form.Group>
 
-                    <Form.Group
-                      className="mb-4"
-                      controlId="phone"
-                      as={Col}
-                      md="6"
-                    >
-                      <Form.Label>Phone Number</Form.Label>
-                      <Form.Control type="text" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                    </Form.Group>
+                    <div className="phone-email-group">
+                      <Form.Group as={Col} md="6" className="mb-4">
+                        <Form.Label>Phone Number</Form.Label>
+                        <Form.Control
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          placeholder="Phone Number"
+                        />
+                      </Form.Group>
 
-                    <Form.Group
-                      className="mb-4"
-                      controlId="checkin"
-                      as={Col}
-                      md="6"
-                    >
-                      <Form.Label className="d-block">Check In</Form.Label>
-                      <DatePicker
-                        selected={startDate}
-                        onChange={(date) => setStartDate(date || new Date())}
-                        selectsStart
-                        startDate={startDate}
-                        endDate={endDate}
-                        className="form-control w-100"
-                        dateFormat="dd, MMMM, yyyy"
-                      />
+                      <Form.Group as={Col} md="6" className="mb-4">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Control
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Email"
+                        />
                     </Form.Group>
+                    </div>
 
-                    <Form.Group
-                      className="mb-4"
-                      controlId="checkout"
-                      as={Col}
-                      md="6"
-                    >
-                      <Form.Label className="d-block">Check Out</Form.Label>
-                      <DatePicker
-                        selected={endDate}
-                        onChange={(date) => setEndDate(date || new Date())}
-                        selectsEnd
-                        startDate={endDate}
-                        endDate={startDate}
-                        dateFormat="dd, MMMM, yyyy"
-                        className="form-control w-100"
+                    {/* Date fields grouped in a single row */}
+                    <div className="date-field-group">
+                      <Form.Group as={Col} md="6" className="mb-4 date-field">
+                        <Form.Label>Check In</Form.Label>
+                        <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date || new Date())}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          className="form-control"
+                          dateFormat="dd, MMMM, yyyy"
+                        />
+                      </Form.Group>
+
+                      <Form.Group as={Col} md="6" className="mb-4 date-field">
+                        <Form.Label>Check Out</Form.Label>
+                        <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date || new Date())}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          className="form-control"
+                          dateFormat="dd, MMMM, yyyy"
+                        />
+                      </Form.Group>
+                    </div>
+
+                    {/* <Form.Group as={Col} md="6" className="mb-4">
+                      <Form.Label>CCCD Number</Form.Label>
+                      <Form.Control
+                        value={cccd}
+                        onChange={(e) => setCccd(e.target.value)}
+                        placeholder="CCCD Number"
                       />
-                    </Form.Group>
+                    </Form.Group> */}
+
                     <Col md="12">
-                      <button className="primaryBtn" type="button" onClick={handleBookRoom}> Submit Now</button>
+                      <button className="primaryBtn" type="button" onClick={handleBookRoom}>
+                        Submit Now
+                      </button>
                     </Col>
                   </Row>
                 </Form>
               </div>
             </Col>
 
-            <Col md="4" lg="4">
-              <Card className="card-info p-0 shadow-sm bg-white">
+            <Col md="4">
+              <Card className="card-info shadow-sm bg-white">
                 <Card.Header>
-                  {" "}
-                  <h1 className="font-bold  h4 mt-2">Price Summary</h1>{" "}
+                  <h1 className="font-bold h4 mt-2">Summary</h1>
                 </Card.Header>
-                <Card.Body className="pb-0">
+                <Card.Body>
                   <ListGroup>
-                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                      <span> Base Price</span>
-                      <strong>{location.state?.price.toLocaleString("vi-VN", {
-                        style: "currency",
-                        currency: "VND",
-                      })}</strong>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Room Name</span>
+                      <strong>{location.state?.roomName}</strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                      <span> Total Nights</span>
-                      <strong>{
-                        moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')
-                      }</strong>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>People</span>
+                      <strong>{location.state?.maxPeople}</strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                      <span> Total Discount <span className="badge bg-danger">
-                        0%
-                      </span></span>
-                      <strong>0đ</strong>
+                    {/* Combined Check-in and Check-out into one field */}
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Dates</span>
+                      <strong>
+                        {moment(startDate).format("DD/MM/YYYY")} - {moment(endDate).format("DD/MM/YYYY")}
+                      </strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                      <span> Taxes % Fees</span>
-                      <strong>{
-                        (location.state?.price * 0.1 * moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')).toLocaleString("vi-VN", {
-                          style: "currency",
-                          currency: "VND",
-                        })
-                      }</strong>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Customer Name</span>
+                      <strong>{`${firstName} ${lastName}`}</strong>
                     </ListGroup.Item>
-
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>CCCD Number</span>
+                      <strong>{cccd}</strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Phone Number</span>
+                      <strong>{phone}</strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Email</span>
+                      <strong>{email}</strong>
+                    </ListGroup.Item>
+                    {/* Price Summary Section */}
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Base Price</span>
+                      <strong>{basePrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Total Nights</span>
+                      <strong>{totalNights}</strong>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="d-flex justify-content-between h5">
+                      <span>Taxes & Fees</span>
+                      <strong>{taxesAndFees.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
+                    </ListGroup.Item>
                   </ListGroup>
                 </Card.Body>
-                <Card.Footer className="d-flex justify-content-between py-4">
-                  <span className="font-bold h5"> Payable Now</span>
-                  <strong className="font-bold h5">{
-                    (location.state?.price * 1.1 * moment(endDate).startOf('day').diff(moment(startDate).startOf('day'), 'days')).toLocaleString("vi-VN", {
-                      style: "currency",
-                      currency: "VND",
-                    })
-                  }</strong>
+                <Card.Footer className="d-flex justify-content-between">
+                  <span className="font-bold h5">Payable Now</span>
+                  <strong className="font-bold h5">
+                    {totalPayable.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                  </strong>
                 </Card.Footer>
               </Card>
             </Col>

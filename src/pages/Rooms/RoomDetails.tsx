@@ -6,31 +6,15 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { NavLink, useParams } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
 
-// interface RoomDetail {
-//   roomTierId: number;
-//   name: string;
-//   //description: string;
-//   floor: number;
-//   price: number;
-//   rating: number;
-//   reviews: number;
-//   images: { original: string }[];
-//   features: { [key: string]: boolean };
-//   included?: string[];
-//   exclusion?: string[];
-// }
-
-
 const RoomDetails = () => {
   const { id } = useParams();
-  console.log(id);
+
   const [roomDetail, setRoomDetail] = useState<any>();
 
   const fetchRoomDetail = async () => {
     const res = await MainApiRequest.get(`/room/${id}`);
-    console.log(res.data);
     setRoomDetail(res.data);
-  };
+  }
 
   useEffect(() => {
     document.title = "Room Details";
@@ -61,11 +45,12 @@ const RoomDetails = () => {
             <Tab.Container id="left-tabs-example" defaultActiveKey="1">
               <Row className="py-5">
                 <Col md={8}>
-                  <Tab.Content className="mt-4">
+                  <Tab.Content className="mt-1">
                     <div className="room_details">
                       <h3 className="font-bold mb-2 h3 border-bottom pb-2">Overview</h3>
-                      {/* <p>{roomDetail?.description}</p> */}
-                      <h5 className="font-bold mb-2 h5 mt-3">Features</h5>
+                      <p className="body-text">{roomDetail?.description}</p>
+
+                      <h3 className="font-bold mb-2 h3 mt-3 border-bottom pb-2">Features</h3>
                       <ul>
                         {Object.entries(roomDetail?.features || {}).map(([key, value]) =>
                           value ? <li key={key}>{key.replace("is", "").replace(/([A-Z])/g, " $1")}</li> : null
@@ -75,7 +60,7 @@ const RoomDetails = () => {
 
                     {/* Inclusions & Exclusions */}
                     <div className="room_details">
-                      <h1 className="font-bold h3 border-bottom pb-2">Inclusions & Exclusions</h1>
+                      <h3 className="font-bold h3 mt-3 border-bottom pb-2">Inclusions & Exclusions</h3>
 
                       {/* Inclusions */}
                       {roomDetail?.included && (
