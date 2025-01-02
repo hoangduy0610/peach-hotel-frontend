@@ -32,6 +32,7 @@ import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/RoomTier";
 import Rating from "@/pages/AdminPage/Rating/Rating";
 import AdminBlacklist from "@/pages/AdminPage/Blacklist/Blacklist";
 import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
+import AdminLogin from "@/pages/AdminPage/Login/Login";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -68,6 +69,7 @@ export default function MainRoutes() {
         <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
+        <Route path="admin/login" element={<AdminLogin />} />
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
