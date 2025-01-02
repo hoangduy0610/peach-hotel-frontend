@@ -1,6 +1,4 @@
-# Getting Started
-
-Hi, this project structure is a sample that you can easily use to create many projects.
+# Hotel Management - PEACH HOTEL
 
 ## Setup Scripts
 

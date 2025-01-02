@@ -1,15 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message } from 'antd';
+import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message, Select } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import "./AdminStaff.scss";
 
 const AdminStaff = () => {
     const [form] = Form.useForm();
     const [staffList, setStaffList] = useState<any[]>([]);
-    
+
     const [openCreateStaffModal, setOpenCreateStaffModal] = useState(false);
     const [editingStaff, setEditingStaff] = useState<any | null>(null);
+<<<<<<< HEAD
     
+=======
+    const [nextId, setNextId] = useState<number>(1); // Quản lý ID tiếp theo
+
+>>>>>>> 61b62cfa378cb701ab7ab3b63ba1c0abaa40c14f
     const fetchStaffList = async () => {
         const res = await MainApiRequest.get('/staff/list');
         setStaffList(res.data);
@@ -20,14 +25,24 @@ const AdminStaff = () => {
     }, []);
 
     const onOpenCreateStaffModal = () => {
+<<<<<<< HEAD
         setOpenCreateStaffModal(true);    
+=======
+        setEditingStaff(null); // Xóa trạng thái đang chỉnh sửa
+        form.setFieldsValue({});
+        setOpenCreateStaffModal(true);
+>>>>>>> 61b62cfa378cb701ab7ab3b63ba1c0abaa40c14f
     };
 
     const onOKCreateStaff = async () => {
         setOpenCreateStaffModal(false);
         const data = form.getFieldsValue();
         if (editingStaff) {
-            await MainApiRequest.put(`/staff/${editingStaff.id}`, data);
+            const {
+                password,
+                ...rest
+            } = data;
+            await MainApiRequest.put(`/staff/${editingStaff.id}`, rest);
         } else {
             await MainApiRequest.post('/staff', data);
         }
@@ -89,13 +104,15 @@ const AdminStaff = () => {
                     >
                         <Input type="email" />
                     </Form.Item>
-                    <Form.Item
-                        label="Password"
-                        name="password"
-                        rules={[{ required: true, message: "Please input password!" }]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
+                    {!editingStaff &&
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: "Please input password!" }]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                    }
                     <Form.Item
                         label="Address"
                         name="address"
@@ -114,7 +131,10 @@ const AdminStaff = () => {
                         label="Role"
                         name="role"
                     >
-                        <Input type="text" disabled value="ROLE_ADMIN" />
+                        <Select>
+                            <Select.Option value="ROLE_ADMIN">Admin</Select.Option>
+                            <Select.Option value="ROLE_RECEP">Staff</Select.Option>
+                        </Select>
                     </Form.Item>
                 </Form>
             </Modal>
@@ -127,10 +147,10 @@ const AdminStaff = () => {
                     { title: 'Email', dataIndex: 'email', key: 'email' },
                     { title: 'Address', dataIndex: 'address', key: 'address' },
                     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-                    { title: 'Role', dataIndex: 'role', key: 'role' },
-                    { 
-                        title: 'Action', 
-                        key: 'actions', 
+                    { title: 'Role', dataIndex: 'role', key: 'role', render: (role: string) => role === 'ROLE_ADMIN' ? 'Admin' : 'Staff' },
+                    {
+                        title: 'Action',
+                        key: 'actions',
                         render: (_, record) => (
                             <>
                                 <Button type="link" onClick={() => onEditStaff(record)}>

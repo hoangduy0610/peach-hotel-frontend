@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Rate, Space, Button, Modal, Form, Input, Popconfirm } from 'antd';
+import { MainApiRequest } from '@/services/MainApiRequest';
 
 const AdminCustomerRating = () => {
     const [ratingsList, setRatingsList] = useState<any[]>([]);
@@ -8,33 +9,9 @@ const AdminCustomerRating = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [currentRating, setCurrentRating] = useState<any | null>(null);
 
-    // Dữ liệu mẫu
-    const sampleRatingsList = [
-        {
-            id: 1,
-            customerName: 'Nguyễn Văn A',
-            rating: 5,
-            comment: 'Excellent service!',
-            date: '2023-01-01'
-        },
-        {
-            id: 2,
-            customerName: 'Trần Thị B',
-            rating: 4,
-            comment: 'Very good, will come again.',
-            date: '2023-02-15'
-        },
-        {
-            id: 3,
-            customerName: 'Lê Văn C',
-            rating: 3,
-            comment: 'Average experience.',
-            date: '2023-03-10'
-        }
-    ];
-
     const fetchRatingsList = async () => {
-        setRatingsList(sampleRatingsList);
+        const res = await MainApiRequest.get('/rating/list');
+        setRatingsList(res.data);
     }
 
     useEffect(() => {
@@ -84,12 +61,12 @@ const AdminCustomerRating = () => {
     return (
         <div className="container-fluid m-2">
             <h3 className='h3'>Customer Rating Management</h3>
-            <Button
+            {/* <Button
                 type='primary'
                 onClick={onOpenCreateRatingModal}
             >
                 Create Rating
-            </Button>
+            </Button> */}
 
             <Modal
                 title={isEditing ? "Edit Rating" : "Create Rating"}
@@ -128,31 +105,31 @@ const AdminCustomerRating = () => {
             <Table
                 dataSource={ratingsList}
                 columns={[
-                    { title: 'Customer Name', dataIndex: 'customerName', key: 'customerName' },
-                    { title: 'Rating', dataIndex: 'rating', key: 'rating', render: (rating: number) => <Rate disabled value={rating} /> },
+                    { title: 'Customer', dataIndex: 'user', key: 'user', render: (user: any) => user.name },
+                    { title: 'Room', dataIndex: 'room', key: 'room', render: (room: any) => room.name },
+                    { title: 'Rating', dataIndex: 'score', key: 'score', render: (rating: number) => <Rate disabled value={rating} /> },
                     { title: 'Comment', dataIndex: 'comment', key: 'comment' },
-                    { title: 'Date', dataIndex: 'date', key: 'date' },
-                    {
-                        title: 'Action',
-                        key: 'action',
-                        render: (_, record) => (
-                            <Space size="middle">
-                                <Button onClick={() => onEditRating(record)}>
-                                    <i className="fas fa-edit"></i>
-                                </Button>
-                                <Popconfirm
-                                    title="Are you sure you want to delete this rating?"
-                                    onConfirm={() => onDeleteRating(record.id)}
-                                    okText="Yes"
-                                    cancelText="No"
-                                >
-                                    <Button danger>
-                                        <i className="fas fa-trash"></i>
-                                    </Button>
-                                </Popconfirm>
-                            </Space>
-                        ),
-                    },
+                    // {
+                    //     title: 'Action',
+                    //     key: 'action',
+                    //     render: (_, record) => (
+                    //         <Space size="middle">
+                    //             <Button onClick={() => onEditRating(record)}>
+                    //                 <i className="fas fa-edit"></i>
+                    //             </Button>
+                    //             <Popconfirm
+                    //                 title="Are you sure you want to delete this rating?"
+                    //                 onConfirm={() => onDeleteRating(record.id)}
+                    //                 okText="Yes"
+                    //                 cancelText="No"
+                    //             >
+                    //                 <Button danger>
+                    //                     <i className="fas fa-trash"></i>
+                    //                 </Button>
+                    //             </Popconfirm>
+                    //         </Space>
+                    //     ),
+                    // },
                 ]}
             />
         </div>
