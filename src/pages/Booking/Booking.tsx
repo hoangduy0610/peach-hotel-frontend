@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Container, Form, Row, Card, ListGroup } from "react-bootstrap";
+import { Col, Container, Form, Row, Card, ListGroup, Button, Modal } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import "./Booking.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
@@ -27,6 +27,9 @@ const Booking = () => {
   const basePrice = location.state?.price || 0;
   const taxesAndFees = basePrice * 0.1 * totalNights;
   const totalPayable = basePrice * totalNights + taxesAndFees;
+  const [services, setServices] = useState<any[]>([]); // State to store available services
+  const [selectedServices, setSelectedServices] = useState<any[]>([]); // State to store selected services
+  const [showServiceModal, setShowServiceModal] = useState(false); // State to toggle modal visibility
 
   const fetchUserInformation = async () => {
     const res = await MainApiRequest.get("/auth/callback");
@@ -34,10 +37,23 @@ const Booking = () => {
     setLastName(res.data.data.name.split(" ").slice(1).join(" "));
   };
 
+  const fetchAvailableServices = async () => {
+    // Dữ liệu mẫu về các dịch vụ
+    const sampleServices = [
+      { id: 1, name: "Spa Service", price: 100000 },
+      { id: 2, name: "Room Cleaning", price: 50000 },
+      { id: 3, name: "Airport Transfer", price: 200000 },
+      { id: 4, name: "Breakfast", price: 75000 },
+    ];
+
+    setServices(sampleServices);
+  };
+
   useEffect(() => {
-    document.title = "Booking";
+    document.title = "Page Name  ";
     window.scroll(0, 0);
     fetchUserInformation();
+    fetchAvailableServices(); // Gọi hàm này để tải dữ liệu mẫu
   }, []);
 
   const handleBookRoom = async () => {
@@ -49,6 +65,7 @@ const Booking = () => {
       checkOut: moment(endDate).format("YYYY-MM-DD"),
       roomIds: [location.state?.roomId],
       status: "Pending",
+      services: selectedServices.map((service) => service.id), // Sending selected services to the backend
     };
 
     try {
@@ -62,6 +79,16 @@ const Booking = () => {
       console.error("Booking error:", error);
       alert("Failed to book room");
     }
+  };
+
+  const handleSelectService = (service: any) => {
+    setSelectedServices((prevSelected) => {
+      if (prevSelected.some((s) => s.id === service.id)) {
+        return prevSelected.filter((s) => s.id !== service.id); // Remove if already selected
+      } else {
+        return [...prevSelected, service]; // Add if not selected
+      }
+    });
   };
 
   return (
@@ -81,7 +108,7 @@ const Booking = () => {
 
                 <Form className="p-4">
                   <Row>
-                    <Form.Group as={Col} md="6" className="mb-4">
+                    <Form.Group as={Col} md="6" controlId="firstname" className="mb-4">
                       <Form.Label>First name</Form.Label>
                       <Form.Control
                         required
@@ -91,7 +118,7 @@ const Booking = () => {
                       />
                     </Form.Group>
 
-                    <Form.Group as={Col} md="6" className="mb-4">
+                    <Form.Group as={Col} md="6" controlId="lastname" className="mb-4">
                       <Form.Label>Last name</Form.Label>
                       <Form.Control
                         required
@@ -118,7 +145,7 @@ const Booking = () => {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="Email"
                         />
-                    </Form.Group>
+                      </Form.Group>
                     </div>
 
                     {/* Date fields grouped in a single row */}
@@ -150,18 +177,29 @@ const Booking = () => {
                       </Form.Group>
                     </div>
 
-                    {/* <Form.Group as={Col} md="6" className="mb-4">
-                      <Form.Label>CCCD Number</Form.Label>
-                      <Form.Control
-                        value={cccd}
-                        onChange={(e) => setCccd(e.target.value)}
-                        placeholder="CCCD Number"
+                    <Form.Group className="mb-4" controlId="checkout" as={Col} md="6">
+                      <Form.Label className="d-block">Check Out</Form.Label>
+                      <DatePicker
+                        selected={endDate}
+                        onChange={(date) => setEndDate(date || new Date())}
+                        selectsEnd
+                        startDate={endDate}
+                        endDate={startDate}
+                        dateFormat="dd, MMMM, yyyy"
+                        className="form-control w-100"
                       />
-                    </Form.Group> */}
+                    </Form.Group>
+
+                    {/* Add Service Selection Button */}
+                    <Col md="12" className="mb-4">
+                      <Button variant="primary" onClick={() => setShowServiceModal(true)}>
+                        Select Services
+                      </Button>
+                    </Col>
 
                     <Col md="12">
                       <button className="primaryBtn" type="button" onClick={handleBookRoom}>
-                        Submit Now
+                        Next
                       </button>
                     </Col>
                   </Row>
@@ -172,60 +210,42 @@ const Booking = () => {
             <Col md="4">
               <Card className="card-info shadow-sm bg-white">
                 <Card.Header>
-                  <h1 className="font-bold h4 mt-2">Summary</h1>
+                  <h1 className="font-bold h4 mt-2">Price Summary</h1>
                 </Card.Header>
                 <Card.Body>
                   <ListGroup>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Room Name</span>
-                      <strong>{location.state?.roomName}</strong>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> Base Price</span>
+                      <strong>{location.state?.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>People</span>
-                      <strong>{location.state?.maxPeople}</strong>
-                    </ListGroup.Item>
-                    {/* Combined Check-in and Check-out into one field */}
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Dates</span>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> Total Nights</span>
                       <strong>
-                        {moment(startDate).format("DD/MM/YYYY")} - {moment(endDate).format("DD/MM/YYYY")}
+                        {moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")}
                       </strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Customer Name</span>
-                      <strong>{`${firstName} ${lastName}`}</strong>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> Total Discount</span>
+                      <strong>0đ</strong>
                     </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>CCCD Number</span>
-                      <strong>{cccd}</strong>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Phone Number</span>
-                      <strong>{phone}</strong>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Email</span>
-                      <strong>{email}</strong>
-                    </ListGroup.Item>
-                    {/* Price Summary Section */}
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Base Price</span>
-                      <strong>{basePrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Total Nights</span>
-                      <strong>{totalNights}</strong>
-                    </ListGroup.Item>
-                    <ListGroup.Item className="d-flex justify-content-between h5">
-                      <span>Taxes & Fees</span>
-                      <strong>{taxesAndFees.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
+                    <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                      <span> Taxes % Fees</span>
+                      <strong>
+                        {(location.state?.price * 0.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")).toLocaleString(
+                          "vi-VN",
+                          { style: "currency", currency: "VND" }
+                        )}
+                      </strong>
                     </ListGroup.Item>
                   </ListGroup>
                 </Card.Body>
-                <Card.Footer className="d-flex justify-content-between">
-                  <span className="font-bold h5">Payable Now</span>
+                <Card.Footer className="d-flex justify-content-between py-4">
+                  <span className="font-bold h5"> Payable Now</span>
                   <strong className="font-bold h5">
-                    {totalPayable.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                    {(location.state?.price * 1.1 * moment(endDate).startOf("day").diff(moment(startDate).startOf("day"), "days")).toLocaleString("vi-VN", {
+                      style: "currency",
+                      currency: "VND",
+                    })}
                   </strong>
                 </Card.Footer>
               </Card>
@@ -233,6 +253,27 @@ const Booking = () => {
           </Row>
         </Container>
       </section>
+
+      <Modal show={showServiceModal} onHide={() => setShowServiceModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Select Services</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ListGroup>
+            {services.map((service) => (
+              <ListGroup.Item key={service.id} action onClick={() => handleSelectService(service)}>
+                {service.name}
+                {selectedServices.some((s) => s.id === service.id) && <span className="badge bg-success ms-2">Selected</span>}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowServiceModal(false)}>
+            Close
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

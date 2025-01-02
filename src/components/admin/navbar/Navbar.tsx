@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.scss';
-import { List } from 'antd';
 import { comparePathname } from '@/utils/uri';
 
 const Navbar: React.FC = () => {
@@ -26,13 +25,43 @@ const Navbar: React.FC = () => {
     },
     {
       title: 'Rooms',
-      link: '/admin/rooms',
+      link: '/admin/room',
       icon: 'fas fa-bed',
     },
     {
       title: 'Room Tier',
       link: '/admin/roomtier',
       icon: 'fas fa-layer-group',
+    },
+    {
+      title: 'Service',
+      link: '/admin/service',
+      icon: 'fas fa-cogs',
+    },
+    {
+      title: 'Promote',
+      link: '/admin/promote',
+      icon: 'fas fa-tags',
+    },
+    {
+      title: 'Staff',
+      link: '/admin/staff',
+      icon: 'fas fa-users',
+    },
+    {
+      title: 'Rating',
+      link: '/admin/rating',
+      icon: 'fas fa-star',
+    },
+    {
+      title: 'Blacklist',
+      link: '/admin/blacklist',
+      icon: 'fas fa-ban',
+    },
+    {
+      title: 'Payment History',  // New Route
+      link: '/admin/paymenthistory',  // Add your route here
+      icon: 'fas fa-credit-card',  // You can use any icon you prefer
     },
   ];
 
@@ -48,7 +77,7 @@ const Navbar: React.FC = () => {
             const isActive = comparePathname(currentPath, route.link);
 
             return (
-              <li className={`flex-1 nav-item`}>
+              <li key={index} className={`flex-1 nav-item`}>
                 <Link
                   to={route.link}
                   className={`nav-link ${isActive ? "nav-link-active" : "text-dark"}`}
@@ -62,8 +91,8 @@ const Navbar: React.FC = () => {
                     {route.title}
                   </span>
                 </Link>
-              </li >
-            )
+              </li>
+            );
           })
         }
       </ul>
