@@ -9,6 +9,7 @@
     height: auto;     /* Đảm bảo tỷ lệ khung hình không bị biến dạng */
     object-fit: cover; /* Đảm bảo ảnh được cắt cúp để phủ đầy không gian */
   }
+
 }
 
 @media (max-width: 1199px) {

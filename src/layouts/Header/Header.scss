@@ -105,8 +105,13 @@ header {
   header .navbar .toggle_btn {
     font-size: var(--bodyText);
     color: var(--white);
-    border: 2px solid var(--white);
+    border: 2px solid transparent;
     padding: 7px 10px;
+    cursor: pointer;
+
+    &:hover {
+      color: var(--primaryClr);
+    }
   }
 
   .is-sticky .navbar .toggle_btn {
@@ -115,6 +120,7 @@ header {
 
   .offcanvas-header {
     border: 1px solid gainsboro;
+
   }
 
   .offcanvas-header .logo {
@@ -123,6 +129,8 @@ header {
     font-family: var(--fontFamily1);
     font-weight: bold;
     text-decoration: none;
+    
+
   }
 
   .offcanvas-body .nav-link {
@@ -134,4 +142,7 @@ header {
     padding: 12px 10px;
     color: var(--black);
   }
+}
+.bi-x-lg::before {
+  cursor: pointer;
 }

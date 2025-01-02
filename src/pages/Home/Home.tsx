@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import Banner from "./partials/Banner/Banner";
 import Search from "@/layouts/Search/Search";
 import Features from "./partials/Features/Features";
-import { Container, Row, Col, } from "react-bootstrap";
+import { Container, Row, Col, Button, } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import video from "../../assets/video1.mp4";
 
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -11,7 +13,6 @@ import "slick-carousel/slick/slick-theme.css";
 
 import "./Home.css";
 
-import Gallery from "./partials/Gallery/Gallery";
 import Cards from "@/layouts/Cards/Cards";
 import { roomTierData, popularsData } from "@/modules/data";
 import ProductCard from "@/layouts/Cards/ProductCard";
@@ -72,6 +73,9 @@ const Home = () => {
   };
   
   const [roomList, setRoomList] = useState<any[]>([]);
+  const [visibleRooms, setVisibleRooms] = useState(8);
+  const navigate = useNavigate();
+
   const fetchListRooms = async () => {
       const res = await MainApiRequest.get(`/room/filter-available`);
       console.log(res.data);
@@ -82,6 +86,12 @@ const Home = () => {
     fetchUserInfo();
     fetchListRooms();
   }, []);
+
+
+  const handleShowMore = () => {
+    navigate("/rooms"); 
+  };
+
 
   return (
     <>
@@ -95,7 +105,7 @@ const Home = () => {
           <Row>
             <Col md="12">
               <div className="main_heading">
-                <h1> Top Destination For Your Next Vacation </h1>
+                <h1> Find Your Ideal Room For Your Next Stay </h1>
               </div>
             </Col>
           </Row>
@@ -124,67 +134,65 @@ const Home = () => {
             </Col>
           </Row>
           <Row>
-            {roomList.map((val, inx) => {
+            {roomList.slice(0, visibleRooms).map((val, inx) => {
               return (
                 <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
                   <ProductCard val={val} />
                 </Col>
-              )
+              );
             })}
           </Row>
+          {visibleRooms < roomList.length && (
+            <Row>
+              <Col md="12" className="text-center">
+                <Button onClick={handleShowMore} variant="primary">
+                  Show More
+                </Button>
+              </Col>
+            </Row>
+          )}
+        </Container>
+
+        <Container>
+        <div className="overflow-hidden rounded-2xl mt-5">
+          <div className="w-100 rounded-2xl relative">
+            <video 
+              loop 
+              muted 
+              autoPlay 
+              className="d-block w-100 object-cover rounded-2xl"
+            >
+              <source src={video} type="video/mp4" />
+            </video>
+          </div>
+        </div>
         </Container>
       </section>
 
-      <section className="call_us">
+      <section className="call_us px-5">
         <Container>
           <Row className="align-items-center">
-            <Col md="8">
-              <h5 className="title">CALL TO ACTION</h5>
-              <h2 className="heading">
-                READY FOR UNFORGATABLE TRAVEL. REMEMBER US!
-              </h2>
-              <p className="text">
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s,{" "}
-              </p>
-            </Col>
+          <Col md="8">
+            <h2 className="heading">
+              READY FOR AN UNFORGETTABLE STAY? CHOOSE US!
+            </h2>
+            <p className="text">
+              Experience exceptional comfort and luxury at our hotel. From elegant rooms 
+              to world-class amenities, we ensure every moment of your stay is unforgettable.
+            </p>
+          </Col>
             <Col md="4" className="text-center mt-3 mt-md-0">
-              <a
-                href="tel:6398312365"
+              <Link
+                to="/contact-us"
                 className="secondary_btn bounce"
-                rel="no"
               >
-                {" "}
-                Contact Us !
-              </a>
+                Contact Us!
+              </Link>
             </Col>
           </Row>
         </Container>
-        <div className="overlay"></div>
+        <div className="overlay px-5"></div>
       </section>
-
-      <section className="gallery">
-        <Container>
-          <Row>
-            <Col md="12">
-              <div className="main_heading">
-                <h1>Photo Gallery </h1>
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="12">
-              <Gallery />
-            </Col>
-          </Row>
-        </Container>
-      </section>
-
-
-
-
-
 
     </>
   );

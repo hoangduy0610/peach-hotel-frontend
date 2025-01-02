@@ -54,7 +54,7 @@ export default function MainRoutes() {
         <Route path="about-us" element={<About />} />
         <Route path="contact-us" element={<Contact />} />
         <Route path="rooms" element={<Rooms />} />
-        <Route path="room-details" element={<RoomDetails />} />
+        <Route path="room/:id" element={<RoomDetails />} />
         <Route path="booking" element={<Booking />} />
         <Route path="roomtier" element={<RoomTier />} />
         <Route path="gallery" element={<PhotoGallery />} />
