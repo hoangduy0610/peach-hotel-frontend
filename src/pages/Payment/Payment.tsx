@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./Payment.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
-import { Button } from "antd";
+import { Button, Tag } from "antd";
 import LoadingOverlay from "@achmadk/react-loading-overlay";
 import { MainApiRequest } from "@/services/MainApiRequest";
 
@@ -19,6 +19,9 @@ const Payment = () => {
     const data = location?.state?.bookingData || {};
     const [price, setPrice] = useState(data.total || 0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
+    const [peachPoint, setPeachPoint] = useState(0);
+    const [userId, setUserId] = useState(0);
+    const [usePeachPoint, setUsePeachPoint] = useState<boolean>(false);
     const roomName = data.rooms[0].name || "";
     const roomTier = location?.state?.tierName || "";
     const checkInDate = moment(data.checkIn).startOf('day') || moment().startOf('day').toDate();
@@ -36,17 +39,23 @@ const Payment = () => {
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
 
     const handlePayment = async () => {
-        const user = await MainApiRequest.get("/auth/callback");
+        if (usePeachPoint) {
+            if (peachPoint <= 0) {
+                alert("Not enough PeachPoint to pay!");
+                return;
+            }
 
-        if (!user?.data?.data) {
-            alert("Please login to continue payment");
-            navigate("/login");
-            return;
+            const res = await MainApiRequest.post(`/booking/peach-coin/${location?.state?.bookingData?.id}`);
+
+            if (res.status !== 200) {
+                alert("Payment failed!");
+                return;
+            }
         }
 
         const res = await MainApiRequest.post("/payment", {
             "description": "Thanh toan dich vu Peach Hotel",
-            "userId": user.data.data.id,
+            "userId": userId,
             "bookingId": location?.state?.bookingData?.id,
         });
 
@@ -59,9 +68,25 @@ const Payment = () => {
         navigate("/");
     };
 
+    const fetchUserInfo = async () => {
+
+        const user = await MainApiRequest.get("/auth/callback");
+
+        if (!user?.data?.data) {
+            alert("Please login to continue payment");
+            navigate("/login");
+            return;
+        }
+
+        setUserId(user.data.data.id);
+        setPeachPoint(user.data.data.peachCoin);
+    };
+
     useEffect(() => {
         document.title = "Payment Page";
         window.scrollTo(0, 0);
+
+        fetchUserInfo();
     }, []);
 
     const applyDiscount = async () => {
@@ -178,15 +203,52 @@ const Payment = () => {
                                             </div>
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                                            <span>Use PeachCoin</span>
+                                            <Tag color="red">{peachPoint}</Tag>
+                                            <Form.Check type="switch" id="custom-switch" checked={usePeachPoint} onChange={(e) => setUsePeachPoint(e.target.checked)} />
+                                        </ListGroup.Item>
+                                        <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                                            <span>PeachCoin Applied</span>
+                                            <strong>
+                                                {
+                                                    (
+                                                        usePeachPoint
+                                                            ? (
+                                                                peachPoint >= price
+                                                                    ? price
+                                                                    : peachPoint
+                                                            )
+                                                            : 0
+                                                    ).toLocaleString("vi-VN", { style: "currency", currency: "VND" })
+                                                }
+                                            </strong>
+                                        </ListGroup.Item>
+                                        <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                                             <span>Discount</span>
-                                            <strong>{discountedPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
+                                            <strong>{(discountedPrice + (
+                                                usePeachPoint
+                                                    ? (
+                                                        peachPoint >= price
+                                                            ? price
+                                                            : peachPoint
+                                                    )
+                                                    : 0
+                                            )).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
                                         </ListGroup.Item>
                                     </ListGroup>
                                 </Card.Body>
                                 <Card.Footer className="d-flex justify-content-between py-4">
                                     <span className="font-bold h5">Total Payment</span>
                                     <strong className="font-bold h5">
-                                        {(price - discountedPrice).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                        {(price - discountedPrice - (
+                                            usePeachPoint
+                                                ? (
+                                                    peachPoint >= price
+                                                        ? price
+                                                        : peachPoint
+                                                )
+                                                : 0
+                                        )).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                     </strong>
                                 </Card.Footer>
                             </Card>
