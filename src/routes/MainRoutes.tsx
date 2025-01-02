@@ -19,6 +19,14 @@ import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
 import Rooms from "@/pages/Rooms/Rooms";
 import RoomTier from "@/pages/RoomTier/RoomTier";
+import AdminService from "@/pages/AdminPage/Service/AdminService";
+import Promote from "@/pages/AdminPage/Promote/Promote";
+import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
+import AdminRoom from "@/pages/AdminPage/AdminRoom/AdminRoom";
+import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/RoomTier";
+import Rating from "@/pages/AdminPage/Rating/Rating";
+import AdminBlacklist from "@/pages/AdminPage/Blacklist/Blacklist";
+import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -55,6 +63,14 @@ export default function MainRoutes() {
         <Route path="admin" element={<AdminPage />}>
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
+          <Route path="service" element={<AdminService/>} />
+          <Route path="promote" element={<Promote/>} />
+          <Route path="staff" element={<AdminStaff />} />
+          <Route path="room" element={<AdminRoom />} />
+          <Route path="roomtier" element={<AdminRoomTier />} />
+          <Route path="rating" element={<Rating />} />
+          <Route path="blacklist" element={<AdminBlacklist />} />
+          <Route path="paymenthistory" element={<PaymentHistory />} />
           <Route path="*" element={<PageNotFound />} />
         </Route>
 
