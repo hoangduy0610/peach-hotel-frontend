@@ -187,7 +187,7 @@ const AdminRoom = () => {
             render: (_: any, record: { id: number }) => (
               <div>
                 <Button type="link" onClick={() => onOpenEditRoomModal(record)}>
-                  Edit
+                  <i className="fas fa-edit"></i>
                 </Button>
                 <Button
                   type="link"
@@ -195,7 +195,7 @@ const AdminRoom = () => {
                   onClick={() => handleDeleteRoom(record.id)}
                   style={{ marginLeft: '10px' }}
                 >
-                  Delete
+                  <i className="fas fa-trash"></i>
                 </Button>
               </div>
             ),

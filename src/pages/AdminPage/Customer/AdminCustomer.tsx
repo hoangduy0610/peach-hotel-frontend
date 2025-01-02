@@ -1,82 +1,79 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import bcrypt from 'bcryptjs'; // Import thư viện để băm mật khẩu
-import "./AdminStaff.scss";
-
-const AdminStaff = () => {
+import "./AdminCustomer.scss";
+const AdminCustomer = () => {
     const [form] = Form.useForm();
-    const [staffList, setStaffList] = useState<any[]>([]);
+    const [customerList, setCustomerList] = useState<any[]>([]);
     
-    const [openCreateStaffModal, setOpenCreateStaffModal] = useState(false);
-    const [editingStaff, setEditingStaff] = useState<any | null>(null);
-    const [nextId, setNextId] = useState<number>(1); // Quản lý ID tiếp theo
-    
-    const fetchStaffList = async () => {
-        const res = await MainApiRequest.get('/staff/list');
-        setStaffList(res.data);
+    const [openCreateCustomerModal, setOpenCreateCustomerModal] = useState(false);
+    const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
+
+    const fetchCustomerList = async () => {
+        const res = await MainApiRequest.get('/user/list');
+        setCustomerList(res.data);
     };
 
     useEffect(() => {
-        fetchStaffList();
+        fetchCustomerList();
     }, []);
 
-    const onOpenCreateStaffModal = () => {
-        setEditingStaff(null); // Xóa trạng thái đang chỉnh sửa
+    const onOpenCreateCustomerModal = () => {
+        setEditingCustomer(null); 
         form.setFieldsValue({});
-        setOpenCreateStaffModal(true);    };
+        setOpenCreateCustomerModal(true);
+    };
 
-    const onOKCreateStaff = async () => {
-        setOpenCreateStaffModal(false);
+    const onOKCreateCustomer = async () => {
+        setOpenCreateCustomerModal(false);
         const data = form.getFieldsValue();
-        if (editingStaff) {
-            await MainApiRequest.put(`/staff/put/${editingStaff.id}`, data);
+        if (editingCustomer) {
+            await MainApiRequest.put(`/user/put/${editingCustomer.id}`, data);
         } else {
-            await MainApiRequest.post('/staff/post', data);
+            await MainApiRequest.post('/user/post', data);
         }
-        fetchStaffList();
-        setEditingStaff(null);
+        fetchCustomerList();
+        setEditingCustomer(null);
         form.resetFields();
     }
 
 
-    const onCancelCreateStaff = () => {
-        setOpenCreateStaffModal(false);
-        setEditingStaff(null);
+    const onCancelCreateCustomer = () => {
+        setOpenCreateCustomerModal(false);
+        setEditingCustomer(null);
         form.resetFields();
     };
 
-    const onEditStaff = (staff: any) => {
-        setEditingStaff(staff);
-        form.setFieldsValue(staff);
-        setOpenCreateStaffModal(true);
+    const onEditCustomer = (customer: any) => {
+        setEditingCustomer(customer);
+        form.setFieldsValue(customer);
+        setOpenCreateCustomerModal(true);
     };
 
-    const onDeleteStaff = async (id: number) => {
-        await MainApiRequest.delete(`/staff/delete/${id}`);
-        fetchStaffList();
+    const onDeleteCustomer = async (id: number) => {
+        await MainApiRequest.delete(`/user/delete/${id}`);
+        fetchCustomerList();
     };
 
     return (
         <div className="container-fluid m-2">
-            <h3 className='h3'>Staff Management</h3>
+            <h3 className='h3'>Customer Management</h3>
             <Button
                 type='primary'
-                onClick={() => onOpenCreateStaffModal()}
+                onClick={() => onOpenCreateCustomerModal()}
             >
-                Create Staff
+                Create Customer
             </Button>
 
             <Modal
-                title={editingStaff ? "Edit Staff" : "Create Staff"}
-                open={openCreateStaffModal}
-                onOk={onOKCreateStaff}
-                onCancel={onCancelCreateStaff}
+                title={editingCustomer ? "Edit Customer" : "Create Customer"}
+                open={openCreateCustomerModal}
+                onOk={onOKCreateCustomer}
+                onCancel={onCancelCreateCustomer}
             >
                 <Form
                     form={form}
                     layout="vertical"
-                    initialValues={{ role: "ROLE_ADMIN" }} // Đặt giá trị mặc định cho "role"
                 >
                     <Form.Item
                         label="Name"
@@ -99,6 +96,7 @@ const AdminStaff = () => {
                     >
                         <Input.Password />
                     </Form.Item>
+
                     <Form.Item
                         label="Address"
                         name="address"
@@ -113,35 +111,28 @@ const AdminStaff = () => {
                     >
                         <Input type="text" />
                     </Form.Item>
-                    <Form.Item
-                        label="Role"
-                        name="role"
-                    >
-                        <Input type="text" disabled value="ROLE_ADMIN" />
-                    </Form.Item>
                 </Form>
             </Modal>
 
             <Table
-                dataSource={staffList}
+                dataSource={customerList}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id' },
                     { title: 'Name', dataIndex: 'name', key: 'name' },
                     { title: 'Email', dataIndex: 'email', key: 'email' },
                     { title: 'Address', dataIndex: 'address', key: 'address' },
                     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-                    { title: 'Role', dataIndex: 'role', key: 'role' },
                     { 
                         title: 'Action', 
                         key: 'actions', 
                         render: (_, record) => (
                             <>
-                                <Button type="link" onClick={() => onEditStaff(record)}>
+                                <Button type="link" onClick={() => onEditCustomer(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
                                 <Popconfirm
-                                    title="Are you sure to delete this staff?"
-                                    onConfirm={() => onDeleteStaff(record.id)}
+                                    title="Are you sure to delete this customer?"
+                                    onConfirm={() => onDeleteCustomer(record.id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
@@ -158,4 +149,4 @@ const AdminStaff = () => {
     );
 };
 
-export default AdminStaff;
+export default AdminCustomer;

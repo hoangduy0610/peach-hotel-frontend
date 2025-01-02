@@ -30,8 +30,9 @@ import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
 import AdminRoom from "@/pages/AdminPage/AdminRoom/AdminRoom";
 import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/RoomTier";
 import Rating from "@/pages/AdminPage/Rating/Rating";
-import AdminBlacklist from "@/pages/AdminPage/Blacklist/Blacklist";
 import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
+import AdminCustomer from "@/pages/AdminPage/Customer/AdminCustomer";
+import AdminBlacklist from "@/pages/AdminPage/Blacklist/AdminBlacklist";
 import AdminLogin from "@/pages/AdminPage/Login/Login";
 
 export default function MainRoutes() {
@@ -76,6 +77,7 @@ export default function MainRoutes() {
           <Route path="service" element={<AdminService />} />
           <Route path="promote" element={<Promote />} />
           <Route path="staff" element={<AdminStaff />} />
+          <Route path="customer" element={<AdminCustomer />} />
           <Route path="room" element={<AdminRoom />} />
           <Route path="roomtier" element={<AdminRoomTier />} />
           <Route path="rating" element={<Rating />} />

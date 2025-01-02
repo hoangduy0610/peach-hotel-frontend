@@ -137,14 +137,18 @@ const AdminCustomerRating = () => {
                         key: 'action',
                         render: (_, record) => (
                             <Space size="middle">
-                                <Button onClick={() => onEditRating(record)}>Edit</Button>
+                                <Button onClick={() => onEditRating(record)}>
+                                    <i className="fas fa-edit"></i>
+                                </Button>
                                 <Popconfirm
                                     title="Are you sure you want to delete this rating?"
                                     onConfirm={() => onDeleteRating(record.id)}
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button danger>Delete</Button>
+                                    <Button danger>
+                                        <i className="fas fa-trash"></i>
+                                    </Button>
                                 </Popconfirm>
                             </Space>
                         ),
