@@ -8,11 +8,20 @@ import { Container, Row, Col, Button } from "react-bootstrap";
 import CustomDropdown from "@/layouts/CustomDropdown/CustomDropdown";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import { useNavigate, useNavigation } from "react-router-dom";
+import moment from "moment";
 
-const Search = ({ tierList }: { tierList: any[] }) => {
+const Search = ({
+  tierList,
+  startDateInp = moment().toDate(),
+  endDateInp = moment().add(5, 'days').toDate()
+}: {
+  tierList: any[];
+  startDateInp?: Date;
+  endDateInp?: Date;
+}) => {
   const navigate = useNavigate();
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(startDateInp || moment().toDate());
+  const [endDate, setEndDate] = useState(endDateInp || moment().add(5, 'days').toDate());
   const [selectedTier, setSelectedTier] = useState<number | null>(null);
   const [selectedGuest, setSelectedGuest] = useState<number | null>(null);
 

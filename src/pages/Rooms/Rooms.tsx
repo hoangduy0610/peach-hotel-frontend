@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import Search from "@/layouts/Search/Search";
 import { LoadingOverlay } from '@achmadk/react-loading-overlay';
+import moment from "moment";
 
 const Rooms = () => {
   const navigate = useNavigate();
@@ -16,8 +17,8 @@ const Rooms = () => {
     state,
   } = useLocation();
 
-  const startDate = state?.startDate || new Date();
-  const endDate = state?.endDate || new Date();
+  const startDate = state?.startDate ? moment(state?.startDate).toDate() : moment().toDate();
+  const endDate = state?.endDate ? moment(state?.endDate).toDate() : moment().add(5, 'days').toDate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);
@@ -69,14 +70,14 @@ const Rooms = () => {
     >
       <Breadcrumbs title="Hotel" pagename="Hotel" />
       <section className="py-5 room_list">
-        <Search tierList={tierList} />
+        <Search tierList={tierList} startDateInp={startDate} endDateInp={endDate} />
         <Container>
           <Col>
             <Row>
               {roomList.map((val, inx) => {
                 return (
                   <Col md={3} sm={6} xs={12} className="mb-5" key={inx}>
-                    <ProductCard val={val} checkInDate={startDate} checkOutDate={endDate} />
+                    <ProductCard val={val} checkInDate={startDate.toISOString()} checkOutDate={endDate.toISOString()} />
                   </Col>
                 );
               })}
@@ -84,15 +85,6 @@ const Rooms = () => {
           </Col>
         </Container>
       </section>
-
-      <Offcanvas show={show} onHide={handleClose}>
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Search</Offcanvas.Title>
-        </Offcanvas.Header>
-        <Offcanvas.Body>
-          <Search tierList={tierList} />
-        </Offcanvas.Body>
-      </Offcanvas>
     </LoadingOverlay>
   );
 };

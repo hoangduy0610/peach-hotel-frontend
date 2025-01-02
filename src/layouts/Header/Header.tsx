@@ -64,7 +64,7 @@ const Header = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setUserInfo(res.data); // Giả định API trả về thông tin người dùng
+      setUserInfo(res.data.data); // Giả định API trả về thông tin người dùng
     } catch (error) {
       console.error("Failed to fetch user info:", error);
       context.setToken(""); // Xóa token nếu không hợp lệ
