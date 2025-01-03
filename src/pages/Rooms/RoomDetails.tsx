@@ -78,6 +78,9 @@ const RoomDetails = () => {
     })
   };
 
+  const hasRating = roomDetail?.ratings?.length > 0;
+  const rating = hasRating ? roomDetail.ratings.reduce((acc: number, rating: any) => acc + rating.score, 0) / roomDetail.ratings.length : 0;
+
   return (
     <>
       <Breadcrumbs
@@ -140,8 +143,8 @@ const RoomDetails = () => {
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           {/* Rating */}
                           <div>
-                            <span className="fw-bold">{roomDetail?.rating || "N/A"}</span>
-                            {[...Array(Math.floor(roomDetail?.rating || 0))].map(
+                            <span className="fw-bold">{rating || "N/A"} </span>
+                            {[...Array(Math.floor(rating || 0))].map(
                               (_, i) => (
                                 <i
                                   key={i}
@@ -149,11 +152,11 @@ const RoomDetails = () => {
                                 ></i>
                               )
                             )}
-                            {(roomDetail?.rating || 0) % 1 > 0 && (
+                            {(rating || 0) % 1 > 0 && (
                               <i className="bi bi-star-half text-warning"></i>
                             )}
                           </div>
-                          <h5>({roomDetail?.reviews || 0} reviews)</h5>
+                          <h5>({roomDetail?.ratings?.length || 0} reviews)</h5>
                         </div>
                         <button
                           onClick={bookNowHandler}

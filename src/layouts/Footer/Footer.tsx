@@ -36,7 +36,7 @@ const Footer = () => {
     <>
     <footer className="footer">
       <div className="footer__section footer__logo-section">
-        <h2 className="footer__logo">GROUP6 HOTEL</h2>
+        <h2 className="footer__logo">PEACH HOTEL</h2>
         <p className="footer__description">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
         </p>

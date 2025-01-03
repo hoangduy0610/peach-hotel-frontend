@@ -81,7 +81,7 @@ const Header = () => {
         <Navbar expand="lg" className="p-0 mt-2">
           {/* Logo Section  */}
           <Navbar.Brand>
-            <NavLink to="/"> Weekendmonks</NavLink>
+            <NavLink to="/"> PeachHotel</NavLink>
           </Navbar.Brand>
           {/* End Logo Section  */}
 

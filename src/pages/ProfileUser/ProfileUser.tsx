@@ -121,11 +121,12 @@ const ProfileUser = () => {
           <Card.Body>
             <div className="profile-img-container">
               <img
-                src={user.imageUrl || userImg}
+                // src={user.imageUrl || userImg}
+                src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
                 alt="Profile"
                 className="profile-img"
               />
-              <div className="image-upload">
+              {/* <div className="image-upload">
                 <input
                   type="file"
                   accept="image/*"
@@ -148,7 +149,7 @@ const ProfileUser = () => {
                   Upload Image
                 </Button>
 
-              </div>
+              </div> */}
             </div>
             <hr />
             <Form onSubmit={handleUpdateProfile}>
@@ -203,7 +204,7 @@ const ProfileUser = () => {
                   readOnly
                 />
               </Form.Group>
-{/* 
+              {/* 
               <Form.Group controlId="peachPoint" className="mb-4">
                 <Form.Label>Peach Point</Form.Label>
                 <Form.Control

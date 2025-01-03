@@ -15,7 +15,7 @@ interface ProductCardProps {
       name: string;
       description: string;
     }
-    rating: 0,
+    ratings: any[],
     isBalcony: boolean,
     isBathroom: boolean,
     isAirConditioner: boolean,
@@ -41,23 +41,49 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDate }) => {
   const navigate = useNavigate();
+  const features = {
+    isBalcony: val?.isBalcony,
+    isBathroom: val?.isBathroom,
+    isAirConditioner: val?.isAirConditioner,
+    isFreeWifi: val?.isFreeWifi,
+    isTelevision: val?.isTelevision,
+    isRefrigerator: val?.isRefrigerator,
+    isBreakfast: val?.isBreakfast,
+    isLunch: val?.isLunch,
+    isDinner: val?.isDinner,
+    isSnack: val?.isSnack,
+    isDrink: val?.isDrink,
+    isParking: val?.isParking,
+    isSwimmingPool: val?.isSwimmingPool,
+    isGym: val?.isGym,
+    isSpa: val?.isSpa,
+    isLaundry: val?.isLaundry,
+    isCarRental: val?.isCarRental,
+    isBusService: val?.isBusService,
+  }
+
   const featureIcons: { [key: string]: string } = {
-    TV: "bi-tv",
-    Conditioner: "bi-fan",
-    Bathtub: "bi-droplet",
-    Wifi: "bi-wifi",
-    Refrigerator: "bi-box",
-    Breakfast: "bi-bowl",
-    Lunch: "bi-cup",
-    Dinner: "bi-spoon",
-    Snack: "bi-basket",
-    Drink: "bi-cup-straw",
-    Parking: "bi-parking",
-    SwimmingPool: "bi-pool",
-    Gym: "bi-droplet-half",
-    Spa: "bi-spa",
+    isBalcony: "bi-house",
+    isTelevision: "bi-tv",
+    isAirConditioner: "bi-fan",
+    isBathroom: "bi-droplet",
+    isFreeWifi: "bi-wifi",
+    isRefrigerator: "bi-box",
+    isBreakfast: "bi-cup",
+    isLunch: "bi-cup",
+    isDinner: "bi-cup",
+    isSnack: "bi-basket",
+    isDrink: "bi-cup-straw",
+    isParking: "bi-car-front",
+    isSwimmingPool: "bi-person-workspace",
+    isGym: "bi-droplet-half",
+    isSpa: "bi-person-workspace",
+    isLaundry: "bi-bucket",
+    isCarRental: "bi-car-front",
+    isBusService: "bi-bus-front",
   };
   console.log('val', val);
+  const rating = val?.ratings?.reduce((acc, cur) => acc + cur.score, 0) / val?.ratings?.length || 0;
 
   return (
     <Card className="rounded-3 shadow-sm product-card">
@@ -81,8 +107,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
         {/* Rating */}
         <div className="rating mb-3">
           {Array.from({ length: 5 }, (_, index) => {
-            const fullStars = Math.floor(val.rating); // Replace 3.5 with val.rating
-            const hasHalfStar = val.rating % 1 !== 0; // Replace 3.5 with val.rating
+            const fullStars = Math.floor(rating); // Replace 3.5 with rating
+            const hasHalfStar = rating % 1 !== 0; // Replace 3.5 with rating
             if (index < fullStars) {
               return <i className="bi bi-star-fill text-warning" key={index}></i>;
             } else if (index === fullStars && hasHalfStar) {
@@ -91,7 +117,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
               return <i className="bi bi-star text-warning" key={index}></i>;
             }
           })}
-          <span className="ms-2">{val.rating} / 5</span> {/* Replace 3.5 with val.rating */}
+          <span className="ms-2">{rating} / 5</span> {/* Replace 3.5 with rating */}
         </div>
 
         {/* Category */}
@@ -105,7 +131,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
 
         {/* Tier */}
         <div className="tier mb-3">
-          <span className="label">Hạng phòng:</span>
+          <span className="label">Tier:</span>
           <Badge className={`tier-badge ${val.roomTier.name.toLowerCase()}`}>
             {val.roomTier.name}
           </Badge>
@@ -113,46 +139,31 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
 
         {/* Features */}
         <div className="features mt-3">
-          <span className="label">Tiện nghi:</span>
+          <span className="label">Features:</span>
           <div className="features-list mt-3">
-            {/* {val.features.map((feature, index) => (
-              <span key={index} className="feature">
-                <i className={`bi ${featureIcons[feature] || "bi-box"}`}></i> {feature}
-              </span>
-            ))} */}
-            {
-              val.isAirConditioner && <span className="feature">
-                <i className="bi bi-fan"></i> Điều hòa
-              </span>
-            }
-            {
-              val.isBalcony && <span className="feature">
-                <i className="bi bi-house-door"></i> Ban công
-              </span>
-            }
-            {
-              val.isBathroom && <span className="feature">
-                <i className="bi bi-droplet"></i> Phòng tắm
-              </span>
-            }
-            {
-              val.isFreeWifi && <span className="feature">
-                <i className="bi bi-wifi"></i> Wifi miễn phí
-              </span>
-            }
+            {Object.entries(features).map(([feature, value]) => {
+              if (value) {
+                return (
+                  <span className="feature">
+                    <i className={`bi ${featureIcons[feature]}`}></i> {feature.replace('is', '')}
+                  </span>
+                );
+              }
+              return null;
+            })}
           </div>
         </div>
-        
+
         {/* Price */}
         <div className="price mt-4 mb-4">
-          <span className="label">Giá:</span>{" "}
+          <span className="label">Price:</span>{" "}
           <span className="price-value">
             {val.price.toLocaleString("vi-VN", {
               style: "currency",
               currency: "VND",
             })}
           </span>{" "}
-          / đêm
+          / night
         </div>
       </Card.Body>
 
@@ -160,7 +171,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
       {/* Footer with buttons */}
       <Card.Footer className="d-flex justify-content-between">
         <Button variant="primary" onClick={() => navigate(`/room/${val.id}`)}>
-          Xem chi tiết
+          Details
         </Button>
         <Button variant="success" onClick={() => navigate("/booking", {
           state: {
@@ -172,10 +183,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
             price: val.price
           }
         })}>
-          Đặt phòng
+          Book now
         </Button>
       </Card.Footer>
-    </Card>
+    </Card >
   );
 };
 
