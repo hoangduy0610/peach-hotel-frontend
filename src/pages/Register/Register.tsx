@@ -15,12 +15,16 @@ const Register = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [name, setName] = React.useState('');
+    const [address, setAddress] = React.useState('');
+    const [phone, setPhone] = React.useState('');
 
     const handleRegister = async () => {
         const res = await MainApiRequest.post('/auth/register', {
             email,
             password,
-            name
+            name,
+            address,
+            phone,
         });
 
         if (res.status === 200) {
@@ -47,37 +51,53 @@ const Register = () => {
                         </div>
                         <div className="card shadow-lg">
                             <div className="card-body p-5">
-                                <h1 className="fs-4 card-title fw-bold mb-4">Đăng ký</h1>
+                                <h1 className="fs-4 card-title fw-bold mb-4">Register</h1>
                                 <form method="POST" className="needs-validation">
                                     <div className="mb-3">
                                         <label className="mb-2 text-muted">E-Mail</label>
                                         <input id="email" type="email" className="form-control" name="email" value={email} required onChange={(e) => setEmail(e.target.value)} />
                                         <div className="invalid-feedback">
-                                            Email không hợp lệ
+                                            Email invalid
                                         </div>
                                     </div>
 
                                     <div className="mb-3">
                                         <div className="mb-2 w-100">
-                                            <label className="text-muted">Mật khẩu</label>
+                                            <label className="text-muted">Password</label>
                                         </div>
                                         <input id="password" type="password" className="form-control" name="password" value={password} required onChange={(e) => setPassword(e.target.value)} />
                                         <div className="invalid-feedback">
-                                            Mật khẩu không hợp lệ
+                                            Password invalid
                                         </div>
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="mb-2 text-muted">Họ và tên</label>
+                                        <label className="mb-2 text-muted">Full Name</label>
                                         <input id="name" type="text" className="form-control" name="name" value={name} required onChange={(e) => setName(e.target.value)} />
                                         <div className="invalid-feedback">
-                                            Họ và tên không hợp lệ
+                                            Name is invalid
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="mb-2 text-muted">Address</label>
+                                        <input id="address" type="text" className="form-control" name="address" value={address} required onChange={(e) => setAddress(e.target.value)} />
+                                        <div className="invalid-feedback">
+                                            Address is invalid
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <label className="mb-2 text-muted">Phone</label>
+                                        <input id="phone" type="text" className="form-control" name="phone" value={phone} required onChange={(e) => setPhone(e.target.value)} />
+                                        <div className="invalid-feedback">
+                                            Phone is invalid
                                         </div>
                                     </div>
 
                                     <div className="d-flex align-items-center">
                                         <button type="button" onClick={handleRegister} className="btn btn-primary ms-auto">
-                                            Đăng kí
+                                            Register
                                         </button>
                                     </div>
 
@@ -85,14 +105,14 @@ const Register = () => {
 
                                     <div className="d-flex justify-content-center mt-3">
                                         <a href="/login" className="text-muted">
-                                            Đã có tài khoản? Đăng nhập ngay
+                                            Already have an account? Login now
                                         </a>
                                     </div>
                                 </form>
                             </div>
                         </div>
                         <div className="text-center mt-5 text-muted">
-                            Copyright &copy; 2024 &mdash; CXZ
+                            Copyright &copy; 2024 &mdash; PeachHotel
                         </div>
                     </div>
                 </div>
