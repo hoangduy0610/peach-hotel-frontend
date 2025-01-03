@@ -1,61 +1,77 @@
-import React, { useEffect, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
 import {
-    Chart as ChartJS,
     ArcElement,
-    Tooltip,
-    Legend
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    Tooltip
 } from 'chart.js';
+import { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
 
 ChartJS.register(
     ArcElement,
     Tooltip,
-    Legend
+    Legend,
+    BarElement,
+    CategoryScale,
+    LinearScale
 );
 
-const TierChart: React.FC = () => {
+const TierChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
-    const sampleData = [
-        { tier: 'Economy', rooms: 40 },
-        { tier: 'Standard', rooms: 30 },
-        { tier: 'Deluxe', rooms: 20 },
-        { tier: 'Suite', rooms: 10 },
-    ];
+    const sampleData = data?.roomByTier || [];
 
     useEffect(() => {
-        const labels = sampleData.map(item => item.tier);
-        const values = sampleData.map(item => item.rooms);
+        const labels = sampleData.map((item: any) => item.tier);
+        const values = sampleData.map((item: any) => item.amount);
+
+        const presetColors = [
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 159, 64, 0.6)',
+            'rgba(199, 199, 199, 0.6)',
+            'rgba(83, 102, 255, 0.6)',
+            'rgba(255, 159, 128, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(54, 162, 235, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(153, 102, 255, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+        ];
+
+        const backgroundColors = labels.map((_: any, i: number) => presetColors[i % presetColors.length]);
+        const borderColors = labels.map((_: any, i: number) => presetColors[i % presetColors.length].replace(/0.6/, '1'));
 
         setChartData({
             labels: labels,
             datasets: [
                 {
-                    label: 'Rooms by Tier',
+                    label: "Rooms by Tier",
                     data: values,
-                    backgroundColor: [
-                        'rgba(255, 99, 132, 0.6)',
-                        'rgba(54, 162, 235, 0.6)',
-                        'rgba(255, 206, 86, 0.6)',
-                        'rgba(75, 192, 192, 0.6)'
-                    ],
-                    borderColor: [
-                        'rgba(255, 99, 132, 1)',
-                        'rgba(54, 162, 235, 1)',
-                        'rgba(255, 206, 86, 1)',
-                        'rgba(75, 192, 192, 1)'
-                    ],
+                    backgroundColor: backgroundColors,
+                    borderColor: borderColors,
                     borderWidth: 1
                 }
             ]
         });
-    }, []);
+    }, [data]);
 
     return (
         <div className="chart">
-            <h3 className='h3'>Rooms by Tier</h3>
             {chartData ? (
-                <Pie
+                <Bar
                     data={chartData}
                     options={{
                         responsive: true,
@@ -66,6 +82,14 @@ const TierChart: React.FC = () => {
                             title: {
                                 display: true,
                                 text: 'Rooms by Tier'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                beginAtZero: true
+                            },
+                            y: {
+                                beginAtZero: true
                             }
                         }
                     }}

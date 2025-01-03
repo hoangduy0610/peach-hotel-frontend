@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Pie } from 'react-chartjs-2';
+import { Doughnut, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -13,13 +13,20 @@ ChartJS.register(
     Legend
 );
 
-const BookingStatusChart: React.FC = () => {
+const BookingStatusChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
     // Dữ liệu mẫu cho booking status (Đã đặt và Đã hủy)
+    // const sampleData = [
+    //     { status: 'Booked', count: 120 },
+    //     { status: 'Cancelled', count: 30 },
+    // ];
+
+    const cancelledRate = data?.cancelBookingRate * 100 || 0;
+    const bookedRate = 100 - cancelledRate;
     const sampleData = [
-        { status: 'Booked', count: 120 },
-        { status: 'Cancelled', count: 30 },
+        { status: 'Booked', count: bookedRate },
+        { status: 'Cancelled', count: cancelledRate },
     ];
 
     useEffect(() => {
@@ -44,13 +51,13 @@ const BookingStatusChart: React.FC = () => {
                 }
             ]
         });
-    }, []);
+    }, [data]);
 
     return (
         <div className="chart">
-            <h3 className='h3'>Booking Status in the Last 14 Days</h3>
+            {/* <h3 className='h3'>Booking Status in the Last 14 Days</h3> */}
             {chartData ? (
-                <Pie
+                <Doughnut
                     data={chartData}
                     options={{
                         responsive: true,

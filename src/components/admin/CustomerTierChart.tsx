@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut, Pie } from 'react-chartjs-2';
 import {
     Chart as ChartJS,
     ArcElement,
@@ -13,19 +13,22 @@ ChartJS.register(
     Legend
 );
 
-const CustomerTierChart: React.FC = () => {
+const CustomerTierChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
-    const sampleData = [
-        { tier: 'Bronze', customers: 40 },
-        { tier: 'Silver', customers: 30 },
-        { tier: 'Gold', customers: 20 },
-        { tier: 'Platinum', customers: 10 },
-    ];
+    // const sampleData = [
+    //     { tier: 'Bronze', customers: 40 },
+    //     { tier: 'Silver', customers: 30 },
+    //     { tier: 'Gold', customers: 20 },
+    //     { tier: 'Platinum', customers: 10 },
+    // ];
+
+    const sampleData = data?.rankMap || [];
+    const arr = Object.entries(sampleData).map(([key, value]) => ({ tier: key, customers: value }));
 
     useEffect(() => {
-        const labels = sampleData.map(item => item.tier);
-        const values = sampleData.map(item => item.customers);
+        const labels = arr.map(item => item.tier);
+        const values = arr.map(item => item.customers);
 
         setChartData({
             labels: labels,
@@ -49,11 +52,11 @@ const CustomerTierChart: React.FC = () => {
                 }
             ]
         });
-    }, []);
+    }, [data]);
 
     return (
         <div className="chart">
-            <h3 className='h3'>Customers by Tier</h3>
+            {/* <h3 className='h3'>Customers by Tier</h3> */}
             {chartData ? (
                 <Doughnut
                     data={chartData}

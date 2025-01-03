@@ -11,6 +11,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import moment from 'moment';
 
 ChartJS.register(
     CategoryScale,
@@ -23,20 +24,22 @@ ChartJS.register(
     Legend
 );
 
-const CombinedChart: React.FC = () => {
+const CombinedChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
-    const sampleData = [
-        { date: '2024-12-01', bookings: 10, revenue: 100 },
-        { date: '2024-12-02', bookings: 12, revenue: 150 },
-        // Các dữ liệu mẫu khác...
-        { date: '2024-12-30', bookings: 10, revenue: 120 },
-    ];
+    // const sampleData = [
+    //     { date: '2024-12-01', bookings: 10, revenue: 100 },
+    //     { date: '2024-12-02', bookings: 12, revenue: 150 },
+    //     // Các dữ liệu mẫu khác...
+    //     { date: '2024-12-30', bookings: 10, revenue: 120 },
+    // ];
+
+    const sampleData = data?.last14DaysBooking || [];
 
     useEffect(() => {
-        const labels = sampleData.map(item => item.date);
-        const bookingValues = sampleData.map(item => item.bookings);
-        const revenueValues = sampleData.map(item => item.revenue);
+        const labels = sampleData.map((item: any) => moment(item.date).format('DD/MM/YYYY'));
+        const bookingValues = sampleData.map((item: any) => item.amount);
+        const revenueValues = (data?.last14DaysBookingValue || []).map((item: any) => item.amount);
 
         setChartData({
             labels: labels,
@@ -57,16 +60,16 @@ const CombinedChart: React.FC = () => {
                     backgroundColor: 'rgba(153, 102, 255, 0.6)',
                     borderColor: 'rgba(153, 102, 255, 1)',
                     fill: false,
-                    tension: 0.1,
+                    // tension: 0.1,
                     yAxisID: 'y-axis-2',
                 }
             ]
         });
-    }, []);
+    }, [data]);
 
     return (
         <div className="chart">
-            <h3 className='h3'>Room Bookings and Daily Revenue in the Last 30 Days</h3>
+            {/* <h3 className='h3'>Room Bookings and Daily Revenue in the Last 14 Days</h3> */}
             {chartData ? (
                 <Chart
                     type='bar'
@@ -79,7 +82,7 @@ const CombinedChart: React.FC = () => {
                             },
                             title: {
                                 display: true,
-                                text: 'Room Bookings and Daily Revenue in the Last 30 Days'
+                                text: 'Room Bookings and Daily Revenue in the Last 14 Days'
                             }
                         },
                         scales: {
@@ -103,11 +106,11 @@ const CombinedChart: React.FC = () => {
                                 position: 'right',
                                 title: {
                                     display: true,
-                                    text: 'Revenue (USD)'
+                                    text: 'Revenue (VND)'
                                 },
                                 beginAtZero: true,
                                 grid: {
-                                    drawOnChartArea: false, 
+                                    drawOnChartArea: false,
                                 },
                             }
                         }

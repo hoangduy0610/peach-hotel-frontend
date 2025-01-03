@@ -126,14 +126,14 @@ const ProfileUser = () => {
                 alt="Profile"
                 className="profile-img"
               />
-              {/* <div className="image-upload">
-                <input
+              <div className="image-upload">
+                {/* <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
                   id="image-upload-input"
                   className="d-none"
-                />
+                /> */}
                 <span>
                   <strong>Current Rank: </strong>
                   {mapIcon(peachPoint)}
@@ -141,15 +141,15 @@ const ProfileUser = () => {
                     {mapRank(peachPoint)}
                   </Tag>
                 </span>
-                <Button
+                {/* <Button
                   variant="primary"
                   onClick={() => document.getElementById("image-upload-input")?.click()}
                   className="upload-btn"
                 >
                   Upload Image
-                </Button>
+                </Button> */}
 
-              </div> */}
+              </div>
             </div>
             <hr />
             <Form onSubmit={handleUpdateProfile}>

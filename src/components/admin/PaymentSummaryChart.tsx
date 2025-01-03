@@ -1,15 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
 import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
     BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
     Title,
-    Tooltip,
-    Legend
+    Tooltip
 } from 'chart.js';
-import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { Doughnut, Pie } from 'react-chartjs-2';
 
 ChartJS.register(
     CategoryScale,
@@ -20,7 +19,7 @@ ChartJS.register(
     Legend
 );
 
-const BookingsChart = ({ data }: { data: any }) => {
+const PaymentSummaryChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
     // const sampleData = [
@@ -55,20 +54,35 @@ const BookingsChart = ({ data }: { data: any }) => {
     //     { date: '2024-12-29', bookings: 9 },
     //     { date: '2024-12-30', bookings: 10 },
     // ];
-    const sampleData = data?.last14DaysBooking || [];
+    const sampleData = [
+        {
+            name: 'Total Payment',
+            value: data?.totalPayment || 0
+        },
+        {
+            name: 'Confirmed Payment',
+            value: data?.totalConfirmedPaymentValue || 0
+        }
+    ];
 
     useEffect(() => {
-        const labels = sampleData.map((item: any) => moment(item.date).format('DD/MM/YYYY'));
-        const values = sampleData.map((item: any) => item.amount);
+        const labels = sampleData.map(item => item.name);
+        const values = sampleData.map(item => item.value);
 
         setChartData({
             labels: labels,
             datasets: [
                 {
-                    label: 'Number of Rooms Booked',
+                    label: 'Payment Summary',
                     data: values,
-                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(75, 192, 192, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
                     borderWidth: 1
                 }
             ]
@@ -77,9 +91,9 @@ const BookingsChart = ({ data }: { data: any }) => {
 
     return (
         <div className="chart">
-            {/* <h3 className='h3'>Room Bookings in the Last 14 Days</h3> */}
+            {/* <h3 className='h3'>Payment Summary</h3> */}
             {chartData ? (
-                <Bar
+                <Doughnut
                     data={chartData}
                     options={{
                         responsive: true,
@@ -89,22 +103,7 @@ const BookingsChart = ({ data }: { data: any }) => {
                             },
                             title: {
                                 display: true,
-                                text: 'Room Bookings in the Last 14 Days'
-                            }
-                        },
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Date'
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Number of Rooms Booked'
-                                },
-                                beginAtZero: true
+                                text: 'Payment Summary'
                             }
                         }
                     }}
@@ -116,4 +115,4 @@ const BookingsChart = ({ data }: { data: any }) => {
     );
 }
 
-export default BookingsChart;
+export default PaymentSummaryChart;

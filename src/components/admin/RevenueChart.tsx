@@ -10,6 +10,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import moment from 'moment';
 
 ChartJS.register(
     CategoryScale,
@@ -21,19 +22,21 @@ ChartJS.register(
     Legend
 );
 
-const RevenueChart: React.FC = () => {
+const RevenueChart = ({ data }: { data: any }) => {
     const [chartData, setChartData] = useState<any>(null);
 
-    const sampleRevenueData = [
-        { date: '2024-12-01', revenue: 100 },
-        { date: '2024-12-02', revenue: 150 },
-        // Các dữ liệu mẫu khác...
-        { date: '2024-12-30', revenue: 120 },
-    ];
+    // const sampleRevenueData = [
+    //     { date: '2024-12-01', revenue: 100 },
+    //     { date: '2024-12-02', revenue: 150 },
+    //     // Các dữ liệu mẫu khác...
+    //     { date: '2024-12-30', revenue: 120 },
+    // ];
+
+    const sampleRevenueData = data?.last30DaysBookingValue || [];
 
     useEffect(() => {
-        const labels = sampleRevenueData.map(item => item.date);
-        const values = sampleRevenueData.map(item => item.revenue);
+        const labels = sampleRevenueData.map((item: any) => moment(item.date).format('DD/MM/YYYY'));
+        const values = sampleRevenueData.map((item: any) => item.amount);
 
         setChartData({
             labels: labels,
@@ -48,11 +51,11 @@ const RevenueChart: React.FC = () => {
                 }
             ]
         });
-    }, []);
+    }, [data]);
 
     return (
         <div className="chart">
-            <h3 className='h3'>Daily Revenue in the Last 30 Days</h3>
+            {/* <h3 className='h3'>Daily Revenue in the Last 14 Days</h3> */}
             {chartData ? (
                 <Line
                     data={chartData}
@@ -77,7 +80,7 @@ const RevenueChart: React.FC = () => {
                             y: {
                                 title: {
                                     display: true,
-                                    text: 'Revenue (USD)'
+                                    text: 'Revenue (VND)'
                                 },
                                 beginAtZero: true
                             }
