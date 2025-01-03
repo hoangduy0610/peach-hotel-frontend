@@ -20,7 +20,7 @@ const AdminStaff = () => {
     }, []);
 
     const onOpenCreateStaffModal = () => {
-        setOpenCreateStaffModal(true);    
+        setOpenCreateStaffModal(true);
     };
 
     const onOKCreateStaff = async () => {
@@ -93,8 +93,8 @@ const AdminStaff = () => {
                             name="role"
                         >
                             <Select>
-                                <Select.Option value="ROLE_ADMIN">Admin</Select.Option>
-                                <Select.Option value="ROLE_RECEP">Staff</Select.Option>
+                                <Select.Option value="ROLE_ADMIN">Manager</Select.Option>
+                                <Select.Option value="ROLE_RECEP">Receptionist</Select.Option>
                             </Select>
                         </Form.Item>
                     </div>
@@ -110,6 +110,7 @@ const AdminStaff = () => {
                             <Form.Item
                                 label="Password"
                                 name="password"
+
                                 rules={[{ required: true, message: "Please input password!" }]}
                             >
                                 <Input.Password />
@@ -142,7 +143,7 @@ const AdminStaff = () => {
                     { title: 'Email', dataIndex: 'email', key: 'email' },
                     { title: 'Address', dataIndex: 'address', key: 'address' },
                     { title: 'Phone', dataIndex: 'phone', key: 'phone' },
-                    { title: 'Role', dataIndex: 'role', key: 'role', render: (role: string) => role === 'ROLE_ADMIN' ? 'Admin' : 'Staff' },
+                    { title: 'Role', dataIndex: 'role', key: 'role', render: (role: string) => role === 'ROLE_ADMIN' ? 'Manager' : 'Receptionist' },
                     {
                         title: 'Action',
                         key: 'actions',
@@ -157,7 +158,7 @@ const AdminStaff = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button onClick={()=> onDeleteStaff(record.id)} danger>    
+                                    <Button onClick={() => onDeleteStaff(record.id)} danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>

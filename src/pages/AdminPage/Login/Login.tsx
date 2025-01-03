@@ -31,6 +31,7 @@ const Login = () => {
             // context.setToken(data.token);
 
             localStorage.setItem('adminToken', data.token);
+            localStorage.setItem('role', data.info.role);
 
             navigate('/admin');
         }

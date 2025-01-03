@@ -17,61 +17,73 @@ const Navbar: React.FC = () => {
       title: 'Dashboard',
       link: '/admin/dashboard',
       icon: 'fas fa-tachometer-alt',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],
     },
     {
       title: 'Booking',
       link: '/admin/booking',
       icon: 'fas fa-book',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],
     },
     {
       title: 'Rooms',
       link: '/admin/room',
       icon: 'fas fa-bed',
+      roles: ['ROLE_ADMIN'],
     },
     {
       title: 'Room Tier',
       link: '/admin/roomtier',
       icon: 'fas fa-layer-group',
+      roles: ['ROLE_ADMIN'],
     },
     {
       title: 'Service',
       link: '/admin/service',
       icon: 'fas fa-cogs',
+      roles: ['ROLE_ADMIN'],
     },
     {
       title: 'Promote',
       link: '/admin/promote',
       icon: 'fas fa-tags',
+      roles: ['ROLE_ADMIN'],
     },
     {
       title: 'Staff',
       link: '/admin/staff',
       icon: 'fas fa-users',
+      roles: ['ROLE_ADMIN'],
     },
     {
       title: 'Customer',
       link: '/admin/customer',
       icon: 'fas fa-user-friends',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],
     },
     {
       title: 'Blacklist',
       link: '/admin/blacklist',
       icon: 'fas fa-ban',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],
     },
     {
       title: 'Rating',
       link: '/admin/rating',
       icon: 'fas fa-star',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],
     },
     {
       title: 'Payment History',  // New Route
       link: '/admin/paymenthistory',  // Add your route here
       icon: 'fas fa-credit-card',  // You can use any icon you prefer
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP'],  // Add your role here
     },
   ];
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('role');
     window.location.href = '/admin/login';
   }
 
@@ -86,7 +98,9 @@ const Navbar: React.FC = () => {
         {
           routes.map((route, index) => {
             const isActive = comparePathname(currentPath, route.link);
-
+            if (!route.roles.includes(localStorage.getItem('role') || '')) {
+              return null;
+            }
             return (
               <li key={index} className={`flex-1 nav-item`}>
                 <Link

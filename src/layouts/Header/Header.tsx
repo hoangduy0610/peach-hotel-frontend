@@ -48,7 +48,7 @@ const Header = () => {
     // Clear token or any session-related info
     context.setToken("");  // Reset token in context
     localStorage.removeItem("token");  // Remove token from localStorage
-    navigate("/login");  // Redirect to home page or login page
+    navigate("/");  // Redirect to home page or login page
   };
 
   useEffect(() => {

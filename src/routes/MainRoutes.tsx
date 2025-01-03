@@ -1,4 +1,4 @@
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useOutletContext } from "react-router-dom";
 import "@/App.scss";
 import Footer from "@/layouts/Footer/Footer";
 import Header from "@/layouts/Header/Header";
@@ -34,6 +34,7 @@ import AdminBlacklist from "@/pages/AdminPage/Blacklist/AdminBlacklist";
 import AdminLogin from "@/pages/AdminPage/Login/Login";
 import AdminPromote from "@/pages/AdminPage/Promote/AdminPromote";
 import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/AdminRoomTier";
+import { message } from "antd";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -41,19 +42,88 @@ export default function MainRoutes() {
 
   // Check if current route is login or register
   const whitelistPages = [
-    "/login", 
-    "/register", 
+    "/login",
+    "/register",
     "/admin/login",
     "/about-us",
     "/contact-us",
     "/",
   ];
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/admin/login";
-  const isAdminPage = location.pathname.includes('/admin')
+  const isAdminPage = location.pathname.includes('admin')
+
+  const adminRoutes = [
+    {
+      url: '/admin/dashboard',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    },
+    {
+      url: '/admin/booking',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    },
+    {
+      url: '/admin/room',
+      roles: ['ROLE_ADMIN']
+    },
+    {
+      url: '/admin/roomtier',
+      roles: ['ROLE_ADMIN']
+    },
+    {
+      url: '/admin/service',
+      roles: ['ROLE_ADMIN']
+    },
+    {
+      url: '/admin/promote',
+      roles: ['ROLE_ADMIN']
+    },
+    {
+      url: '/admin/staff',
+      roles: ['ROLE_ADMIN']
+    },
+    {
+      url: '/admin/customer',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    },
+    {
+      url: '/admin/rating',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    },
+    {
+      url: '/admin/blacklist',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    },
+    {
+      url: '/admin/paymenthistory',
+      roles: ['ROLE_ADMIN', 'ROLE_RECEP']
+    }
+  ];
 
   useEffect(() => {
     if (!context)
       return;
+
+    if (localStorage.getItem('pendingMessage')) {
+      const type = localStorage.getItem('pendingMessageType');
+      switch (type) {
+        case 'success':
+          message.success(localStorage.getItem('pendingMessage'));
+          break;
+        case 'error':
+          message.error(localStorage.getItem('pendingMessage'));
+          break;
+        default:
+          message.info(localStorage.getItem('pendingMessage'));
+          break;
+      }
+      localStorage.removeItem('pendingMessage');
+      localStorage.removeItem('pendingMessageType');
+    }
+
+    if (location.pathname === "/admin") {
+      window.location.href = "/admin/dashboard";
+      return;
+    }
 
     if (whitelistPages.includes(location.pathname)) {
       return;
@@ -64,8 +134,25 @@ export default function MainRoutes() {
       return;
     }
 
-    if (!localStorage.getItem('token')) {
+    if (!localStorage.getItem('token') && !isAdminPage) {
+      console.log('Redirecting to login page');
       window.location.href = "/login";
+    }
+
+    if (isAdminPage) {
+      const role = localStorage.getItem('role');
+      if (!role) {
+        window.location.href = "/admin/login";
+        return;
+      }
+
+      const allowedRoutes = adminRoutes.filter(route => route.roles.includes(role));
+      const isAllowed = allowedRoutes.some(route => location.pathname.includes(route.url));
+      if (!isAllowed) {
+        localStorage.setItem('pendingMessage', 'You are not allowed to access this page');
+        localStorage.setItem('pendingMessageType', 'error');
+        window.location.href = "/admin/dashboard";
+      }
     }
   }, []);
 
