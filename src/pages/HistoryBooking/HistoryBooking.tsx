@@ -8,16 +8,43 @@ import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 const HistoryBooking = () => {
+  const navigate = useNavigate();
   const [bookingList, setBookingList] = useState<any[]>([]);
   const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [currentReservationCode, setCurrentReservationCode] = useState<number | null>(null);
   const [feedbackForm] = Form.useForm();
   const [rating, setRating] = useState(0);
-  const navigate = useNavigate();
+  const [originalBookingList, setOriginalBookingList] = useState<any[]>([]);
+
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const mappingColor = (status: string) => {
+    switch (status) {
+      case 'PENDING': return 'blue';
+      case 'CONFIRMED': return 'green';
+      case 'CANCELLED': return 'red';
+      case 'CHECKED_IN': return 'orange';
+      case 'CHECKED_OUT': return 'purple';
+      default: return 'black';
+    }
+  }
+
+  const handleSearchKeyword = () => {
+    if (searchKeyword === '') {
+      setBookingList(originalBookingList);
+    } else {
+      const filteredList = originalBookingList.filter(booking => {
+        return booking.customerName.toLowerCase().includes(searchKeyword.toLowerCase())
+          || booking.reservationCode.toLowerCase().includes(searchKeyword.toLowerCase())
+          || booking.customerPhone.toLowerCase().includes(searchKeyword.toLowerCase());
+      });
+      setBookingList(filteredList);
+    }
+  }
 
   const fetchBookingList = async () => {
     const res = await MainApiRequest.get('/booking/list');
     setBookingList(res.data)
+    setOriginalBookingList(res.data);
   }
 
   useEffect(() => {
@@ -70,51 +97,70 @@ const HistoryBooking = () => {
       <Breadcrumbs title="History Booking" pagename="History Booking" />
       <section className="history-section py-5">
         <Container>
+          <Form
+            layout='inline'
+            className='d-flex justify-content-end mb-3'
+          >
+            <Form.Item label='Search (Customer Name, Reservation code, Number)' className='d-flex flex-1'>
+              <Input placeholder='Search Keyword' value={searchKeyword} onChange={(e) => setSearchKeyword(e.target.value)} />
+            </Form.Item>
+            <Form.Item>
+              <Button type='primary' onClick={handleSearchKeyword}>Search</Button>
+            </Form.Item>
+          </Form>
           <Table
             dataSource={bookingList}
+            showSorterTooltip={{ target: 'sorter-icon' }}
             columns={[
-              { title: 'Guest', dataIndex: 'customerName', key: 'customerName' },
-              { title: 'Reservation Code', dataIndex: 'reservationCode', key: 'reservationCode' },
-              { title: 'Phone Number', dataIndex: 'customerPhone', key: 'customerPhone' },
               {
-                title: 'Check In',
-                dataIndex: 'checkIn',
-                key: 'checkIn',
-                render: (checkIn: string) => moment(checkIn).format('DD-MM-YYYY'),
+                sorter: (a: any, b: any) => a.customerName.localeCompare(b.customerName),
+                title: 'Guest', dataIndex: 'customerName', key: 'customerName'
               },
               {
-                title: 'Check Out',
-                dataIndex: 'checkOut',
-                key: 'checkOut',
-                render: (checkOut: string) => moment(checkOut).format('DD-MM-YYYY'),
+                sorter: (a: any, b: any) => a.reservationCode.localeCompare(b.reservationCode),
+                title: 'Reservation Code', dataIndex: 'reservationCode', key: 'reservationCode'
               },
               {
-                title: 'Room Type',
-                dataIndex: 'rooms',
-                key: 'rooms',
-                render: (rooms: any[]) => rooms[0]?.roomTier?.name,
+                sorter: (a: any, b: any) => a.customerPhone.localeCompare(b.customerPhone),
+                title: 'Phone Number', dataIndex: 'customerPhone', key: 'customerPhone'
+              },
+              // { sorter:true, title: 'Check In', dataIndex: 'checkIn', key: 'checkIn', render: (checkIn: string) => moment(checkIn).format('DD-MM-YYYY') },
+              // { sorter:true, title: 'Check Out', dataIndex: 'checkOut', key: 'checkOut', render: (checkOut: string) => moment(checkOut).format('DD-MM-YYYY') },
+              {
+                title: 'Booking Time', key: 'bookingTime', render: (record: any) => {
+                  return (
+                    <div className='text-left d-flex flex-column'>
+                      <span><strong className="fw-bold">Arrive:</strong> {moment(record.checkIn).format('DD-MM-YYYY')}</span>
+                      <span><strong className="fw-bold">Leave: </strong> {moment(record.checkOut).format('DD-MM-YYYY')}</span>
+                    </div>
+                  )
+                }
               },
               {
-                title: 'Status',
-                dataIndex: 'status',
-                key: 'status',
-                render: (status: string) => {
-                  let color = '';
-                  switch (status) {
-                    case 'PENDING':
-                      color = 'orange';
-                      break;
-                    case 'CANCELLED':
-                      color = 'red';
-                      break;
-                    case 'CONFIRMED':
-                      color = 'green';
-                      break;
-                    default:
-                      color = 'gray';
-                  }
-                  return <Tag color={color}>{status}</Tag>;
-                },
+                title: 'Checkin Time', key: 'checkinTime', render: (record: any) => {
+                  return (
+                    <div className='text-left d-flex flex-column'>
+                      <span><strong className="fw-bold">Check In:</strong> {record.realCheckIn ? moment(record.realCheckIn).format('DD-MM-YYYY HH:mm:ss') : '-'}</span>
+                      <span><strong className="fw-bold">Check Out:</strong> {record.realCheckOut ? moment(record.realCheckOut).format('DD-MM-YYYY HH:mm:ss') : '-'}</span>
+                    </div>
+                  )
+                }
+              },
+              {
+                sorter: (a: any, b: any) => a.rooms[0]?.roomTier?.name.localeCompare(b.rooms[0]?.roomTier?.name),
+                title: 'Room Type', dataIndex: 'rooms', key: 'roomType', render: (rooms: any[]) => rooms[0]?.roomTier?.name
+              },
+              {
+                sorter: (a: any, b: any) => a.rooms[0]?.name.localeCompare(b.rooms[0]?.name),
+                title: 'Room Name', dataIndex: 'rooms', key: 'roomName', render: (rooms: any[]) => rooms[0]?.name
+              },
+              {
+                sorter: (a: any, b: any) => a.createdAt.localeCompare(b.createdAt),
+                title: 'Booking Date', dataIndex: 'createdAt', key: 'createdAt', render: (bookingDate: string) => moment(bookingDate).format('DD-MM-YYYY HH:mm:ss')
+              },
+              {
+                sorter: (a: any, b: any) => a.status.localeCompare(b.status),
+                title: 'Status', dataIndex: 'status', key: 'status', render: (status: string) => <Tag color={mappingColor(status)}>{status}</Tag>
               },
               {
                 title: 'Actions',

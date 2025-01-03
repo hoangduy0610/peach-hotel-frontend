@@ -78,7 +78,8 @@ const Navbar: React.FC = () => {
   return (
     <div className="d-flex flex-column align-items-center w-100 min-vh-100 sidebar px-2">
       <h1 className="logo">
-        <img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUhQJ-44yDYIuo8Hj-L1ezQSKAkkK4CqlecQ&s"} style={{ width: '100%', height: 'auto' }} />
+        {/* <img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUhQJ-44yDYIuo8Hj-L1ezQSKAkkK4CqlecQ&s"} style={{ width: '100%', height: 'auto' }} /> */}
+        <img src={require("@/assets/logo.jpg")} style={{ height: 150, width: 'auto' }} />
       </h1>
       <h5 className="systems">Navigation Systems</h5>
       <ul className="nav nav-pills d-flex flex-column w-100">

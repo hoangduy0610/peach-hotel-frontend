@@ -122,6 +122,8 @@ const PaymentHistory = () => {
       <Table
         dataSource={paymentsList}
         columns={[
+          { title: 'Booking Reservation Code', dataIndex: 'booking', key: 'bookingCode', render: (booking: any) => booking.reservationCode },
+          { title: 'Customer Name', dataIndex: 'booking', key: 'customerName', render: (booking: any) => booking.customerName },
           { title: 'Payment Remark', dataIndex: 'description', key: 'description' },
           { title: 'Amount', dataIndex: 'amount', key: 'amount' },
           { title: 'Payment Date', dataIndex: 'paymentDate', key: 'paymentDate' },
