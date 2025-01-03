@@ -9,12 +9,7 @@ const AdminStaff = () => {
 
     const [openCreateStaffModal, setOpenCreateStaffModal] = useState(false);
     const [editingStaff, setEditingStaff] = useState<any | null>(null);
-<<<<<<< HEAD
-    
-=======
-    const [nextId, setNextId] = useState<number>(1); // Quản lý ID tiếp theo
 
->>>>>>> 61b62cfa378cb701ab7ab3b63ba1c0abaa40c14f
     const fetchStaffList = async () => {
         const res = await MainApiRequest.get('/staff/list');
         setStaffList(res.data);
@@ -25,13 +20,7 @@ const AdminStaff = () => {
     }, []);
 
     const onOpenCreateStaffModal = () => {
-<<<<<<< HEAD
         setOpenCreateStaffModal(true);    
-=======
-        setEditingStaff(null); // Xóa trạng thái đang chỉnh sửa
-        form.setFieldsValue({});
-        setOpenCreateStaffModal(true);
->>>>>>> 61b62cfa378cb701ab7ab3b63ba1c0abaa40c14f
     };
 
     const onOKCreateStaff = async () => {
@@ -80,6 +69,7 @@ const AdminStaff = () => {
             </Button>
 
             <Modal
+                className='staff-modal'
                 title={editingStaff ? "Edit Staff" : "Create Staff"}
                 open={openCreateStaffModal}
                 onOk={onOKCreateStaff}
@@ -90,36 +80,42 @@ const AdminStaff = () => {
                     layout="vertical"
                     initialValues={{ role: "ROLE_ADMIN" }} // Đặt giá trị mặc định cho "role"
                 >
-                    <Form.Item
-                        label="Name"
-                        name="name"
-                        rules={[{ required: true, message: "Please input name!" }]}
-                    >
-                        <Input type="text" />
-                    </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[{ required: true, message: "Please input email!" }]}
-                    >
-                        <Input type="email" />
-                    </Form.Item>
-                    {!editingStaff &&
+                    <div className="field-row">
                         <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[{ required: true, message: "Please input password!" }]}
+                            label="Name"
+                            name="name"
+                            rules={[{ required: true, message: "Please input name!" }]}
                         >
-                            <Input.Password />
+                            <Input type="text" />
                         </Form.Item>
-                    }
-                    <Form.Item
-                        label="Address"
-                        name="address"
-                        rules={[{ required: true, message: "Please input address!" }]}
-                    >
-                        <Input type="text" />
-                    </Form.Item>
+                        <Form.Item
+                            label="Role"
+                            name="role"
+                        >
+                            <Select>
+                                <Select.Option value="ROLE_ADMIN">Admin</Select.Option>
+                                <Select.Option value="ROLE_RECEP">Staff</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    </div>
+                    <div className="field-row">
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: "Please input email!" }]}
+                        >
+                            <Input type="email" />
+                        </Form.Item>
+                        {!editingStaff &&
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                rules={[{ required: true, message: "Please input password!" }]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
+                        }
+                    </div>
                     <Form.Item
                         label="Phone"
                         name="phone"
@@ -128,14 +124,13 @@ const AdminStaff = () => {
                         <Input type="text" />
                     </Form.Item>
                     <Form.Item
-                        label="Role"
-                        name="role"
+                        label="Address"
+                        name="address"
+                        rules={[{ required: true, message: "Please input address!" }]}
                     >
-                        <Select>
-                            <Select.Option value="ROLE_ADMIN">Admin</Select.Option>
-                            <Select.Option value="ROLE_RECEP">Staff</Select.Option>
-                        </Select>
+                        <Input type="text" />
                     </Form.Item>
+
                 </Form>
             </Modal>
 
@@ -152,8 +147,8 @@ const AdminStaff = () => {
                         title: 'Action',
                         key: 'actions',
                         render: (_, record) => (
-                            <>
-                                <Button type="link" onClick={() => onEditStaff(record)}>
+                            <Space size="middle">
+                                <Button onClick={() => onEditStaff(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
                                 <Popconfirm
@@ -162,11 +157,11 @@ const AdminStaff = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>
+                                    <Button onClick={()=> onDeleteStaff(record.id)} danger>    
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>
-                            </>
+                            </Space >
                         ),
                     },
                 ]}

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, Modal, Select, Table, Popconfirm } from 'antd';
-
+import { Button, Form, Input, Modal, Select, Table, Popconfirm, Space, Checkbox } from 'antd';
+import "./AdminRoom.scss";
 const AdminRoom = () => {
   const [form] = Form.useForm();
   const [roomList, setRoomList] = useState<any[]>([]);
@@ -15,9 +15,14 @@ const AdminRoom = () => {
     const res = await MainApiRequest.get('/room/list');
     setRoomList(res.data);
   };
+  const fetchRoomTierList = async () => {
+    const res = await MainApiRequest.get('/room/tier/list');
+    setRoomTierList(res.data);
+  }
 
   useEffect(() => {
     fetchRoomList();
+    fetchRoomTierList();
   }, []);
 
   const onOpenCreateRoomModal = () => {
@@ -63,33 +68,90 @@ const AdminRoom = () => {
       </Button>
 
       <Modal
+        className='room-modal'
         title={editingRoom ? "Edit Room" : "Create Room"}
         open={openCreateRoomModal}
         onOk={() => onOKCreateRoom()}
         onCancel={() => onCancelCreateRoom()}
       >
-        <Form form={form}>
-          <Form.Item label="Room Name" name="name" rules={[{ required: true, message: 'Please input room name!' }]}>
-            <Input />
+        <Form 
+          form={form}
+          layout="vertical"
+        >
+          <div className='field-row'>
+          <Form.Item 
+            label="Room Name" 
+            name="name" 
+            rules={[{ required: true, message: 'Please input room name!' }]}
+          >
+            <Input type='text'/>
           </Form.Item>
-          <Form.Item label="Price" name="price" rules={[{ required: true, message: 'Please input price!' }]}>
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item label="Room Tier" name="roomTierId" rules={[{ required: true, message: 'Please select room tier!' }]}>
-            <Select>
-              {roomTierList.map((tier) => (
-                <Select.Option key={tier.id} value={tier.id}>
-                  {tier.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Form.Item 
+              label="Room Tier" 
+              name="roomTierId" 
+              rules={[{ required: true, message: 'Please select room tier!' }]}
+            >
+              <Select>
+                {roomTierList.map(roomTier => (
+                  <Select.Option key={roomTier.id} value={roomTier.id}>
+                    {roomTier.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            </div>
+            <div className='field-row'>
+              <Form.Item 
+                label="Floor" 
+                name="floor" 
+                rules={[{ required: true, message: 'Please input price!' }]}
+              >
+                <Input type="number" />
+              </Form.Item>
+              <Form.Item 
+                label="Price" 
+                name="price" 
+                rules={[{ required: true, message: 'Please input price!' }]}
+              >
+                <Input type="number" />
+              </Form.Item>
+
+            </div> 
+              {/* Checkbox features */}
+              <Form.Item label="Features" name="features">
+                <div className="checkbox-group">
+                  <Checkbox value="isBalcony">Balcony</Checkbox>
+                  <Checkbox value="isBathroom">Bathroom</Checkbox>
+                  <Checkbox value="isAirConditioner">Air Conditioner</Checkbox>
+                  <Checkbox value="isFreeWifi">Free Wi-Fi</Checkbox>
+                  <Checkbox value="isTelevision">Television</Checkbox>
+                  <Checkbox value="isRefrigerator">Refrigerator</Checkbox>
+                  <Checkbox value="isBreakfast">Breakfast</Checkbox>
+                  <Checkbox value="isLunch">Lunch</Checkbox>
+                  <Checkbox value="isDinner">Dinner</Checkbox>
+                  <Checkbox value="isSnack">Snack</Checkbox>
+                  <Checkbox value="isDrink">Drink</Checkbox>
+                  <Checkbox value="isParking">Parking</Checkbox>
+                  <Checkbox value="isSwimmingPool">Swimming Pool</Checkbox>
+                  <Checkbox value="isGym">Gym</Checkbox>
+                  <Checkbox value="isSpa">Spa</Checkbox>
+                  <Checkbox value="isLaundry">Laundry</Checkbox>
+                  <Checkbox value="isCarRental">Car Rental</Checkbox>
+                  <Checkbox value="isBusService">Bus Service</Checkbox>
+                </div>
+              </Form.Item>
+
         </Form>
       </Modal>
 
       {/* Room List Table */}
       <Table
         dataSource={roomList}
+        pagination={{
+          pageSize: 5, // Số lượng item trên mỗi trang
+          showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
+          pageSizeOptions: ['5', '10', '20'], // Các tùy chọn cho số item mỗi trang
+        }}
         columns={[
           { title: 'Room Name', dataIndex: 'name', key: 'name' },
           { title: 'Price', dataIndex: 'price', key: 'price' },
@@ -141,35 +203,39 @@ const AdminRoom = () => {
               };
 
               return (
-                <ul style={{ listStyle: '-', padding: 0, textAlign: 'left' }}>
+                <div className="features-grid">
                   {Object.entries(features).map(([feature, value]) => {
                     if (value) {
                       return (
-                        <li>
-                          <i key={feature} className={`bi ${featureIcons[feature]} me-2 text-success`}></i>
+                        <div key={feature} className="feature-item">
+                          <i className={`bi ${featureIcons[feature]} me-2 text-success`}></i>
                           {feature.replace('is', '')}
-                        </li>
-                      )
+                        </div>
+                      );
                     }
                     return null;
                   })}
-                </ul>
-              )
-            }
+                </div>
+              );
+            },
           },
           {
             title: 'Actions', key: 'actions', render: (_, record) => (
-              <>
-                <Button type="link" onClick={() => onEditRoom(record)}>Edit</Button>
+              <Space>
+                <Button onClick={() => onEditRoom(record)}>
+                  <i className="fas fa-edit"></i>
+                </Button>
                 <Popconfirm
                   title="Are you sure to delete this room?"
                   onConfirm={() => onDeleteRoom(record.id)}
                   okText="Yes"
                   cancelText="No"
                 >
-                  <Button type="link" danger>Delete</Button>
+                  <Button onClick={() => onDeleteRoom(record.id)} danger>
+                    <i className="fas fa-trash"></i>
+                  </Button>
                 </Popconfirm>
-              </>
+              </Space>
             )
           }
         ]}

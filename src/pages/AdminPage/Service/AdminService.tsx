@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import './AdminService.css';
+import './AdminService.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, Modal, Select, Table, Popconfirm } from 'antd';
+import { Button, Form, Input, Modal, Select, Table, Popconfirm, Space } from 'antd';
 
 const AdminService = () => {
     const [form] = Form.useForm();
@@ -94,8 +94,8 @@ const AdminService = () => {
         await MainApiRequest.delete(`/service/tier/${id}`);
         fetchServiceTierList();
     };
-    console.log(serviceList, serviceTierList);
 
+    console.log(serviceList);
 
     return (
         <div className="container-fluid m-2">
@@ -114,87 +114,91 @@ const AdminService = () => {
 
             {/* Service Modal */}
             <Modal
+                className="service-modal"
                 title={editingService ? "Edit Service" : "Create Service"}
                 open={openCreateServiceModal}
                 onOk={onOKCreateService}
                 onCancel={onCancelCreateService}
-            >
-                <Form 
-                    form={form}
-                    layout='vertical'
                 >
-                    <Form.Item 
-                        label="Service Name" 
-                        name="name" 
-                        rules={[{ required: true, message: 'Please input service name!' }]}
+                <Form form={form} layout="vertical">
+                    <div className="field-row">
+                    <Form.Item
+                        label="Service Name"
+                        name="name"
+                        rules={[{ required: true, message: "Please input service name!" }]}
                     >
-                        <Input type='text' />
+                        <Input type="text" />
                     </Form.Item>
-                    <Form.Item 
-                        label="Service Tier" 
-                        name="serviceTierId" 
-                        rules={[{ required: true, message: 'Please select service tier!' }]}
-                        >
+                    <Form.Item
+                        label="Service Tier"
+                        name="serviceTierId"
+                        rules={[{ required: true, message: "Please select service tier!" }]}
+                    >
                         <Select>
                             {serviceTierList.map((tier) => (
-                                <Select.Option key={tier.id} value={tier.id}>
-                                    {tier.name}
-                                </Select.Option>
+                            <Select.Option key={tier.id} value={tier.id}>
+                                {tier.name}
+                            </Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item 
-                        label="Price" 
-                        name="price" 
-                        rules={[{ required: true, message: 'Please input price!' }]}
+                    </div>
+                    <Form.Item
+                    label="Price"
+                    name="price"
+                    rules={[{ required: true, message: "Please input price!" }]}
                     >
-                        <Input type="number" />
+                    <Input type="number" />
                     </Form.Item>
                 </Form>
-            </Modal>
+                </Modal>
 
             {/* Service Tier Modal */}
             <Modal
+                className="service-modal"
                 title={editingServiceTier ? "Edit Service Tier" : "Create Service Tier"}
                 open={openCreateServiceTierModal}
-                onOk={() => onOKCreateServiceTier()}
-                onCancel={() => onCancelCreateServiceTier()}
-            >
-                <Form form={form}>
-                    <Form.Item 
-                        label="Tier Name" 
-                        name="name" 
-                        rules={[{ required: true, message: 'Please input tier name!' }]}
+                onOk={onOKCreateServiceTier}
+                onCancel={onCancelCreateServiceTier}
+                >
+                <Form form={form} layout="vertical">
+                    <Form.Item
+                    label="Tier Name"
+                    name="name"
+                    rules={[{ required: true, message: "Please input tier name!" }]}
                     >
-                        <Input type="text"/>
+                    <Input type="text" />
                     </Form.Item>
-                    <Form.Item 
-                        label="Type" 
-                        name="type" 
-                        rules={[{ required: true, message: 'Please input tier type!' }]}
+                    <div className="field-row">
+                    <Form.Item
+                        label="Type"
+                        name="type"
+                        rules={[{ required: true, message: "Please input tier type!" }]}
                     >
                         <Select>
-                            <Select.Option value="Restaurent">RESTAURENT</Select.Option>
-                            <Select.Option value="Other">OTHER</Select.Option>
+                        <Select.Option value="Restaurent">RESTAURENT</Select.Option>
+                        <Select.Option value="Other">OTHER</Select.Option>
                         </Select>
                     </Form.Item>
-                    <Form.Item 
-                        label="Description" 
-                        name="description" 
-                        rules={[{ required: true, message: 'Please input description!' }]}
+                    <Form.Item
+                        label="Available People"
+                        name="available"
+                        rules={[{ required: true, message: "Please input number of availables!" }]}
                     >
-                        <Input type='text'/>
-                    </Form.Item>
-                    <Form.Item 
-                        label="Available people" 
-                        name="available" 
-                        rules={[{ required: true, message: 'Please input number of availables!' }]}>
                         <Input type="number" />
+                    </Form.Item>
+                    </div>
+                    <Form.Item
+                    label="Description"
+                    name="description"
+                    rules={[{ required: true, message: "Please input description!" }]}
+                    >
+                    <Input.TextArea />
                     </Form.Item>
                 </Form>
             </Modal>
 
-
+            <h4 className="h4 mt-3">Service List</h4>                  
             {/* Service List Table */}
             <Table
                 dataSource={serviceList}
@@ -205,14 +209,15 @@ const AdminService = () => {
                     { 
                         title: 'Tier', dataIndex: 'serviceTier', key: 'serviceTier', render(_, record) {
                             return record.name;
+                            console.log(record.name);
                         }
                     
                     },
                     
                     {
-                        title: 'Actions', key: 'actions', render: (_, record) => (
-                            <>
-                                <Button type="link" onClick={() => onEditService(record)}>
+                        title: 'Actions', key: 'action', render: (_, record) => (
+                            <Space size="middle">
+                                <Button onClick={() => onEditService(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
                                 <Popconfirm
@@ -221,17 +226,18 @@ const AdminService = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>
+                                    <Button onClick={() => onDeleteService(record.id)} danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>
-                            </>
+                            </Space>
                         )
                     }
                 ]}
             />
 
             {/* Service Tier List Table */}
+            <h4 className="h4 mt-3">Service Tier List</h4>
             <Table
                 dataSource={serviceTierList}
                 columns={[
@@ -240,9 +246,12 @@ const AdminService = () => {
                     { title: 'Type', dataIndex: 'type', key: 'type' },
                     { title: 'Description', dataIndex: 'description', key: 'description' },
                     { title: 'Available people', dataIndex: 'available', key: 'available' },
-                    {    title: 'Actions', key: 'actions', render: (_, record) => (
-                            <>
-                                <Button type="link" onClick={() => onEditServiceTier(record)}>
+                    {    
+                        title: 'Actions', 
+                        key: 'action', 
+                        render: (_, record) => (
+                            <Space size="middle">
+                                <Button onClick={() => onEditServiceTier(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
                                 <Popconfirm
@@ -251,11 +260,11 @@ const AdminService = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>
+                                    <Button onClick={() => onDeleteServiceTier(record.id)} danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>
-                            </>
+                            </Space>
                         )
                     }
                 ]}

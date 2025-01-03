@@ -4,7 +4,7 @@ import { Button, Form, Input, Modal, Select, Table, message } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-
+import "./AdminBooking.scss";
 export const CreateBookingModal = ({
     openCreateBookingModal,
     onOKCreateBooking,
@@ -99,6 +99,7 @@ export const CreateBookingModal = ({
                 onCancel={() => setShowServiceModal(false)}
             />
             <Modal
+                className="booking-modal"
                 title="Create Booking"
                 open={openCreateBookingModal}
                 onOk={() => handleCreateBooking()}
@@ -128,6 +129,7 @@ export const CreateBookingModal = ({
                     >
                         <Input type='text' readOnly disabled />
                     </Form.Item>
+                    <div className="field-row">
                     <Form.Item
                         label='Check In'
                         name='checkIn'
@@ -158,16 +160,24 @@ export const CreateBookingModal = ({
                             dateFormat="dd-MM-yyyy"
                         />
                     </Form.Item>
-                    <Select onChange={handleChangeRoom}>
-                        {
-                            rooms.map(room => (
-                                <Select.Option key={room.id} value={room.id}>{room.name} - Capacity: {room.roomTier.capacity}</Select.Option>
-                            ))
-                        }
-                    </Select>
-                    <Button onClick={fetchRooms}>
-                        Fetch Rooms
-                    </Button>
+                    </div>
+                    <div className="field-row1">
+                        <Select onChange={handleChangeRoom}>
+                            {
+                                rooms.map(room => (
+                                    <Select.Option 
+                                        key={room.id} 
+                                        value={room.id}
+                                    >
+                                        {room.name} - Capacity: {room.roomTier.capacity}
+                                    </Select.Option>
+                                ))
+                            }
+                        </Select>
+                        <Button onClick={fetchRooms}>
+                            Fetch Rooms
+                        </Button>
+                    </div>
                     <Form.Item label={'Room Pricing'}>
                         <Input type='text' value={selectedRoom?.price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })} readOnly disabled />
                     </Form.Item>

@@ -25,15 +25,15 @@ import Feedback from "react-bootstrap/esm/Feedback";
 import FeedbackPage from "@/pages/Feedback/FeedbackPage";
 import Payment from "@/pages/Payment/Payment";
 import AdminService from "@/pages/AdminPage/Service/AdminService";
-import Promote from "@/pages/AdminPage/Promote/Promote";
 import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
 import AdminRoom from "@/pages/AdminPage/AdminRoom/AdminRoom";
-import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/RoomTier";
 import Rating from "@/pages/AdminPage/Rating/Rating";
 import PaymentHistory from "@/pages/AdminPage/PaymentHistory/PaymentHistory";
 import AdminCustomer from "@/pages/AdminPage/Customer/AdminCustomer";
 import AdminBlacklist from "@/pages/AdminPage/Blacklist/AdminBlacklist";
 import AdminLogin from "@/pages/AdminPage/Login/Login";
+import AdminPromote from "@/pages/AdminPage/Promote/AdminPromote";
+import AdminRoomTier from "@/pages/AdminPage/AdminRoomTier/AdminRoomTier";
 
 export default function MainRoutes() {
   const location = useLocation();
@@ -75,7 +75,7 @@ export default function MainRoutes() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="booking" element={<AdminBooking />} />
           <Route path="service" element={<AdminService />} />
-          <Route path="promote" element={<Promote />} />
+          <Route path="promote" element={<AdminPromote />} />
           <Route path="staff" element={<AdminStaff />} />
           <Route path="customer" element={<AdminCustomer />} />
           <Route path="room" element={<AdminRoom />} />

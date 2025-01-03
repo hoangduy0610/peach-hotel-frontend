@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import './AdminBooking.css';
+import './AdminBooking.scss';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import { Button, Form, Input, DatePicker, Modal, Select, Table, Tag, message } from 'antd';
 import moment from 'moment';
