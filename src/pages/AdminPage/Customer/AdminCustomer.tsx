@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message } from 'antd';
 import { MainApiRequest } from '@/services/MainApiRequest';
 import "./AdminCustomer.scss";
+import { on } from 'events';
 const AdminCustomer = () => {
     const [form] = Form.useForm();
     const [customerList, setCustomerList] = useState<any[]>([]);
@@ -70,6 +71,7 @@ const AdminCustomer = () => {
             </Button>
 
             <Modal
+                className='customer-modal'
                 title={editingCustomer ? "Edit Customer" : "Create Customer"}
                 open={openCreateCustomerModal}
                 onOk={onOKCreateCustomer}
@@ -86,30 +88,24 @@ const AdminCustomer = () => {
                     >
                         <Input type="text" />
                     </Form.Item>
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[{ required: true, message: "Please input email!" }]}
-                    >
-                        <Input type="email" />
-                    </Form.Item>
-                    {!editingCustomer &&
+                    <div className="field-row">
                         <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[{ required: true, message: "Please input password!" }]}
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: "Please input email!" }]}
                         >
-                            <Input.Password />
+                            <Input type="email" />
                         </Form.Item>
-                    }
-
-                    <Form.Item
-                        label="Address"
-                        name="address"
-                        rules={[{ required: true, message: "Please input address!" }]}
-                    >
-                        <Input type="text" />
-                    </Form.Item>
+                        {!editingCustomer &&
+                            <Form.Item
+                                label="Password"
+                                name="password"
+                                rules={[{ required: true, message: "Please input password!" }]}
+                            >
+                                <Input.Password />
+                            </Form.Item>
+                        }
+                    </div>
                     <Form.Item
                         label="Phone"
                         name="phone"
@@ -117,6 +113,14 @@ const AdminCustomer = () => {
                     >
                         <Input type="text" />
                     </Form.Item>
+                    <Form.Item
+                        label="Address"
+                        name="address"
+                        rules={[{ required: true, message: "Please input address!" }]}
+                    >
+                        <Input type="text" />
+                    </Form.Item>
+
                 </Form>
             </Modal>
 
@@ -132,8 +136,8 @@ const AdminCustomer = () => {
                         title: 'Action',
                         key: 'actions',
                         render: (_, record) => (
-                            <>
-                                <Button type="link" onClick={() => onEditCustomer(record)}>
+                            <Space size="middle">
+                                <Button onClick={() => onEditCustomer(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
                                 <Popconfirm
@@ -142,11 +146,11 @@ const AdminCustomer = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button type="link" danger>
+                                    <Button onClick={() => onDeleteCustomer(record.id)} danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>
-                            </>
+                            </Space>
                         ),
                     },
                 ]}

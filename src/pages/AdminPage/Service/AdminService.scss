@@ -1,3 +1,4 @@
+// AdminService.scss
 .container-fluid {
   padding: 20px;
 
@@ -20,7 +21,6 @@
   }
 
   .ant-modal {
-    
     .ant-modal-header {
       justify-self: center;
       background-color: #f0f8ff;
@@ -48,11 +48,8 @@
         font-weight: 500;
         color: #555;
       }
-      .ant-picker-input{
-        border: none !important;
-      }
 
-      input, textarea{
+      input, textarea, .ant-select-selector {
         border-radius: 5px;
         border: 1px solid #ccc;
         padding: 8px;
@@ -60,9 +57,6 @@
         &:focus {
           border-color: #1890ff;
           box-shadow: 0 0 5px rgba(24, 144, 255, 0.5);
-        }
-        .ant-picker-input{
-          border: none !important;
         }
       }
     }
@@ -93,19 +87,16 @@
 }
 
 /* Modal Form Styling */
-.customer-modal {
+.service-modal {
   .ant-form-item {
 
     label {
       font-size: 14px;
       font-weight: 500;
       color: #444;
-
-    }.ant-picker-input{
-      border: none !important;
     }
 
-    input, textarea {
+    input, .ant-select-selector, textarea {
       border-radius: 8px;
       border: 1px solid #ccc;
       transition: border-color 0.3s ease;
@@ -114,16 +105,13 @@
         border-color: #40a9ff;
         box-shadow: 0 0 8px rgba(64, 169, 255, 0.2);
       }
-
-      .ant-picker-input{
-        border: none !important;
-      }
     }
   }
 
   .field-row {
     display: flex;
     justify-content: space-between;
+    
     gap: 20px;
 
     .ant-form-item {
