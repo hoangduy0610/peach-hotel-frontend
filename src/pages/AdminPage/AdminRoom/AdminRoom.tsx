@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 import { Button, Form, Input, Modal, Select, Table, Popconfirm, Space, Checkbox } from 'antd';
 import "./AdminRoom.scss";
+import { features } from 'process';
 const AdminRoom = () => {
   const [form] = Form.useForm();
   const [roomList, setRoomList] = useState<any[]>([]);
@@ -12,11 +13,11 @@ const AdminRoom = () => {
   const [editingRoomTier, setEditingRoomTier] = useState<any | null>(null);
 
   const fetchRoomList = async () => {
-    const res = await MainApiRequest.get('/room/list');
+    const res = await AdminApiRequest.get('/room/list');
     setRoomList(res.data);
   };
   const fetchRoomTierList = async () => {
-    const res = await MainApiRequest.get('/room/tier/list');
+    const res = await AdminApiRequest.get('/room/tier/list');
     setRoomTierList(res.data);
   }
 
@@ -31,11 +32,43 @@ const AdminRoom = () => {
 
   const onOKCreateRoom = async () => {
     setOpenCreateRoomModal(false);
-    const data = form.getFieldsValue();
+    const defaultFeatures = {
+      isBalcony: false,
+      isBathroom: false,
+      isAirConditioner: false,
+      isFreeWifi: false,
+      isTelevision: false,
+      isRefrigerator: false,
+      isBreakfast: false,
+      isLunch: false,
+      isDinner: false,
+      isSnack: false,
+      isDrink: false,
+      isParking: false,
+      isSwimmingPool: false,
+      isGym: false,
+      isSpa: false,
+      isLaundry: false,
+      isCarRental: false,
+      isBusService: false,
+    };
+
+    const featuresMap = form.getFieldValue('features')?.reduce((acc: any, feature: string) => {
+      acc[feature] = true;
+      return acc;
+    }, defaultFeatures);
+
+    const data = {
+      name: form.getFieldValue('name'),
+      floor: parseInt(form.getFieldValue('floor') || "0"),
+      price: parseInt(form.getFieldValue('price') || "0"),
+      roomTierId: form.getFieldValue('roomTierId'),
+      ...featuresMap,
+    };
     if (editingRoom) {
-      await MainApiRequest.put(`/room/${editingRoom.id}`, data);
+      await AdminApiRequest.put(`/room/${editingRoom.id}`, data);
     } else {
-      await MainApiRequest.post('/room', data);
+      await AdminApiRequest.post('/room', data);
     }
     fetchRoomList();
     setEditingRoom(null);
@@ -51,11 +84,15 @@ const AdminRoom = () => {
   const onEditRoom = (room: any) => {
     setEditingRoom(room);
     form.setFieldsValue(room);
+    form.setFieldsValue({
+      features: Object.keys(room).filter((key) => key.startsWith('is') && room[key]),
+      roomTierId: room.roomTier.id,
+    });
     setOpenCreateRoomModal(true);
   };
 
   const onDeleteRoom = async (id: number) => {
-    await MainApiRequest.delete(`/room/${id}`);
+    await AdminApiRequest.delete(`/room/${id}`);
     fetchRoomList();
   };
 
@@ -74,21 +111,21 @@ const AdminRoom = () => {
         onOk={() => onOKCreateRoom()}
         onCancel={() => onCancelCreateRoom()}
       >
-        <Form 
+        <Form
           form={form}
           layout="vertical"
         >
           <div className='field-row'>
-          <Form.Item 
-            label="Room Name" 
-            name="name" 
-            rules={[{ required: true, message: 'Please input room name!' }]}
-          >
-            <Input type='text'/>
-          </Form.Item>
-          <Form.Item 
-              label="Room Tier" 
-              name="roomTierId" 
+            <Form.Item
+              label="Room Name"
+              name="name"
+              rules={[{ required: true, message: 'Please input room name!' }]}
+            >
+              <Input type='text' />
+            </Form.Item>
+            <Form.Item
+              label="Room Tier"
+              name="roomTierId"
               rules={[{ required: true, message: 'Please select room tier!' }]}
             >
               <Select>
@@ -99,47 +136,49 @@ const AdminRoom = () => {
                 ))}
               </Select>
             </Form.Item>
-            </div>
-            <div className='field-row'>
-              <Form.Item 
-                label="Floor" 
-                name="floor" 
-                rules={[{ required: true, message: 'Please input price!' }]}
-              >
-                <Input type="number" />
-              </Form.Item>
-              <Form.Item 
-                label="Price" 
-                name="price" 
-                rules={[{ required: true, message: 'Please input price!' }]}
-              >
-                <Input type="number" />
-              </Form.Item>
+          </div>
+          <div className='field-row'>
+            <Form.Item
+              label="Floor"
+              name="floor"
+              rules={[{ required: true, message: 'Please input price!' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
+            <Form.Item
+              label="Price"
+              name="price"
+              rules={[{ required: true, message: 'Please input price!' }]}
+            >
+              <Input type="number" />
+            </Form.Item>
 
-            </div> 
-              {/* Checkbox features */}
-              <Form.Item label="Features" name="features">
-                <div className="checkbox-group">
-                  <Checkbox value="isBalcony">Balcony</Checkbox>
-                  <Checkbox value="isBathroom">Bathroom</Checkbox>
-                  <Checkbox value="isAirConditioner">Air Conditioner</Checkbox>
-                  <Checkbox value="isFreeWifi">Free Wi-Fi</Checkbox>
-                  <Checkbox value="isTelevision">Television</Checkbox>
-                  <Checkbox value="isRefrigerator">Refrigerator</Checkbox>
-                  <Checkbox value="isBreakfast">Breakfast</Checkbox>
-                  <Checkbox value="isLunch">Lunch</Checkbox>
-                  <Checkbox value="isDinner">Dinner</Checkbox>
-                  <Checkbox value="isSnack">Snack</Checkbox>
-                  <Checkbox value="isDrink">Drink</Checkbox>
-                  <Checkbox value="isParking">Parking</Checkbox>
-                  <Checkbox value="isSwimmingPool">Swimming Pool</Checkbox>
-                  <Checkbox value="isGym">Gym</Checkbox>
-                  <Checkbox value="isSpa">Spa</Checkbox>
-                  <Checkbox value="isLaundry">Laundry</Checkbox>
-                  <Checkbox value="isCarRental">Car Rental</Checkbox>
-                  <Checkbox value="isBusService">Bus Service</Checkbox>
-                </div>
-              </Form.Item>
+          </div>
+          {/* Checkbox features */}
+          <Form.Item label="Features" name="features">
+            <Checkbox.Group>
+              <div className="checkbox-group">
+                <Checkbox value="isBalcony">Balcony</Checkbox>
+                <Checkbox value="isBathroom">Bathroom</Checkbox>
+                <Checkbox value="isAirConditioner">Air Conditioner</Checkbox>
+                <Checkbox value="isFreeWifi">Free Wi-Fi</Checkbox>
+                <Checkbox value="isTelevision">Television</Checkbox>
+                <Checkbox value="isRefrigerator">Refrigerator</Checkbox>
+                <Checkbox value="isBreakfast">Breakfast</Checkbox>
+                <Checkbox value="isLunch">Lunch</Checkbox>
+                <Checkbox value="isDinner">Dinner</Checkbox>
+                <Checkbox value="isSnack">Snack</Checkbox>
+                <Checkbox value="isDrink">Drink</Checkbox>
+                <Checkbox value="isParking">Parking</Checkbox>
+                <Checkbox value="isSwimmingPool">Swimming Pool</Checkbox>
+                <Checkbox value="isGym">Gym</Checkbox>
+                <Checkbox value="isSpa">Spa</Checkbox>
+                <Checkbox value="isLaundry">Laundry</Checkbox>
+                <Checkbox value="isCarRental">Car Rental</Checkbox>
+                <Checkbox value="isBusService">Bus Service</Checkbox>
+              </div>
+            </Checkbox.Group>
+          </Form.Item>
 
         </Form>
       </Modal>
@@ -155,8 +194,8 @@ const AdminRoom = () => {
         columns={[
           { title: 'Room Name', dataIndex: 'name', key: 'name' },
           { title: 'Price', dataIndex: 'price', key: 'price' },
-          { title: 'Room Tier', dataIndex: 'roomTier', key: 'roomTier', render(_, record) 
-            { return record.name }
+          {
+            title: 'Room Tier', dataIndex: 'roomTier', key: 'roomTier', render(roomTier, record) { return roomTier.name }
           },
           {
             title: 'Features', dataIndex: 'features', key: 'features', render: (_, roomDetail) => {
@@ -231,7 +270,7 @@ const AdminRoom = () => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <Button onClick={() => onDeleteRoom(record.id)} danger>
+                  <Button danger>
                     <i className="fas fa-trash"></i>
                   </Button>
                 </Popconfirm>

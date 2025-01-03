@@ -5,7 +5,6 @@ import Gallery from "@/pages/Home/partials/Gallery/Gallery";
 
 const PhotoGallery = () => {
   useEffect(() => {
-    document.title = " Gallery   ";
     window.scroll(0, 0);
   }, []);
 

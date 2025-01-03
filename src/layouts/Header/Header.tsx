@@ -122,45 +122,46 @@ const Header = () => {
           <div className="ms-md-4 ms-2 mt-2 mt-lg-0 flex-row d-flex">
             <Nav>
               {userInfo ? (
-              <>
-               <NavDropdown 
-                  title={userInfo?.name || "Perry Ặc Ặc"}
-                  className="primaryBtn align-items-center"
-                  id="collasible-nav-dropdown"
-                >
-                  <NavDropdown.Item onClick={() => navigate("/profile-user")}>
-                    {/* <img
+                <>
+                  <NavDropdown
+                    title={userInfo?.name || "Perry Ặc Ặc"}
+                    className="primaryBtn align-items-center"
+                    id="collasible-nav-dropdown"
+                  >
+                    <NavDropdown.Item onClick={() => navigate("/profile-user")}>
+                      {/* <img
                       alt=""
                       src={${userInfo.pic}}
                       width="25"
                       height="25"
                       style={{ marginRight: 10 }}
                     /> */}
-                    My Profile
-                  </NavDropdown.Item>
+                      My Profile
+                    </NavDropdown.Item>
 
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={() => navigate("/history")}>
-                    My Booking
-                  </NavDropdown.Item>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={() => navigate("/history")}>
+                      My Booking
+                    </NavDropdown.Item>
 
-                  <NavDropdown.Divider />
-                  <NavDropdown.Item onClick={handleLogout}>
-                    Logout
-                  </NavDropdown.Item>
-                </NavDropdown>
-              </>
-            ) : (
-              <NavLink 
-                //className="primaryBtn d-none d-sm-inline-block" 
-                to="/login"
-              >
-                Login
-              </NavLink>
-            )}
-          </Nav>
+                    <NavDropdown.Divider />
+                    <NavDropdown.Item onClick={handleLogout}>
+                      Logout
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                </>
+              ) : (
+                <NavLink
+                  //className="primaryBtn d-none d-sm-inline-block" 
+                  className="primaryBtn align-items-center"
+                  to="/login"
+                >
+                  Login
+                </NavLink>
+              )}
+            </Nav>
             <li className="d-inline-block d-lg-none toggle_btn pt-1">
-              <i className={open ? "bi bi-x-lg" : "bi bi-list"}  onClick={toggleMenu}></i>
+              <i className={open ? "bi bi-x-lg" : "bi bi-list"} onClick={toggleMenu}></i>
             </li>
           </div>
         </Navbar>

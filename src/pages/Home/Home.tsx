@@ -67,11 +67,6 @@ const Home = () => {
     ],
   };
 
-  const fetchUserInfo = async () => {
-    const res = await MainApiRequest.get("/auth/callback");
-    console.log(res);
-  };
-
   const [roomList, setRoomList] = useState<any[]>([]);
   const [visibleRooms, setVisibleRooms] = useState(8);
   const [tierList, setTierList] = useState<any[]>([]);
@@ -91,7 +86,6 @@ const Home = () => {
   }
 
   useEffect(() => {
-    fetchUserInfo();
     fetchListRooms();
     fetchTierList();
   }, []);

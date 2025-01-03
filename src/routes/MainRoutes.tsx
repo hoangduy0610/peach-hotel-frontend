@@ -40,14 +40,31 @@ export default function MainRoutes() {
   const context = useSystemContext();
 
   // Check if current route is login or register
+  const whitelistPages = [
+    "/login", 
+    "/register", 
+    "/admin/login",
+    "/about-us",
+    "/contact-us",
+    "/",
+  ];
   const isAuthPage = location.pathname === "/login" || location.pathname === "/register" || location.pathname === "/admin/login";
   const isAdminPage = location.pathname.includes('/admin')
 
   useEffect(() => {
     if (!context)
       return;
-    console.log(context.token)
-    if (!localStorage.getItem('token') && !isAuthPage) {
+
+    if (whitelistPages.includes(location.pathname)) {
+      return;
+    }
+
+    if (!localStorage.getItem('adminToken') && isAdminPage) {
+      window.location.href = "/admin/login";
+      return;
+    }
+
+    if (!localStorage.getItem('token')) {
       window.location.href = "/login";
     }
   }, []);

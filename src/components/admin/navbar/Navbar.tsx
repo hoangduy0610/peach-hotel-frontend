@@ -70,6 +70,11 @@ const Navbar: React.FC = () => {
     },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    window.location.href = '/admin/login';
+  }
+
   return (
     <div className="d-flex flex-column align-items-center w-100 min-vh-100 sidebar px-2">
       <h1 className="logo">
@@ -100,6 +105,22 @@ const Navbar: React.FC = () => {
             );
           })
         }
+        <li key={99999} className={`flex-1 nav-item`}>
+          <Link
+            to={"#"}
+            onClick={handleLogout}
+            className={`nav-link text-dark`}
+          >
+            <span className="icon-circle">
+              <i className="fas fa-right-from-bracket"></i>
+            </span>
+            <span
+              className={`title text-dark`}
+            >
+              Logout
+            </span>
+          </Link>
+        </li>
       </ul>
     </div>
   );

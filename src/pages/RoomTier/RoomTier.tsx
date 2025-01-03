@@ -7,7 +7,6 @@ import { roomTierData } from '@/modules/data';
 
 const RoomTier = () => {
   useEffect(() => {
-    document.title = "RoomTier";
     window.scroll(0, 0);
   }, []);
 

@@ -1,5 +1,5 @@
 import { SelectAdditionalService } from "@/pages/Booking/SelectAdditionalService";
-import { MainApiRequest } from "@/services/MainApiRequest";
+import { AdminApiRequest } from "@/services/AdminApiRequest";
 import { Button, Form, Input, Modal, Select, Table, message } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
@@ -47,7 +47,7 @@ export const CreateBookingModal = ({
     const [selectedRoom, setSelectedRoom] = useState<any | null>(null);
 
     const fetchRooms = async () => {
-        const res = await MainApiRequest.get('/room/filter-available', {
+        const res = await AdminApiRequest.get('/room/filter-available', {
             params: {
                 checkInDate: moment(startDate).startOf('day').toISOString(),
                 checkOutDate: moment(endDate).startOf('day').toISOString(),
@@ -58,13 +58,13 @@ export const CreateBookingModal = ({
 
     const fetchAvailableServices = async () => {
         setIsLoadingTierList(true);
-        const res = await MainApiRequest.get("/service/tier/list");
+        const res = await AdminApiRequest.get("/service/tier/list");
         setServiceTiers(res.data);
         setIsLoadingTierList(false);
     };
 
     const fetchCustomers = async () => {
-        const res = await MainApiRequest.get('/user/list');
+        const res = await AdminApiRequest.get('/user/list');
         setCustomers(res.data);
     };
 

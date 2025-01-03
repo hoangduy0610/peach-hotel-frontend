@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Rate, Space, Button, Modal, Form, Input, Popconfirm } from 'antd';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 
 const AdminCustomerRating = () => {
     const [ratingsList, setRatingsList] = useState<any[]>([]);
@@ -10,7 +10,7 @@ const AdminCustomerRating = () => {
     const [currentRating, setCurrentRating] = useState<any | null>(null);
 
     const fetchRatingsList = async () => {
-        const res = await MainApiRequest.get('/rating/list');
+        const res = await AdminApiRequest.get('/rating/list');
         setRatingsList(res.data);
     }
 

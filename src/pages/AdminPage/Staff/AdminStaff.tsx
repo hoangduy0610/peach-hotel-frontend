@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message, Select } from 'antd';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 import "./AdminStaff.scss";
 
 const AdminStaff = () => {
@@ -11,7 +11,7 @@ const AdminStaff = () => {
     const [editingStaff, setEditingStaff] = useState<any | null>(null);
 
     const fetchStaffList = async () => {
-        const res = await MainApiRequest.get('/staff/list');
+        const res = await AdminApiRequest.get('/staff/list');
         setStaffList(res.data);
     };
 
@@ -31,9 +31,9 @@ const AdminStaff = () => {
                 password,
                 ...rest
             } = data;
-            await MainApiRequest.put(`/staff/${editingStaff.id}`, rest);
+            await AdminApiRequest.put(`/staff/${editingStaff.id}`, rest);
         } else {
-            await MainApiRequest.post('/staff', data);
+            await AdminApiRequest.post('/staff', data);
         }
         fetchStaffList();
         setEditingStaff(null);
@@ -54,7 +54,7 @@ const AdminStaff = () => {
     };
 
     const onDeleteStaff = async (id: number) => {
-        await MainApiRequest.delete(`/staff/${id}`);
+        await AdminApiRequest.delete(`/staff/${id}`);
         fetchStaffList();
     };
 

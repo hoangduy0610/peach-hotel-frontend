@@ -1,20 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, Modal, Table, Space, Popconfirm, Upload } from 'antd';
-import { UploadOutlined, PlusOutlined } from '@ant-design/icons';
 import imgDefault from '@/assets/bed7.jpg';
-import img from '@/assets/tienich1.jpg';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Form, GetProp, Input, Modal, Popconfirm, Progress, Space, Table, Upload, UploadProps } from 'antd';
+import { useEffect, useState } from 'react';
 import "./AdminRoomTier.scss";
+
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type UploadRequestOption = Parameters<GetProp<UploadProps, 'customRequest'>>[0];
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 const AdminRoomTier = () => {
   const [form] = Form.useForm();
+  const [progress, setProgress] = useState(0);
   const [roomTierList, setRoomTierList] = useState<any[]>([]);
   const [openCreateRoomTierModal, setOpenCreateRoomTierModal] = useState(false);
   const [editingRoomTier, setEditingRoomTier] = useState<any | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+
+  const handleChange = (info: any) => {
+    setFileList(info.fileList);
+    console.log("info: ", info);
+  };
+
+  const handleUpload = async (options: UploadRequestOption) => {
+    const { onSuccess, onError, file, onProgress } = options;
+
+    const fmData = new FormData();
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+      onUploadProgress: (event: any) => {
+        const percent = Math.floor((event.loaded / event.total) * 100);
+        setProgress(percent);
+        if (percent === 100) {
+          setTimeout(() => setProgress(0), 1000);
+        }
+        onProgress && onProgress({ percent: (event.loaded / event.total) * 100 });
+      }
+    };
+    fmData.append("file", file);
+    try {
+      const res = await AdminApiRequest.post("/file/upload", fmData, config);
+      const { data } = res;
+      setImageUrls([...imageUrls, data.url]);
+      onSuccess && onSuccess("Ok");
+    } catch (err: any) {
+      console.log("Eroor: ", err);
+      const error = new Error("Some error");
+      onError && onError(error);
+    }
+  }
+
+  const handlePreview = async (file: any) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+  }
 
   const fetchRoomTierList = async () => {
-    const res = await MainApiRequest.get('/room/tier/list');
+    const res = await AdminApiRequest.get('/room/tier/list');
     setRoomTierList(res.data);
   };
 
@@ -22,30 +72,25 @@ const AdminRoomTier = () => {
     fetchRoomTierList();
   }, []);
 
-  const handleImageChange = (info: any) => {
-    const file = info.file.originFileObj;
-    const reader = new FileReader();
-    reader.onload = () => {
-      setImagePreview(reader.result as string);
-      form.setFieldValue('imageUrl', reader.result as string); // Lưu ảnh dưới dạng Base64 hoặc link.
-    };
-    reader.readAsDataURL(file);
-  };
-
   const onOpenCreateRoomTierModal = () => {
     setOpenCreateRoomTierModal(true);
-    setImagePreview(null);
   };
 
   const onOKCreateRoomTier = async () => {
     setOpenCreateRoomTierModal(false);
-    const data = form.getFieldsValue();
-    if (editingRoomTier) {
-      await MainApiRequest.put(`/room/tier/${editingRoomTier.id}`, data);
-    } else {
-      await MainApiRequest.post('/room/tier', data);
+    const data = {
+      name: form.getFieldValue('name'),
+      description: form.getFieldValue('description'),
+      slot: 1,
+      images: imageUrls,
+      capacity: parseInt(form.getFieldValue('capacity') || "0"),
     }
-    
+    if (editingRoomTier) {
+      await AdminApiRequest.put(`/room/tier/${editingRoomTier.id}`, data);
+    } else {
+      await AdminApiRequest.post('/room/tier', data);
+    }
+
     fetchRoomTierList();
     setEditingRoomTier(null);
     form.resetFields();
@@ -54,7 +99,6 @@ const AdminRoomTier = () => {
   const onCancelCreateRoomTier = () => {
     setOpenCreateRoomTierModal(false);
     setEditingRoomTier(null);
-    setImagePreview(null);
     form.resetFields();
   };
 
@@ -62,15 +106,28 @@ const AdminRoomTier = () => {
     setEditingRoomTier(tier);
     form.setFieldsValue({
       ...tier,
-      imageUrl: tier.images?.[0] || null, // Chỉ lấy hình ảnh đầu tiên trong danh sách.
+      // imageUrl: tier.images?.[0] || null, // Chỉ lấy hình ảnh đầu tiên trong danh sách.
     });
-    setImagePreview(tier.images?.[0] || null);
+    setFileList(tier.images?.map((image: string, index: number) => ({
+      uid: index.toString(),
+      name: tier.name + ".png",
+      status: "done",
+      response: '{"status": "success"}',
+      url: image,
+    })) || []);
+    setImageUrls(tier.images || []);
     setOpenCreateRoomTierModal(true);
   };
 
   const onDeleteRoomTier = async (id: number) => {
-    await MainApiRequest.delete(`/room/tier/${id}`);
+    await AdminApiRequest.delete(`/room/tier/${id}`);
     fetchRoomTierList();
+  };
+
+  const handleRemove = (file: any) => {
+    const newFileList = fileList.filter((item) => item.uid !== file.uid);
+    setFileList(newFileList);
+    setImageUrls(imageUrls.filter((url) => url !== file.url));
   };
 
   return (
@@ -88,42 +145,32 @@ const AdminRoomTier = () => {
         onOk={() => onOKCreateRoomTier()}
         onCancel={() => onCancelCreateRoomTier()}
       >
-        <Form 
-            form={form} 
-            layout="vertical" 
-            initialValues={{ slot: 1 }}>
-        <Form.Item
+        <Form
+          form={form}
+          layout="vertical"
+          initialValues={{ slot: 1 }}>
+          <Form.Item
             label="Images"
             name="imageUrl"
             valuePropName="fileList"
             getValueFromEvent={(e) => e.fileList}
           >
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <Upload
-              listType="picture-card"
-              showUploadList={false}
-              accept="image/*"
-              beforeUpload={() => false} // Prevent automatic upload
-              onChange={handleImageChange}
-            >
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Preview"
-                  style={{
-                    width: '150px',
-                    height: '150px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                  }}                
-                />
-              ) : (
-                <div>
+              <Upload
+                listType="picture-card"
+                fileList={fileList}
+                accept="image/*"
+                onPreview={handlePreview}
+                customRequest={handleUpload}
+                onRemove={handleRemove}
+                onChange={handleChange}
+              >
+                <button style={{ border: 0, background: 'none' }} type="button">
                   <PlusOutlined />
                   <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              )}
-            </Upload>
+                </button>
+              </Upload>
+              {progress > 0 ? <Progress percent={progress} /> : null}
             </div>
           </Form.Item>
           <Form.Item
@@ -134,9 +181,6 @@ const AdminRoomTier = () => {
             <Input type="text" />
           </Form.Item>
           <div className="field-row">
-            <Form.Item label="Slot" name="slot">
-              <Input readOnly />
-            </Form.Item>
             <Form.Item
               label="Capacity"
               name="capacity"
@@ -156,31 +200,31 @@ const AdminRoomTier = () => {
       </Modal>
 
       {/* Room Tier List Table */}
-      <Table 
+      <Table
         className='roomTier-table'
-                pagination={{
-            pageSize: 5, // Số lượng item trên mỗi trang
-            showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
-            pageSizeOptions: ['5', '10', '20'], // Các tùy chọn cho số item mỗi trang
-          }}
+        pagination={{
+          pageSize: 5, // Số lượng item trên mỗi trang
+          showSizeChanger: true, // Hiển thị tùy chọn thay đổi số item trên mỗi trang
+          pageSizeOptions: ['5', '10', '20'], // Các tùy chọn cho số item mỗi trang
+        }}
         dataSource={roomTierList}
         columns={[
-            {
-                title: 'Image',
-                dataIndex: 'images',
-                key: 'images',
-                render: (images) => (
-                  <img
-                    src={images?.[0] || imgDefault}
-                    alt="Room"
-                    style={{
-                      width: '100px',
-                      height: '100px',
-                      borderRadius: '8px',
-                    }}
-                  />
-                ),
-            },
+          {
+            title: 'Image',
+            dataIndex: 'images',
+            key: 'images',
+            render: (images) => (
+              <img
+                src={images?.[0] || imgDefault}
+                alt="Room"
+                style={{
+                  width: '100px',
+                  height: '100px',
+                  borderRadius: '8px',
+                }}
+              />
+            ),
+          },
           { title: 'Tier Name', dataIndex: 'name', key: 'name' },
           { title: 'Description', dataIndex: 'description', key: 'description' },
           { title: 'Available', dataIndex: 'available', key: 'available' },
@@ -199,7 +243,7 @@ const AdminRoomTier = () => {
                   okText="Yes"
                   cancelText="No"
                 >
-                  <Button onClick={() => onDeleteRoomTier(record.id)} danger>
+                  <Button danger>
                     <i className="fas fa-trash"></i>
                   </Button>
                 </Popconfirm>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, DatePicker, Modal, Table, Space, Popconfirm, message } from 'antd';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 import "./AdminCustomer.scss";
 import { on } from 'events';
 const AdminCustomer = () => {
@@ -11,7 +11,7 @@ const AdminCustomer = () => {
     const [editingCustomer, setEditingCustomer] = useState<any | null>(null);
 
     const fetchCustomerList = async () => {
-        const res = await MainApiRequest.get('/user/list');
+        const res = await AdminApiRequest.get('/user/list');
         setCustomerList(res.data);
     };
 
@@ -33,9 +33,9 @@ const AdminCustomer = () => {
                 password,
                 ...rest
             } = data;
-            await MainApiRequest.put(`/user/${editingCustomer.id}`, rest);
+            await AdminApiRequest.put(`/user/${editingCustomer.id}`, rest);
         } else {
-            await MainApiRequest.post('/user', data);
+            await AdminApiRequest.post('/user', data);
         }
         fetchCustomerList();
         setEditingCustomer(null);
@@ -56,7 +56,7 @@ const AdminCustomer = () => {
     };
 
     const onDeleteCustomer = async (id: number) => {
-        await MainApiRequest.delete(`/user/${id}`);
+        await AdminApiRequest.delete(`/user/${id}`);
         fetchCustomerList();
     };
 

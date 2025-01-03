@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Input, Modal, Table, Popconfirm, Select } from 'antd';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 import './AdminBlacklist.scss';
 import moment from 'moment';
 const { Option } = Select;
@@ -14,7 +14,7 @@ const AdminBlacklist = () => {
 
   // Fetch danh sách Blacklist và User
   const fetchBlacklist = async () => {
-    const res = await MainApiRequest.get('/blacklist/list');
+    const res = await AdminApiRequest.get('/blacklist/list');
     setBlacklist(res.data);
     if (res.data.length > 0) {
       const maxId = Math.max(...res.data.map((item: any) => item.id));
@@ -23,7 +23,7 @@ const AdminBlacklist = () => {
   };
 
   const fetchCustomerList = async () => {
-    const res = await MainApiRequest.get('/user/list');
+    const res = await AdminApiRequest.get('/user/list');
     setCustomerList(res.data);
   };
 
@@ -52,14 +52,14 @@ const AdminBlacklist = () => {
       reason: formData.reason,
       userId: formData.userId,
     };
-    await MainApiRequest.post('/blacklist', newBlacklistEntry);
+    await AdminApiRequest.post('/blacklist', newBlacklistEntry);
     fetchBlacklist();
     setOpenCreateBlacklistModal(false);
   };
 
   // Xóa Blacklist
   const onDeleteBlacklist = async (id: number) => {
-    await MainApiRequest.delete(`/blacklist/${id}`);
+    await AdminApiRequest.delete(`/blacklist/${id}`);
     fetchBlacklist();
   };
 

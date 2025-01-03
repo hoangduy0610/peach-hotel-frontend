@@ -6,7 +6,6 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 
 const Contact = () => {
   useEffect(() => {
-    document.title = "Contact us";
     window.scroll(0, 0);
   }, []);
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Table, Space, Button, Modal, Form, Input, InputNumber, DatePicker, Select, Tag, message } from 'antd';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 
 const { RangePicker } = DatePicker;
 
@@ -12,7 +12,7 @@ const PaymentHistory = () => {
   const [currentPayment, setCurrentPayment] = useState<any | null>(null);
 
   const fetchPaymentsList = async () => {
-    const res = await MainApiRequest.get('/payment/list');
+    const res = await AdminApiRequest.get('/payment/list');
     setPaymentsList(res.data);
   };
 
@@ -59,7 +59,7 @@ const PaymentHistory = () => {
     // setIsEditing(true);
     // setOpenCreatePaymentModal(true);
     const id = record.id;
-    const res = await MainApiRequest.post(`/payment/confirm/${id}`);
+    const res = await AdminApiRequest.post(`/payment/confirm/${id}`);
     if (res.status === 200) {
       message.success('Payment confirmed successfully!');
       fetchPaymentsList();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './AdminBooking.scss';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 import { Button, Form, Input, DatePicker, Modal, Select, Table, Tag, message } from 'antd';
 import moment from 'moment';
 import { CreateBookingModal } from './CreateBookingModal';
@@ -11,7 +11,7 @@ const AdminBooking = () => {
   const [openCreateBookingModal, setOpenCreateBookingModal] = useState(false);
 
   const fetchBookingList = async () => {
-    const res = await MainApiRequest.get('/booking/list');
+    const res = await AdminApiRequest.get('/booking/list');
     setBookingList(res.data);
   }
 
@@ -25,7 +25,7 @@ const AdminBooking = () => {
 
   const onOKCreateBooking = async (data: any) => {
     setOpenCreateBookingModal(false);
-    const res = await MainApiRequest.post('/booking', data);
+    const res = await AdminApiRequest.post('/booking', data);
     if (res.status === 200) {
       fetchBookingList();
     }
@@ -34,7 +34,7 @@ const AdminBooking = () => {
       userId: data.userId,
       bookingId: res.data.id
     }
-    await MainApiRequest.post('/payment', paymentData);
+    await AdminApiRequest.post('/payment', paymentData);
     message.success('Create booking successfully');
     // const data = form.getFieldsValue();
     // console.log(data);

@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSystemContext } from '@/hooks/useSystemContext';
-import { MainApiRequest } from '@/services/MainApiRequest';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -21,16 +21,16 @@ const Login = () => {
     }
 
     const handleLogin = async () => {
-        const res = await MainApiRequest.post('/auth/admin/signin', {
+        const res = await AdminApiRequest.post('/auth/admin/signin', {
             email,
             password
         });
 
         if (res.status === 200) {
             const data = res.data;
-            context.setToken(data.token);
+            // context.setToken(data.token);
 
-            localStorage.setItem('token', data.token);
+            localStorage.setItem('adminToken', data.token);
 
             navigate('/admin');
         }

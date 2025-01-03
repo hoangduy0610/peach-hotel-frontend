@@ -48,7 +48,6 @@ const Booking = () => {
   };
 
   useEffect(() => {
-    document.title = "Page Name  ";
     window.scroll(0, 0);
     fetchUserInformation();
     fetchAvailableServices(); // Gọi hàm này để tải dữ liệu mẫu

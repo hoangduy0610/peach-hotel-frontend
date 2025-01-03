@@ -21,7 +21,6 @@ const HistoryBooking = () => {
   }
 
   useEffect(() => {
-    document.title = 'History Booking';
     window.scroll(0, 0);
 
     fetchBookingList()
@@ -93,7 +92,7 @@ const HistoryBooking = () => {
                 title: 'Room Type',
                 dataIndex: 'rooms',
                 key: 'rooms',
-                render: (rooms: any[]) => rooms[0].roomTier.name,
+                render: (rooms: any[]) => rooms[0]?.roomTier?.name,
               },
               {
                 title: 'Status',

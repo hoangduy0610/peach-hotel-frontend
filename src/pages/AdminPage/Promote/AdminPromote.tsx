@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { MainApiRequest } from '@/services/MainApiRequest';
-import { Button, Form, Input, DatePicker, Modal, Table, Select, Popconfirm, message, Space } from 'antd';
+import { AdminApiRequest } from '@/services/AdminApiRequest';
+import { Button, Form, Input, DatePicker, Modal, Table, Select, Popconfirm, message, Space, Tag } from 'antd';
 import moment from 'moment';
 import "./AdminPromote.scss";
 import axios from 'axios';
@@ -17,7 +17,7 @@ const AdminPromote = () => {
 
     // Hàm random mã CouponCode
     const generateRandomCode = () => {
-        const length = Math.floor(Math.random() * 7) + 4; // Random từ 4 đến 10 ký tự
+        const length = 15; // Random 15 ký tự
         const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         let result = "";
         for (let i = 0; i < length; i++) {
@@ -27,12 +27,12 @@ const AdminPromote = () => {
     };
 
     const fetchPromoteList = async () => {
-        const res = await MainApiRequest.get('/promote/list');
+        const res = await AdminApiRequest.get('/promote/list');
         setPromoteList(res.data);
     }
 
     const fetchCouponList = async () => {
-        const res = await MainApiRequest.get('/promote/coupon/list');
+        const res = await AdminApiRequest.get('/promote/coupon/list');
         setCouponList(res.data);
     }
 
@@ -54,37 +54,40 @@ const AdminPromote = () => {
         setOpenCreatePromoteModal(true);
     };
 
-    const onOpenCreateCouponModal = (record = null) => {
+    const onOpenCreateCouponModal = (record: any = null) => {
         setEditCoupon(record);
-        if (record) form.setFieldsValue(record);
+        if (record) {
+            form.setFieldsValue(record);
+            form.setFieldsValue({ promoteId: record.promote.id });
+        }
         setOpenCreateCouponModal(true);
     }
 
     const onOKCreatePromote = async () => {
         const data = form.getFieldsValue();
-    
+
         if (data.startAt) {
             data.startAt = data.startAt.toISOString();
         } else {
             message.error("Start date is required!");
             return;
         }
-    
+
         if (data.endAt) {
             data.endAt = data.endAt.toISOString();
         } else {
             message.error("End date is required!");
             return;
         }
-    
+
         try {
             let res;
             if (editPromote) {
-                res = await MainApiRequest.put(`/promote/${editPromote.id}`, data);
+                res = await AdminApiRequest.put(`/promote/${editPromote.id}`, data);
             } else {
-                res = await MainApiRequest.post('/promote', data);
+                res = await AdminApiRequest.post('/promote', data);
             }
-    
+
             if (res && res.status === 200) {
                 fetchPromoteList();
                 setOpenCreatePromoteModal(false);
@@ -103,13 +106,14 @@ const AdminPromote = () => {
             }
         }
     };
-    
+
 
     const onDeletePromote = async (id: number) => {
         try {
-            const res = await MainApiRequest.delete(`/promote/${id}`);
+            const res = await AdminApiRequest.delete(`/promote/${id}`);
             if (res && res.status === 200) {
                 fetchPromoteList();
+                fetchCouponList();
                 message.success('Promote deleted successfully!');
             } else {
                 message.error('Failed to delete promote: ' + res?.data?.message || "Unknown error");
@@ -126,20 +130,20 @@ const AdminPromote = () => {
     };
     const onOKCreateCoupon = async () => {
         const data = form.getFieldsValue();
-        
+
         if (!data.code || data.code.trim() === "") {
             message.error("Coupon code is required!");
             return;
         }
-    
+
         try {
             let res;
             if (editCoupon) {
-                res = await MainApiRequest.put(`/promote/coupon/${editCoupon.id}`, data);
+                res = await AdminApiRequest.put(`/promote/coupon/${editCoupon.id}`, data);
             } else {
-                res = await MainApiRequest.post('/promote/coupon', data);
+                res = await AdminApiRequest.post('/promote/coupon', data);
             }
-    
+
             if (res && res.status === 200) {
                 fetchCouponList();
                 setOpenCreateCouponModal(false);
@@ -157,12 +161,12 @@ const AdminPromote = () => {
             // }
         }
     };
-    
-    
+
+
 
     const onDeleteCoupon = async (id: number) => {
         try {
-            const res = await MainApiRequest.delete(`/promote/coupon/${id}`);
+            const res = await AdminApiRequest.delete(`/promote/coupon/${id}`);
             if (res && res.status === 200) {
                 fetchCouponList();
                 message.success('Coupon deleted successfully!');
@@ -178,7 +182,7 @@ const AdminPromote = () => {
             // }
         }
     };
-    
+
 
     const onCancelCreatePromote = () => {
         setOpenCreatePromoteModal(false);
@@ -215,7 +219,7 @@ const AdminPromote = () => {
                 onOk={() => onOKCreatePromote()}
                 onCancel={() => onCancelCreatePromote()}
             >
-                <Form 
+                <Form
                     form={form}
                     layout="vertical"
                 >
@@ -231,8 +235,8 @@ const AdminPromote = () => {
                             name='type'
                             rules={[{ required: true, message: 'Please select type!' }]}>
                             <Select>
-                                <Select.Option value="percentage">Percentage</Select.Option>
-                                <Select.Option value="fixed">Fixed</Select.Option>
+                                <Select.Option value="PERCENT">Percentage</Select.Option>
+                                <Select.Option value="FIXED">Fixed</Select.Option>
                             </Select>
                         </Form.Item>
                     </div>
@@ -280,7 +284,7 @@ const AdminPromote = () => {
                 >
                     <Form.Item
                         label='Promote Name'
-                        name='name'
+                        name='promoteId'
                         rules={[{ required: true, message: 'Please input promote name!' }]}
                     >
                         <Select>
@@ -328,7 +332,7 @@ const AdminPromote = () => {
                     { title: 'End At', dataIndex: 'endAt', key: 'endAt', render: (endAt: string) => moment(endAt).format('YYYY-MM-DD HH:mm:ss') },
                     {
                         title: 'Actions', key: 'actions', render: (text, record) => (
-                            <Space  size="middle">
+                            <Space size="middle">
                                 <Button onClick={() => onOpenCreatePromoteModal(record)}>
                                     <i className="fas fa-edit"></i>
                                 </Button>
@@ -338,7 +342,7 @@ const AdminPromote = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button onClick={() => onDeletePromote(record.id)} danger>
+                                    <Button danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>
@@ -347,13 +351,14 @@ const AdminPromote = () => {
                     },
                 ]}
             />
-            
+
             <h4 className='h4 mt-3'>Coupon List</h4>
             <Table
                 dataSource={couponList}
                 columns={[
                     { title: 'ID', dataIndex: 'id', key: 'id' },
-                    { title: 'Promote Name', dataIndex: 'promote', key: 'promoteName', render: (promote) => promote?.name || 'N/A' },
+                    { title: 'Promote Name', dataIndex: 'promote', key: 'promote', render: (promote) => promote?.name || 'N/A' },
+                    { title: 'Status', dataIndex: 'status', key: 'status', render: (status) => <Tag color={status === 'ACTIVE' ? 'green' : 'red'}>{status}</Tag> },
                     { title: 'Coupon Code', dataIndex: 'code', key: 'code' },
                     {
                         title: 'Actions', key: 'actions', render: (text, record) => (
@@ -367,7 +372,7 @@ const AdminPromote = () => {
                                     okText="Yes"
                                     cancelText="No"
                                 >
-                                    <Button onClick={() => onDeleteCoupon(record.id)} danger>
+                                    <Button danger>
                                         <i className="fas fa-trash"></i>
                                     </Button>
                                 </Popconfirm>

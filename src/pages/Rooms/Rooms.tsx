@@ -52,7 +52,6 @@ const Rooms = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    document.title = " Hotel   ";
     window.scroll(0, 0);
 
     fetchTierList();

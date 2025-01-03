@@ -79,11 +79,10 @@ const Payment = () => {
         }
 
         setUserId(user.data.data.id);
-        setPeachPoint(user.data.data.peachCoin);
+        setPeachPoint(user.data.data.peachCoin || 0);
     };
 
     useEffect(() => {
-        document.title = "Payment Page";
         window.scrollTo(0, 0);
 
         fetchUserInfo();
@@ -205,7 +204,7 @@ const Payment = () => {
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                                             <span>Use PeachCoin</span>
                                             <Tag color="red">{peachPoint}</Tag>
-                                            <Form.Check type="switch" id="custom-switch" checked={usePeachPoint} onChange={(e) => setUsePeachPoint(e.target.checked)} />
+                                            <Form.Check type="switch" id="custom-switch" disabled={peachPoint <= 0} checked={usePeachPoint} onChange={(e) => setUsePeachPoint(e.target.checked)} />
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                                             <span>PeachCoin Applied</span>

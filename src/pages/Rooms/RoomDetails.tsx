@@ -18,7 +18,6 @@ const RoomDetails = () => {
   }
 
   useEffect(() => {
-    document.title = "Room Details";
     window.scroll(0, 0);
 
     fetchRoomDetail();

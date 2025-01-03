@@ -14,7 +14,6 @@ import "./About.scss";
 
 const About = () => {
   useEffect(() => {
-    document.title = "About Us";
     window.scroll(0, 0);
   }, []);
 
