@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
-import hotelImg1 from "@/assets/room1.jpg";
-import hotelImg2 from "@/assets/room3.jpg";
-import hotelImg3 from "@/assets/room5.jpg";
+import hotelImg1 from "@/assets/img1.jpg";
+import hotelImg2 from "@/assets/banner-1.jpg";
+import hotelImg3 from "@/assets/img3.jpg";
+import hotelImg4 from "@/assets/img4.jpeg";
+import hotelImg5 from "@/assets/img5.jpeg";
 import about1 from "@/assets/view7.jpg";
 import about2 from "@/assets/view8.jpg";
-import about3 from "@/assets/view11.jpg";
+import about3 from "@/assets/lobby.jpeg";
 import icons1 from "@/assets/delicious4.jpg";
 import icons2 from "@/assets/spa.jpg";
 import icons3 from "@/assets/tienich8.jpg";
@@ -145,11 +147,21 @@ const About = () => {
           </section>
 
           {/* Hotel Images */}
-          <Row className="hotel-images-section mb-5">
-            <Col md="12" className="text-center mb-4">
+          <Col md="12" className="text-center mb-4">
               <h2 className="fw-bold">A Glimpse of Our Hotel</h2>
               <p>Explore the luxurious and comfortable spaces of our hotel through real images.</p>
             </Col>
+          <Col className="mb-4">
+              <Card className="border-0">
+                <Card.Img src={hotelImg2} alt="view" className="rounded" />
+              </Card>
+          </Col>
+          <Col className="mb-4">
+              <Card className="border-0">
+                <Card.Img src={hotelImg4} alt="view" className="rounded" />
+              </Card>
+          </Col>
+          <Row className="hotel-images-section mb-5">
             <Col md="4" className="mb-4">
               <Card className="border-0 shadow-sm">
                 <Card.Img src={hotelImg1} alt="Hotel Room" className="rounded img-fluid" />
@@ -157,12 +169,12 @@ const About = () => {
             </Col>
             <Col md="4" className="mb-4">
               <Card className="border-0 shadow-sm">
-                <Card.Img src={hotelImg2} alt="Luxury Spa" className="rounded img-fluid" />
+                <Card.Img src={hotelImg3} alt="Infinity Pool" className="rounded img-fluid" />
               </Card>
             </Col>
             <Col md="4" className="mb-4">
               <Card className="border-0 shadow-sm">
-                <Card.Img src={hotelImg3} alt="Infinity Pool" className="rounded img-fluid" />
+                <Card.Img src={hotelImg5} alt="Luxury Spa" className="rounded img-fluid" />
               </Card>
             </Col>
           </Row>
