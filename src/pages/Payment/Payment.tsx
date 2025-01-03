@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import "./Payment.scss";
 import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
-import { Button, Tag } from "antd";
+import { Button, Tag, message } from "antd";
 import LoadingOverlay from "@achmadk/react-loading-overlay";
 import { MainApiRequest } from "@/services/MainApiRequest";
 
@@ -41,14 +41,16 @@ const Payment = () => {
     const handlePayment = async () => {
         if (usePeachPoint) {
             if (peachPoint <= 0) {
-                alert("Not enough PeachPoint to pay!");
+                // alert("Not enough PeachPoint to pay!");
+                message.error("Not enough PeachPoint to pay!");
                 return;
             }
 
             const res = await MainApiRequest.post(`/booking/peach-coin/${location?.state?.bookingData?.id}`);
 
             if (res.status !== 200) {
-                alert("Payment failed!");
+                // alert("Payment failed!");
+                message.error("Payment failed!");
                 return;
             }
         }
@@ -60,11 +62,13 @@ const Payment = () => {
         });
 
         if (res.status !== 200) {
-            alert("Payment failed!");
+            // alert("Payment failed!");
+            message.error("Payment failed!");
             return;
         }
 
-        alert("Payment successful!");
+        // alert("Payment successful!");
+        message.success("Payment successful!");
         navigate("/");
     };
 
@@ -73,7 +77,8 @@ const Payment = () => {
         const user = await MainApiRequest.get("/auth/callback");
 
         if (!user?.data?.data) {
-            alert("Please login to continue payment");
+            // alert("Please login to continue payment");
+            message.error("Please login to continue payment");
             navigate("/login");
             return;
         }
@@ -93,7 +98,8 @@ const Payment = () => {
         const bookingId = location?.state?.bookingData?.id;
         if (!bookingId) {
             setIsLoading(false);
-            alert("Invalid booking data");
+            // alert("Invalid booking data");
+            message.error("Invalid booking data");
             return;
         }
 
@@ -102,14 +108,16 @@ const Payment = () => {
             return null;
         });
         if (res && res.status === 200) {
-            alert("Discount applied successfully!");
+            // alert("Discount applied successfully!");
+            message.success("Discount applied successfully!");
             if (res.data.coupon.promote.type === "PERCENT") {
                 setDiscountedPrice(price * res.data.coupon.promote.discount / 100);
             } else {
                 setDiscountedPrice(res.data.coupon.promote.discount);
             }
         } else {
-            alert("Invalid discount code!");
+            // alert("Invalid discount code!");
+            message.error("Invalid discount code!");
         }
         setIsLoading(false);
     }

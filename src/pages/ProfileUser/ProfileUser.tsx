@@ -5,7 +5,7 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { MainApiRequest } from "@/services/MainApiRequest"; // Thay thế với API thực tế của bạn
 import "./ProfileUser.scss";
 import userImg from "@/assets/cus1.jpg";
-import { Tag } from "antd";
+import { Tag, message } from "antd";
 
 const ProfileUser = () => {
   const navigate = useNavigate();
@@ -54,10 +54,12 @@ const ProfileUser = () => {
     };
     try {
       await MainApiRequest.put(`/user/${id}`, updatedData);
-      alert("Profile updated successfully!");
+      // alert("Profile updated successfully!");
+      message.success("Profile updated successfully!");
     } catch (error) {
       console.error("Error updating profile", error);
-      alert("Failed to update profile. Please try again.");
+      // alert("Failed to update profile. Please try again.");
+      message.error("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -79,12 +81,14 @@ const ProfileUser = () => {
       try {
         const response = await MainApiRequest.post("/upload-avatar", formData);
         if (response.status === 200) {
-          alert("Image uploaded successfully!");
+          // alert("Image uploaded successfully!");
+          message.success("Image uploaded successfully!");
           setUser({ ...user, imageUrl: response.data.imageUrl }); // Cập nhật ảnh từ server
         }
       } catch (error) {
         console.error("Error uploading image:", error);
-        alert("Failed to upload image. Please try again.");
+        // alert("Failed to upload image. Please try again.");
+        message.error("Failed to upload image. Please try again.");
       }
     }
   };

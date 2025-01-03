@@ -64,7 +64,8 @@ const HistoryBooking = () => {
     const user = await MainApiRequest.get("/auth/callback");
 
     if (!user?.data?.data) {
-      alert("Please login to continue payment");
+      // alert("Please login to continue payment");
+      message.error("Please login to continue payment");
       navigate("/login");
       return;
     }

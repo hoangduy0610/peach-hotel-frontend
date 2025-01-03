@@ -6,7 +6,7 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 import { MainApiRequest } from "@/services/MainApiRequest";
-import { Table, Button, Modal } from "antd";
+import { Table, Button, Modal, message } from "antd";
 import { SelectAdditionalService } from "./SelectAdditionalService";
 
 const Booking = () => {
@@ -57,7 +57,8 @@ const Booking = () => {
     const user = await MainApiRequest.get("/auth/callback");
 
     if (!user?.data?.data) {
-      alert("Please login to continue payment");
+      // alert("Please login to continue payment");
+      message.error("Please login to continue payment");
       navigate("/login");
       return;
     }
@@ -77,12 +78,14 @@ const Booking = () => {
       const res = await MainApiRequest.post("/booking", data);
 
       if (res.status === 200) {
-        alert("Booking success, proceed to payment");
+        // alert("Booking success, proceed to payment");
+        message.success("Booking success, proceed to payment");
         navigate("/payment", { state: { bookingData: res.data, tierName: location.state?.roomTier } });
       }
     } catch (error: any) {
-      console.error("Booking error:", error);
-      alert("Failed to book room. Reason: " + error.response.data.message);
+      // console.error("Booking error:", error);
+      message.error("Failed to book room. Reason: " + error.response.data.message);
+      // alert("Failed to book room. Reason: " + error.response.data.message);
     }
   };
 
