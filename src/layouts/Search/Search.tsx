@@ -96,7 +96,9 @@ const Search = ({
                       1,
                       2,
                       3,
-                      4
+                      4,
+                      5,
+                      6
                     ].map((item) => item.toString())}
                   />
                 </div>
