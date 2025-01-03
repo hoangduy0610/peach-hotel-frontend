@@ -164,12 +164,12 @@ const About = () => {
           <Row className="hotel-images-section mb-5">
             <Col md="4" className="mb-4">
               <Card className="border-0 shadow-sm">
-                <Card.Img src={hotelImg1} alt="Hotel Room" className="rounded img-fluid" />
+                <Card.Img src={hotelImg3} alt="Hotel Room" className="rounded img-fluid" />
               </Card>
             </Col>
             <Col md="4" className="mb-4">
               <Card className="border-0 shadow-sm">
-                <Card.Img src={hotelImg3} alt="Infinity Pool" className="rounded img-fluid" />
+                <Card.Img src={hotelImg1} alt="Infinity Pool" className="rounded img-fluid" />
               </Card>
             </Col>
             <Col md="4" className="mb-4">
