@@ -96,7 +96,7 @@ const HistoryBooking = () => {
     <>
       <Breadcrumbs title="History Booking" pagename="History Booking" />
       <section className="history-section py-5">
-        <Container>
+        <div className='w-75 container-fluid'>
           <Form
             layout='inline'
             className='d-flex justify-content-end mb-3'
@@ -184,7 +184,7 @@ const HistoryBooking = () => {
               },
             ]}
           />
-        </Container>
+        </div>
       </section>
 
       <Modal

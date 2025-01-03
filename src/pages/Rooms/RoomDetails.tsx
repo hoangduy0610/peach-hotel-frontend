@@ -123,6 +123,34 @@ const RoomDetails = () => {
                           ) : null
                         )}
                       </div>
+
+                      <h3 className="font-bold mb-2 h3 mt-3 border-bottom pb-2">Reviews</h3>
+                      <div style={{ lineHeight: 1.5 }}>
+                        {roomDetail?.ratings?.length ?
+                          roomDetail.ratings.map((rating: any) => (
+                            <div key={rating.id} className="mb-3">
+                              <div className="d-flex justify-content-between">
+                                <h5 className="fw-bold">{rating.user.name}</h5>
+                                <div>
+                                  {[...Array(Math.floor(rating.score))].map(
+                                    (_, i) => (
+                                      <i
+                                        key={i}
+                                        className="bi bi-star-fill text-warning"
+                                      ></i>
+                                    )
+                                  )}
+                                  {(rating.score % 1) > 0 && (
+                                    <i className="bi bi-star-half text-warning"></i>
+                                  )}
+                                </div>
+                              </div>
+                              <p>{rating.comment}</p>
+                            </div>
+                          ))
+                          : <p>No reviews yet</p>
+                        }
+                      </div>
                     </div>
                   </Tab.Content>
                 </Col>
