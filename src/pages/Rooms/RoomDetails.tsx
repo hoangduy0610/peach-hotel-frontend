@@ -6,6 +6,7 @@ import Breadcrumbs from "@/layouts/Breadcrumbs/Breadcrumbs";
 import { NavLink, useNavigate, useParams } from "react-router-dom";
 import { MainApiRequest } from "@/services/MainApiRequest";
 import moment from "moment";
+import { maxHeight, minHeight, minWidth } from "@mui/system";
 
 const RoomDetails = () => {
   const navigate = useNavigate();
@@ -97,7 +98,8 @@ const RoomDetails = () => {
               items={(roomDetail?.roomTier?.images || []).map((image: string) => ({
                 original: image,
                 thumbnail: image,
-                originalHeight: 300,
+                originalHeight: 700,
+                style: { objectFit: "none" },
               }))}
               showNav={false}
               showBullets={false}
