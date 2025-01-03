@@ -8,7 +8,6 @@ import Booking from "@/pages/Booking/Booking";
 import Contact from "@/pages/Contact/Contact";
 import Home from "@/pages/Home/Home";
 import Login from "@/pages/Login/Login";
-import PhotoGallery from "@/pages/PhotoGallery/PhotoGallery";
 import Register from "@/pages/Register/Register";
 import { useEffect } from "react";
 import { useSystemContext } from "@/hooks/useSystemContext";
@@ -17,12 +16,9 @@ import Dashboard from "@/pages/AdminPage/Dasboard/Dashboard";
 import AdminBooking from "@/pages/AdminPage/AdminBooking/AdminBooking";
 
 import Rooms from "@/pages/Rooms/Rooms";
-import RoomTier from "@/pages/RoomTier/RoomTier";
 import HistoryBooking from "@/pages/HistoryBooking/HistoryBooking";
 import RoomDetails from "@/pages/Rooms/RoomDetails";
 import ProfileUser from "@/pages/ProfileUser/ProfileUser";
-import Feedback from "react-bootstrap/esm/Feedback";
-import FeedbackPage from "@/pages/Feedback/FeedbackPage";
 import Payment from "@/pages/Payment/Payment";
 import AdminService from "@/pages/AdminPage/Service/AdminService";
 import AdminStaff from "@/pages/AdminPage/Staff/AdminStaff";
@@ -169,9 +165,7 @@ export default function MainRoutes() {
         <Route path="room/:id" element={<RoomDetails />} />
         <Route path="booking" element={<Booking />} />
         <Route path="history" element={<HistoryBooking />} />
-        {/* <Route path="feedback/:reservationCode" element={<FeedbackPage />} /> */}
         <Route path="payment" element={<Payment />} />
-        <Route path="gallery" element={<PhotoGallery />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="admin/login" element={<AdminLogin />} />
