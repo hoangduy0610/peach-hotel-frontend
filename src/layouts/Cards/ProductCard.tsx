@@ -2,18 +2,18 @@ import React from "react";
 import "./ProductCard.scss";
 import { Card, Button, Badge, Stack } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import Anchorage from "@/assets/view1.jpg";
-import { Rate } from 'antd';
 
 interface ProductCardProps {
   val: {
     id: number,
     name: string,
+    image: string,
     floor: 0,
     price: 0,
     roomTier: {
       name: string;
       description: string;
+      images: string[]; // Assuming roomTier has an images array
     }
     ratings: any[],
     isBalcony: boolean,
@@ -89,8 +89,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
     <Card className="rounded-3 shadow-sm product-card">
       <Card.Img
         variant="top"
-        // src={val.image}
-        src={Anchorage}
+        src={val.roomTier.images[0]} // Use the first image from roomTier
         className="img-fluid"
         alt={`Image of ${val.name}`}
       />
@@ -120,15 +119,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
           <span className="ms-2">{rating} / 5</span> {/* Replace 3.5 with rating */}
         </div>
 
-        {/* Category */}
-        {/* <Stack direction="horizontal" gap={2} className="mb-3">
-          {val.category.map((cat, index) => (
-            <Badge key={index} className="category-badge">
-              {cat}
-            </Badge>
-          ))}
-        </Stack> */}
-
         {/* Tier */}
         <div className="tier mb-3">
           <span className="label">Tier:</span>
@@ -144,7 +134,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
             {Object.entries(features).map(([feature, value]) => {
               if (value) {
                 return (
-                  <span className="feature">
+                  <span className="feature" key={feature}>
                     <i className={`bi ${featureIcons[feature]}`}></i> {feature.replace('is', '')}
                   </span>
                 );
@@ -167,7 +157,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
         </div>
       </Card.Body>
 
-
       {/* Footer with buttons */}
       <Card.Footer className="d-flex justify-content-between">
         <Button variant="primary" onClick={() => navigate(`/room/${val.id}`)}>
@@ -186,7 +175,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
           Book now
         </Button>
       </Card.Footer>
-    </Card >
+    </Card>
   );
 };
 
