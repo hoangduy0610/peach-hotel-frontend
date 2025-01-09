@@ -15,23 +15,18 @@ const Payment = () => {
     const [discountCode, setDiscountCode] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    // Extract values from location.state and set default values
     const data = location?.state?.bookingData || {};
     const [price, setPrice] = useState(data.total || 0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
     const [peachPoint, setPeachPoint] = useState(0);
     const [userId, setUserId] = useState(0);
-    const [usePeachPoint, setUsePeachPoint] = useState<boolean>(false);
-    const roomName = data.rooms[0].name || "";
+    const [usePeachPoint, setUsePeachPoint] = useState(false);
+    const roomName = data.rooms[0]?.name || "";
     const roomTier = location?.state?.tierName || "";
-    const checkInDate = moment(data.checkIn).startOf('day') || moment().startOf('day').toDate();
-    const checkOutDate = moment(data.checkOut).startOf('day') || moment().startOf('day').add(1, 'days').toDate();
+    const checkInDate = moment(data.checkIn).startOf("day") || moment().startOf("day").toDate();
+    const checkOutDate = moment(data.checkOut).startOf("day") || moment().startOf("day").add(1, "days").toDate();
 
-
-    // Validate values before calculations
-    const totalNights = checkInDate && checkOutDate
-        ? moment(checkOutDate).diff(moment(checkInDate), 'days')
-        : 0;
+    const totalNights = checkInDate && checkOutDate ? moment(checkOutDate).diff(moment(checkInDate), "days") : 0;
 
     const taxesAndFees = price / 10;
     const payableNow = price - taxesAndFees;
@@ -39,45 +34,38 @@ const Payment = () => {
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
 
     const handlePayment = async () => {
+        if (usePeachPoint && peachPoint <= 0) {
+            message.error("Not enough PeachPoint to pay!");
+            return;
+        }
+
         if (usePeachPoint) {
-            if (peachPoint <= 0) {
-                // alert("Not enough PeachPoint to pay!");
-                message.error("Not enough PeachPoint to pay!");
-                return;
-            }
-
             const res = await MainApiRequest.post(`/booking/peach-coin/${location?.state?.bookingData?.id}`);
-
             if (res.status !== 200) {
-                // alert("Payment failed!");
                 message.error("Payment failed!");
                 return;
             }
         }
 
         const res = await MainApiRequest.post("/payment", {
-            "description": "Thanh toan dich vu Peach Hotel",
-            "userId": userId,
-            "bookingId": location?.state?.bookingData?.id,
+            description: "Thanh toan dich vu Peach Hotel",
+            userId: userId,
+            bookingId: location?.state?.bookingData?.id,
         });
 
         if (res.status !== 200) {
-            // alert("Payment failed!");
             message.error("Payment failed!");
             return;
         }
 
-        // alert("Payment successful!");
         message.success("Payment successful!");
         navigate("/");
     };
 
     const fetchUserInfo = async () => {
-
         const user = await MainApiRequest.get("/auth/callback");
 
         if (!user?.data?.data) {
-            // alert("Please login to continue payment");
             message.error("Please login to continue payment");
             navigate("/login");
             return;
@@ -89,7 +77,6 @@ const Payment = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-
         fetchUserInfo();
     }, []);
 
@@ -98,7 +85,6 @@ const Payment = () => {
         const bookingId = location?.state?.bookingData?.id;
         if (!bookingId) {
             setIsLoading(false);
-            // alert("Invalid booking data");
             message.error("Invalid booking data");
             return;
         }
@@ -108,7 +94,6 @@ const Payment = () => {
             return null;
         });
         if (res && res.status === 200) {
-            // alert("Discount applied successfully!");
             message.success("Discount applied successfully!");
             if (res.data.coupon.promote.type === "PERCENT") {
                 setDiscountedPrice(price * res.data.coupon.promote.discount / 100);
@@ -116,17 +101,27 @@ const Payment = () => {
                 setDiscountedPrice(res.data.coupon.promote.discount);
             }
         } else {
-            // alert("Invalid discount code!");
             message.error("Invalid discount code!");
         }
         setIsLoading(false);
-    }
+    };
+
+    const finalPeachPoint = usePeachPoint
+        ? Math.min(peachPoint, price - discountedPrice)
+        : 0;
+
+    const totalPayment = price - discountedPrice - finalPeachPoint;
+
+    useEffect(() => {
+        if (usePeachPoint) {
+            setDiscountedPrice((prev) => prev + finalPeachPoint);
+        } else {
+            setDiscountedPrice((prev) => prev - finalPeachPoint);
+        }
+    }, [usePeachPoint, finalPeachPoint]);
 
     return (
-        <LoadingOverlay
-            active={isLoading}
-            spinner
-        >
+        <LoadingOverlay active={isLoading} spinner>
             <Breadcrumbs title="Payment" pagename="Payment" />
             <section className="payment-section py-5">
                 <Container>
@@ -171,7 +166,7 @@ const Payment = () => {
                                     </Form.Group>
                                     <button
                                         type="button"
-                                        className="primaryBtn w-100 h-40 "
+                                        className="primaryBtn w-100 h-40"
                                         onClick={handlePayment}
                                     >
                                         Pay Now
@@ -205,59 +200,48 @@ const Payment = () => {
                                         <ListGroup.Item className="border-0 justify-content-between h5 pt-0">
                                             <Form.Label>Discount Code</Form.Label>
                                             <div className="d-flex justify-content-center align-items-center gap-2">
-                                                <Form.Control type="text" placeholder="Enter code" onChange={(e) => setDiscountCode(e.target.value)} value={discountCode} />
-                                                <button className="btn btn-success" onClick={applyDiscount}>Apply</button>
+                                                <Form.Control
+                                                    type="text"
+                                                    placeholder="Enter code"
+                                                    onChange={(e) => setDiscountCode(e.target.value)}
+                                                    value={discountCode}
+                                                />
+                                                <button className="btn btn-success" onClick={applyDiscount}>
+                                                    Apply
+                                                </button>
                                             </div>
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                                             <span>Use PeachCoin</span>
                                             <Tag color="red">{peachPoint}</Tag>
-                                            <Form.Check type="switch" id="custom-switch" disabled={peachPoint <= 0} checked={usePeachPoint} onChange={(e) => setUsePeachPoint(e.target.checked)} />
+                                            <Form.Check
+                                                type="switch"
+                                                id="custom-switch"
+                                                disabled={peachPoint <= 0}
+                                                checked={usePeachPoint}
+                                                onChange={(e) => setUsePeachPoint(e.target.checked)}
+                                            />
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
                                             <span>PeachCoin Applied</span>
                                             <strong>
-                                                {
-                                                    (
-                                                        usePeachPoint
-                                                            ? (
-                                                                peachPoint >= price
-                                                                    ? price
-                                                                    : peachPoint
-                                                            )
-                                                            : 0
-                                                    ).toLocaleString("vi-VN", { style: "currency", currency: "VND" })
-                                                }
+                                                {finalPeachPoint.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                             </strong>
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                                            <span>Discount</span>
-                                            <strong>{(discountedPrice + (
-                                                usePeachPoint
-                                                    ? (
-                                                        peachPoint >= price
-                                                            ? price
-                                                            : peachPoint
-                                                    )
-                                                    : 0
-                                            )).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</strong>
+                                            <span>Total Discount</span>
+                                            <strong>
+                                                {discountedPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                            </strong>
+                                        </ListGroup.Item>
+                                        <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
+                                            <span>Total Payment</span>
+                                            <strong>
+                                                {totalPayment.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                            </strong>
                                         </ListGroup.Item>
                                     </ListGroup>
                                 </Card.Body>
-                                <Card.Footer className="d-flex justify-content-between py-4">
-                                    <span className="font-bold h5">Total Payment</span>
-                                    <strong className="font-bold h5">
-                                        {(price - discountedPrice - (
-                                            usePeachPoint
-                                                ? (
-                                                    peachPoint >= price
-                                                        ? price
-                                                        : peachPoint
-                                                )
-                                                : 0
-                                        )).toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
-                                    </strong>
-                                </Card.Footer>
                             </Card>
                         </Col>
                     </Row>
