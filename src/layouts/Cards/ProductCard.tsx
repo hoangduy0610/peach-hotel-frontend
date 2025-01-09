@@ -104,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
         </Card.Title>
 
         {/* Rating */}
-        <div className="rating mb-3">
+        {/* <div className="rating mb-3">
           {Array.from({ length: 5 }, (_, index) => {
             const fullStars = Math.floor(rating); // Replace 3.5 with rating
             const hasHalfStar = rating % 1 !== 0; // Replace 3.5 with rating
@@ -117,6 +117,21 @@ const ProductCard: React.FC<ProductCardProps> = ({ val, checkInDate, checkOutDat
             }
           })}
           <span className="ms-2">{rating} / 5</span> {/* Replace 3.5 with rating */}
+        {/* </div>} */}
+        <div className="rating mb-3">
+          {Array.from({ length: 5 }, (_, index) => {
+            const roundedRating = Math.round(rating * 10) / 10; // Làm tròn đến chữ số thập phân thứ nhất
+            const fullStars = Math.floor(roundedRating);
+            const hasHalfStar = roundedRating % 1 !== 0;
+            if (index < fullStars) {
+              return <i className="bi bi-star-fill text-warning" key={index}></i>;
+            } else if (index === fullStars && hasHalfStar) {
+              return <i className="bi bi-star-half text-warning" key={index}></i>;
+            } else {
+              return <i className="bi bi-star text-warning" key={index}></i>;
+            }
+          })}
+          <span className="ms-2">{(Math.round(rating * 10) / 10).toFixed(1)} / 5</span> {/* Làm tròn và hiển thị */}
         </div>
 
         {/* Tier */}

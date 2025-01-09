@@ -173,16 +173,13 @@ const RoomDetails = () => {
                         <div className="d-flex justify-content-between align-items-center mb-3">
                           {/* Rating */}
                           <div>
-                            <span className="fw-bold">{rating || "N/A"} </span>
-                            {[...Array(Math.floor(rating || 0))].map(
-                              (_, i) => (
-                                <i
-                                  key={i}
-                                  className="bi bi-star-fill text-warning"
-                                ></i>
-                              )
-                            )}
-                            {(rating || 0) % 1 > 0 && (
+                            <span className="fw-bold">
+                              {(Math.round((rating || 0) * 10) / 10).toFixed(1)} {/* Làm tròn đến 1 chữ số thập phân */}
+                            </span>
+                            {[...Array(Math.floor(rating || 0))].map((_, i) => (
+                              <i key={i} className="bi bi-star-fill text-warning"></i>
+                            ))}
+                            {(Math.round((rating || 0) * 10) / 10) % 1 > 0 && (
                               <i className="bi bi-star-half text-warning"></i>
                             )}
                           </div>
