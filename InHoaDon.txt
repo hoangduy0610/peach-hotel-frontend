@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xác Nhận Đặt Phòng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .invoice-container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            font-size: 1.8em;
+            margin: 0;
+            color: #444;
+        }
+        header p {
+            margin: 5px 0;
+            color: #666;
+        }
+        .section-title {
+            font-weight: bold;
+            margin: 20px 0 10px;
+            text-transform: uppercase;
+            font-size: 1.1em;
+        }
+        .info {
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .info strong {
+            display: inline-block;
+            width: 150px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        table th {
+            background-color: #f5f5f5;
+            font-weight: bold;
+        }
+        table td {
+            font-size: 0.9em;
+        }
+        .summary {
+            margin-top: 20px;
+            text-align: right;
+        }
+        .summary p {
+            margin: 5px 0;
+        }
+        .summary .total {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <header>
+            <h1>PEACH HOTEL</h1>
+            <p>112 Nguyễn Văn Trỗi, Quận 2, TP.HCM | T: +84 98 348 06 83 | Email: contact@demo.com</p>
+        </header>
+        
+        <div>
+            <div class="section-title">Thông Tin Doanh Nghiệp</div>
+            <div class="info">
+                <p><strong>Tên doanh nghiệp:</strong> Happy Holiday Resort - Demo1</p>
+                <p><strong>Địa chỉ:</strong> 112 Nguyễn Văn Trỗi, Quận 2, TP.HCM</p>
+                <p><strong>Hotline:</strong> +84 98 348 06 83</p>
+                <p><strong>Email:</strong> contact@demo.com</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Thông Tin Đặt Phòng</div>
+            <div class="info">
+                <p><strong>Mã đặt phòng:</strong> 001443</p>
+                <p><strong>Họ tên:</strong> Nguyễn Mai Anh</p>
+                <p><strong>Phone/Email:</strong> 0123 456 789 / maianh@example.com</p>
+                <p><strong>Ngày đặt:</strong> 02/10/2024</p>
+            </div>
+        </div>
+
+        <div>
+            <div class="section-title">Chi Tiết Đặt Phòng</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên Dịch Vụ</th>
+                        <th>Số Đêm</th>
+                        <th>Giá Phòng (1 Đêm)</th>
+                        <th>Thành Tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Holo Opera - Studio <br><em>Bao gồm bữa sáng</em></td>
+                        <td>2</td>
+                        <td>1,200,000 VND</td>
+                        <td>2,400,000 VND</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="summary">
+            <p>Tổng tiền phòng: <strong>2,400,000 VND</strong></p>
+            <p>Dịch vụ thêm: <strong>0 VND</strong></p>
+            <p>Đã thanh toán: <strong>0 VND</strong></p>
+            <p class="total">Số tiền còn lại: <strong>2,400,000 VND</strong></p>
+        </div>
+
+        <footer>
+            Cảm ơn quý khách đã lựa chọn Peach Hotel! <br>
+            Hẹn gặp lại quý khách.
+        </footer>
+    </div>
+</body>
+</html>
