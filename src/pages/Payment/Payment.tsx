@@ -16,6 +16,8 @@ const Payment = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const data = location?.state?.bookingData || {};
+    console.log(data);
+    console.log(location?.state?.tierName);
     const [price, setPrice] = useState(data.total || 0);
     const [discountedPrice, setDiscountedPrice] = useState(0);
     const [peachPoint, setPeachPoint] = useState(0);
@@ -28,8 +30,8 @@ const Payment = () => {
 
     const totalNights = checkInDate && checkOutDate ? moment(checkOutDate).diff(moment(checkInDate), "days") : 0;
 
-    const taxesAndFees = price / 10;
-    const payableNow = price - taxesAndFees;
+    const payableNow = price / 1.1;
+    const taxesAndFees = price - payableNow;
 
     const [paymentMethod, setPaymentMethod] = useState("creditCard");
 
@@ -112,13 +114,13 @@ const Payment = () => {
 
     const totalPayment = price - discountedPrice - finalPeachPoint;
 
-    useEffect(() => {
-        if (usePeachPoint) {
-            setDiscountedPrice((prev) => prev + finalPeachPoint);
-        } else {
-            setDiscountedPrice((prev) => prev - finalPeachPoint);
-        }
-    }, [usePeachPoint, finalPeachPoint]);
+    // useEffect(() => {
+    //     if (usePeachPoint) {
+    //         setDiscountedPrice((prev) => prev + finalPeachPoint);
+    //     } else {
+    //         setDiscountedPrice((prev) => prev - finalPeachPoint);
+    //     }
+    // }, [usePeachPoint, finalPeachPoint]);
 
     return (
         <LoadingOverlay active={isLoading} spinner>
@@ -223,15 +225,15 @@ const Payment = () => {
                                             />
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                                            <span>PeachCoin Applied</span>
+                                            <span>Coupon Discount</span>
                                             <strong>
-                                                {finalPeachPoint.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                                {discountedPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                             </strong>
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">
-                                            <span>Total Discount</span>
+                                            <span>PeachCoin Applied</span>
                                             <strong>
-                                                {discountedPrice.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
+                                                {finalPeachPoint.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}
                                             </strong>
                                         </ListGroup.Item>
                                         <ListGroup.Item className="border-0 d-flex justify-content-between h5 pt-0">

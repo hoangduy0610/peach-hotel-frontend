@@ -17,8 +17,8 @@ const Rooms = () => {
     state,
   } = useLocation();
 
-  const startDate = state?.startDate ? moment(state?.startDate).toDate() : moment().toDate();
-  const endDate = state?.endDate ? moment(state?.endDate).toDate() : moment().add(5, 'days').toDate();
+  const startDate = state?.startDate ? moment(state?.startDate).startOf('day').toDate() : moment().startOf('day').toDate();
+  const endDate = state?.endDate ? moment(state?.endDate).startOf('day').toDate() : moment().add(5, 'days').startOf('day').toDate();
 
   const [isLoading, setIsLoading] = useState(false);
   const [show, setShow] = useState(false);

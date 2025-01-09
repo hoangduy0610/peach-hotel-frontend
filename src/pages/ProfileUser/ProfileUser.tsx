@@ -126,7 +126,8 @@ const ProfileUser = () => {
             <div className="profile-img-container">
               <img
                 // src={user.imageUrl || userImg}
-                src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                // src="https://static.vecteezy.com/system/resources/previews/009/292/244/non_2x/default-avatar-icon-of-social-media-user-vector.jpg"
+                src="https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/446873116_7905494119510206_5914400312179930848_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeHO6RHsSvDk42AvKJAEDs7JLgJcZXtIjTcuAlxle0iNN0fWxaZYBNAuK1fLecSeIsfssPWsqwXvoamfKjW-a4GB&_nc_ohc=wWFSDnMKMCMQ7kNvgFf0yTJ&_nc_oc=AdghJlwNPdPSMshwXhMm0b0RvLNCr5062FAotaZy3QLnyoGbNAvUJu7s7MXKHKgogqY&_nc_zt=23&_nc_ht=scontent.fsgn8-4.fna&_nc_gid=AnMTydkfiBeTrUP80whmBDE&oh=00_AYCqyowWxqw0tstlVU2jVZ3xVzJ611X0MejWyDP4M4LLJQ&oe=67855CC2"
                 alt="Profile"
                 className="profile-img"
               />

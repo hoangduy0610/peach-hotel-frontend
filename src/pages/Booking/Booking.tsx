@@ -67,8 +67,8 @@ const Booking = () => {
       userId: user.data.data.id,
       customerName: `${firstName} ${lastName}`,
       customerPhone: phone,
-      checkIn: moment(startDate).format("YYYY-MM-DD"),
-      checkOut: moment(endDate).format("YYYY-MM-DD"),
+      checkIn: moment(startDate).startOf('day'),
+      checkOut: moment(endDate).startOf('day'),
       roomIds: [location.state?.roomId],
       status: "PENDING",
       serviceIds: selectedServices.map((service) => service.id), // Sending selected services to the backend
