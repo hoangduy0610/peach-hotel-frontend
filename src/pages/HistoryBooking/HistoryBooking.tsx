@@ -15,7 +15,7 @@ const HistoryBooking = () => {
   const [feedbackForm] = Form.useForm();
   const [rating, setRating] = useState(0);
   const [originalBookingList, setOriginalBookingList] = useState<any[]>([]);
-
+  const [userId, setUserId] = useState(0);
   const [searchKeyword, setSearchKeyword] = useState('');
   const mappingColor = (status: string) => {
     switch (status) {
@@ -70,6 +70,8 @@ const HistoryBooking = () => {
       return;
     }
 
+    setUserId(user.data.data.id);
+
     const res = await MainApiRequest.post('/rating', {
       score: rating,
       comment: values.comment,
@@ -91,6 +93,23 @@ const HistoryBooking = () => {
       message.success('Booking has been cancelled successfully');
       fetchBookingList();
     }
+  }
+
+  const isRated = (ratings: any[]) => {
+    return ratings.length > 0 && ratings.some(rating => rating.user.id === userId);
+  }
+
+  const downloadInvoice = async (id: number) => {
+    const res = await MainApiRequest.post(`/payment/pdf/${id}`, {}, {
+      responseType: 'blob',
+    });
+
+    const url = window.URL.createObjectURL(new Blob([res.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `invoice-${id}.pdf`);
+    document.body.appendChild(link);
+    link.click();
   }
 
   return (
@@ -167,7 +186,7 @@ const HistoryBooking = () => {
                 title: 'Actions',
                 key: 'actions',
                 render: (_, record) => (
-                  <>
+                  <div>
                     {record.status === 'CONFIRMED' && (
                       <Button type="primary" onClick={() => handleOpenFeedbackModal(record.rooms[0].id)}>
                         Feedback
@@ -180,7 +199,14 @@ const HistoryBooking = () => {
                         </Button>
                       )
                     }
-                  </>
+                    {
+                      record.status === 'CONFIRMED' && (
+                        <Button className='btn btn-primary mt-2' onClick={() => downloadInvoice(record.paymentHistory[0].id)}>
+                          Invoice
+                        </Button>
+                      )
+                    }
+                  </div>
                 ),
               },
             ]}
